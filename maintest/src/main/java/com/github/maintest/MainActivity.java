@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
                     image.setImageBitmap(BitmapFactory.decodeFile(photos.get(0)));
                 })
                 .setCropWhiteSingle(options)
-                .setMaxChoice(10)
                 .start();
     }
 
