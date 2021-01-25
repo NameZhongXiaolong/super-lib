@@ -52,8 +52,8 @@ public class GalleryUCropActivity extends UCropActivity {
 
                 //英文
                 if (ChoiceGallerySetting.LANGUAGE_EN.equals(mLanguage)) {
-                    configuration.setLocale(Locale.ENGLISH);
                     if (!Objects.equals("en", defLocale.getLanguage())) {
+                        configuration.setLocale(Locale.ENGLISH);
                         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
                     }
                 }
