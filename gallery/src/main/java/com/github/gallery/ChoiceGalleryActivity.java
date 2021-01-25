@@ -293,7 +293,13 @@ public class ChoiceGalleryActivity extends BaseActivity {
             mPhotoAdapter.setChoicePhotos(new ArrayList<>());
             mPhotoAdapter.setChecked(position, true);
             Uri source = Uri.fromFile(new File(mPhotoAdapter.getItem(position)));
-            Uri destination = Uri.fromFile(new File(getCacheDir(), "gallery_crop.png"));
+            File outFile = new File(getCacheDir(), "gallery_crop.png");
+            if (outFile.exists()) {
+                if (!outFile.delete()) {
+                    outFile = new File(getCacheDir(), "gallery_crop_tmp.png");
+                }
+            }
+            Uri destination = Uri.fromFile(outFile);
 
             UCrop.Options options = mUCropOptions;
             if (options == null) {
