@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="drawableStartWidth" format="dimension" />
+    <attr name="drawableStartHeight" format="dimension" />
+    <attr name="drawableEndWidth" format="dimension" />
+    <attr name="drawableEndHeight" format="dimension" />
+    <attr name="drawableTopWidth" format="dimension" />
+    <attr name="drawableTopHeight" format="dimension" />
+    <attr name="drawableBottomWidth" format="dimension" />
+    <attr name="drawableBottomHeight" format="dimension" />
+
+    <attr name="backgroundArc" format="boolean" />
+    <attr name="backgroundColorPressed" format="color" />
+    <attr name="backgroundColorEnabled" format="color" />
+
+    <attr name="strokeColorPressed" format="color" />
+    <attr name="strokeColorEnabled" format="color" />
+
+    <attr name="textColorPressed" format="color" />
+    <attr name="textColorEnabled" format="color" />
+
+    <declare-styleable name="SuperButton">
+        <attr name="drawableStartWidth" />
+        <attr name="drawableStartHeight" />
+        <attr name="drawableEndWidth" />
+        <attr name="drawableEndHeight" />
+        <attr name="drawableTopWidth" />
+        <attr name="drawableTopHeight" />
+        <attr name="drawableBottomWidth" />
+        <attr name="drawableBottomHeight" />
+
+        <!--是否左右半圆-->
+        <attr name="backgroundArc" />
+        <!--圆角-->
+        <attr name="android:radius" />
+        <!--圆角-->
+        <attr name="android:topLeftRadius" />
+        <attr name="android:topRightRadius" />
+        <attr name="android:bottomLeftRadius" />
+        <attr name="android:bottomRightRadius" />
+
+        <!--背景颜色-->
+        <attr name="backgroundColor" />
+        <!--不可点击时的背景颜色-->
+        <attr name="backgroundColorEnabled" />
+        <!--点击时的背景颜色-->
+        <attr name="backgroundColorPressed" />
+        <!--背景描边宽度-->
+        <attr name="strokeWidth" />
+        <!--背景描边颜色-->
+        <attr name="strokeColor" />
+        <!--背景描边不可点击时的颜色-->
+        <attr name="strokeColorEnabled" />
+        <!--背景描边点击时的颜色-->
+        <attr name="strokeColorPressed" />
+        <!--文字不可点击时的颜色-->
+        <attr name="textColorEnabled" />
+        <!--文字点击时的颜色-->
+        <attr name="textColorPressed" />
+    </declare-styleable>
+
+</resources>

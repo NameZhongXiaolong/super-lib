@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <item name="gallery_image_view" type="id"/>
+     <item name="gallery_check_num" type="id"/>
+     <item name="gallery_flag" type="id"/>
+     <item name="gallery_view" type="id"/>
+     <item name="gallery_view_selected" type="id"/>
+     <item name="gallery_text_catalog" type="id"/>
+     <item name="gallery_image_button" type="id"/>
+     <item name="gallery_check_box" type="id"/>
+     <item name="gallery_view_pager" type="id"/>
+     <item name="gallery_tool_bar" type="id" />
+     <item name="gallery_text_title" type="id" />
+     <item name="gallery_image_button_ic" type="id" />
+     <item name="gallery_button_complete" type="id" />
+     <item name="gallery_view_stub" type="id" />
+     <item name="gallery_refresh_layout" type="id" />
+     <item name="gallery_button_preview" type="id" />
+     <item name="gallery_list_catalog" type="id" />
+     <item name="gallery_button_bg" type="id" />
+     <item name="gallery_frame_layout" type="id" />
+     <item name="gallery_constraint_layout" type="id" />
+     <item name="gallery_list" type="id" />
+     <item name="gallery_progress_layout" type="id" />
+     <item name="gallery_tool_bar_parent" type="id" />
+     <item name="gallery_bottom_parent" type="id" />
+
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="statusBarSize">24dp</dimen>
+    <dimen name="navigationBarSize">48dp</dimen>
+    <dimen name="actionBarSize">56dp</dimen>
+    <dimen name="topBarSize">80dp</dimen>
+
+</resources>

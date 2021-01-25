@@ -1,0 +1,45 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Gallery_AppTheme_Light" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/gallery_white</item>
+        <item name="colorPrimaryDark">@color/gallery_color_grey</item>
+        <item name="colorAccent">@color/gallery_color_333333</item>
+        <item name="android:windowBackground">@color/gallery_white</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="galleryColorAccentTranslucent">@color/gallery_colorAccentTranslucent</item>
+    </style>
+
+    <style name="Gallery_AppTheme_Light_StatusBar" parent="Gallery_AppTheme_Light">
+        <item name="colorPrimaryDark">@color/gallery_white</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+    </style>
+
+    <!--测试App 通用主题-->
+    <style name="Gallery_AppTheme_Dragon_Normal" parent="Gallery_AppTheme_Light_StatusBar">
+        <item name="colorAccent">@color/gallery_color_333333</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+    </style>
+
+    <!--测试App 6.0以下版本主题-->
+    <style name="Gallery_AppTheme_Dragon_M" parent="Gallery_AppTheme_Light">
+        <item name="colorAccent">@color/gallery_color_333333</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <!--MilaChat App通用主题-->
+    <style name="Gallery_AppTheme_MilaChat_Normal" parent="Gallery_AppTheme_Light">
+        <item name="colorAccent">@color/gallery_milachat_colorAccent</item>
+        <item name="colorPrimaryDark">@color/gallery_white</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+    </style>
+
+    <!--MilaChat App6.0以下版本主题-->
+    <style name="Gallery_AppTheme_MilaChat_M" parent="Gallery_AppTheme_Light">
+        <item name="colorAccent">@color/gallery_milachat_colorAccent</item>
+    </style>
+
+</resources>

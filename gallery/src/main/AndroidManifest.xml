@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.gallery">
+
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <application>
+        <activity android:name=".ChoiceGalleryActivity" android:theme="@style/Gallery_AppTheme_Light"/>
+        <activity android:name=".GalleryPreviewActivity" android:theme="@style/Gallery_AppTheme_Light"/>
+        <activity android:name=".GalleryUCropActivity" android:theme="@style/Gallery_AppTheme_Light"/>
+
+        <service
+            android:name=".ScanningLocalPhotoService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+    </application>
+</manifest>

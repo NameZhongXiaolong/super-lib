@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/gallery_constraint_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gallery_white">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@id/gallery_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="48dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@id/gallery_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@id/gallery_button_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom"
+        android:background="@color/gallery_transparent"
+        android:gravity="center"
+        android:minWidth="75dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="8dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="8dp"
+        android:text="@string/gallery_preview"
+        android:textAllCaps="false"
+        android:textSize="16sp" />
+
+    <View
+        android:id="@id/gallery_button_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        tools:background="#80000000"
+        tools:visibility="visible" />
+
+    <com.github.gallery.SquareFrameLayout
+        android:id="@id/gallery_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gallery_transparent">
+
+        <ListView
+            android:id="@id/gallery_list_catalog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gallery_white"
+            android:clickable="true"
+            android:divider="#EDEDED"
+            android:dividerHeight="1px"
+            android:focusable="true"
+            android:listSelector="@android:color/transparent"
+            android:visibility="gone" />
+    </com.github.gallery.SquareFrameLayout>
+
+</FrameLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ChoiceGalleryView">
+        <!--列数-->
+        <attr name="choiceGalleryViewColumnCount" format="integer"/>
+        <!--行数-->
+        <attr name="choiceGalleryViewRowCount" format="integer"/>
+        <!--间距-->
+        <attr name="choiceGalleryViewChildMargin" format="dimension"/>
+        <attr name="choiceGalleryViewMax" format="integer"/>
+    </declare-styleable>
+
+    <attr name="gallery_darkStatusBar" format="boolean" />
+    <attr name="galleryColorAccentTranslucent" format="color" />
+
+</resources>

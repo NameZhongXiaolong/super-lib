@@ -1,0 +1,5 @@
+rootProject.name = "maintest"
+include ':maintest'
+include ':gallery'
+include ':dialog'
+include ':widget'

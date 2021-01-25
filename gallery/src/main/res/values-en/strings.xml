@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gallery_checked">Checked</string>
+    <string name="gallery_image_scanning">Scanning picture&#8230;</string>
+    <string name="gallery_preview">Preview</string>
+    <string name="gallery_catalog_all">All</string>
+    <string name="gallery_catalog_complete">Complete(%1$d/%2$d)</string>
+    <string name="gallery_max_photo">"You can only select %1$d pictures at most"</string>
+</resources>

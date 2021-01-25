@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">mainTest</string>
+    <string name="select_image">图片选择器</string>
+    <string name="dialog">弹出框</string>
+</resources>

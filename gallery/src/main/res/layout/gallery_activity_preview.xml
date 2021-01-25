@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/gallery_white">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@id/gallery_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@id/gallery_bottom_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#CCFFFFFF"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@id/gallery_list"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="#CCFFFFFF" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#DDFFFFFF">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@id/gallery_check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:background="@color/gallery_transparent"
+                android:button="@drawable/gallery_ic_check_box"
+                android:gravity="center"
+                android:minWidth="105dp"
+                android:text="@string/gallery_checked"
+                android:textColor="#333333"
+                android:textSize="16sp"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/gallery_tool_bar_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#DDFFFFFF"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@id/gallery_tool_bar"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/gallery_ic_back" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@id/gallery_text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:paddingStart="1dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="6dp"
+            android:textColor="#333333"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/gallery_tool_bar"
+            app:layout_constraintLeft_toRightOf="@id/gallery_tool_bar"
+            app:layout_constraintTop_toTopOf="@id/gallery_tool_bar"
+            tools:text="全部" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@id/gallery_button_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/gallery_complete_button"
+            android:minWidth="80dp"
+            android:minHeight="30dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textAllCaps="false"
+            android:textColor="@color/gallery_white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/gallery_tool_bar"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/gallery_tool_bar" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1px"
+            android:layout_gravity="bottom"
+            android:background="#333333"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
