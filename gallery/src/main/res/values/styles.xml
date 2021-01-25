@@ -16,7 +16,7 @@
     </style>
 
     <!--测试App 通用主题-->
-    <style name="Gallery_AppTheme_Dragon_Normal" parent="Gallery_AppTheme_Light_StatusBar">
+    <style name="Gallery_AppTheme_MeStore_Normal" parent="Gallery_AppTheme_Light_StatusBar">
         <item name="colorAccent">@color/gallery_color_333333</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:fitsSystemWindows">true</item>
@@ -24,7 +24,7 @@
     </style>
 
     <!--测试App 6.0以下版本主题-->
-    <style name="Gallery_AppTheme_Dragon_M" parent="Gallery_AppTheme_Light">
+    <style name="Gallery_AppTheme_MeStore_M" parent="Gallery_AppTheme_Light">
         <item name="colorAccent">@color/gallery_color_333333</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:fitsSystemWindows">true</item>

@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
     //图片选择器
     public void onSelectImage(View view) {
         boolean crop = true;
-//        new ChoiceGallerySetting(this).setMilaChatTheme().build();
-        new ChoiceGallerySetting(this).setMilaChatTheme().setLanguage(ChoiceGallerySetting.LANGUAGE_EN).build();
+        new ChoiceGallerySetting(this).setMeStoreTheme().build();
+//        new ChoiceGallerySetting(this).setMilaChatTheme().setLanguage(ChoiceGallerySetting.LANGUAGE_ZH_CN).build();
 
         UCrop.Options options = ChoiceGallery.getDefCropOptions(this);
         options.setToolbarWidgetColor(Color.WHITE);
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     image.setImageBitmap(BitmapFactory.decodeFile(photos.get(0)));
                 })
                 .setCropWhiteSingle(options)
-//                .setMaxChoice(10)
+                .setMaxChoice(10)
                 .start();
     }
 

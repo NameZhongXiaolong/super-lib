@@ -35,6 +35,11 @@ public class ChoiceGallerySetting {
         return this;
     }
 
+    public ChoiceGallerySetting setMeStoreTheme() {
+        mTheme = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? R.style.Gallery_AppTheme_MeStore_Normal : R.style.Gallery_AppTheme_MeStore_M;
+        return this;
+    }
+
     public void build(){
         mSharedPrefs.edit().clear().apply();
         if (!TextUtils.isEmpty(mLanguage)) {

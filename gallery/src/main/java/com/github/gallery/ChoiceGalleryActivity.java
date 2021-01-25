@@ -94,7 +94,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gallery_activity_choice);
-        getWindow().setNavigationBarColor(Color.WHITE);
+
         //find view
         Toolbar toolbar = findViewById(R.id.gallery_tool_bar);
         mBtnChoiceComplete = findViewById(R.id.gallery_button_complete);
@@ -423,9 +423,9 @@ public class ChoiceGalleryActivity extends BaseActivity {
      * @return true关闭成功,false已经处于关闭状态
      */
     private boolean closeCatalogView() {
-        if (mLvCatalog.getVisibility() != View.VISIBLE) {
+        if (mLvCatalog == null || mLvCatalog.getVisibility() != View.VISIBLE) {
             return false;
-        }else{
+        } else {
             onCatalogViewVisibility();
             return true;
         }
