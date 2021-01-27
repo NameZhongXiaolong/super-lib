@@ -1,7 +1,6 @@
 package com.github.gallery;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,13 +26,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yalantis.ucrop.UCrop;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,12 +45,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import static android.widget.AbsListView.CHOICE_MODE_SINGLE;
+import static com.github.gallery.PhotoAdapter.OnItemClickType.CAMERA;
 import static com.github.gallery.PhotoAdapter.OnItemClickType.CHECKED;
 
 /**
  * Created by ZhongXiaolong on 2019/12/30 17:16.
  * <p>
  * 使用方法{@link ChoiceGallery},不要直接调用本Activity
+ * <p>
+ * Event事件
+ * 扫描本地图片结果 {@link ChoiceGalleryActivity#onScanningLocalPhotoResultEvent(LoadResultData)}
+ * 扫描本地图片成功返回的集合 {@link ChoiceGalleryActivity#onScanningLocalPhotoCompleteEvent(List)}
+ * 拍照成功 {@link ChoiceGalleryActivity#onCameraResultEvent(CameraResult)}
+ * 裁剪成功 {@link ChoiceGalleryActivity#onCropResultEvent(CropResult)}
  */
 public class ChoiceGalleryActivity extends BaseActivity {
 
@@ -76,7 +78,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
     private View mVBgButton;
     private int mCatalogSelectedPosition = -1;
     private boolean mCanCrop;
-    private static UCrop.Options mUCropOptions;
+    private boolean mShowCamera;
 
     static void start(ChoiceGallery choiceGallery) {
         Intent starter = new Intent(choiceGallery.getContext(), ChoiceGalleryActivity.class);
@@ -84,7 +86,8 @@ public class ChoiceGalleryActivity extends BaseActivity {
         starter.putExtra("tag", tag);
         starter.putExtra("maxChoice", choiceGallery.getMaxChoice());
         starter.putExtra("crop", choiceGallery.getMaxChoice() == 1 && choiceGallery.isCropWhiteSingle());
-        mUCropOptions = choiceGallery.getCropOptions();
+        starter.putExtra("show_camera", choiceGallery.isShowCamera());
+        GalleryCropFragment.mUCropOptions = choiceGallery.getCropOptions();
         starter.putStringArrayListExtra("choiceList", new ArrayList<>(choiceGallery.getChoiceList()));
         choiceGallery.getContext().startActivity(starter);
         new ChoiceGalleryReceiver(choiceGallery.getContext(), tag, choiceGallery.getCallback()).register();
@@ -106,6 +109,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
         mTag = getIntent().getStringExtra("tag");
         mMaxChoice = getIntent().getIntExtra("maxChoice", 0);
         mCanCrop = getIntent().getBooleanExtra("crop", false);
+        mShowCamera = getIntent().getBooleanExtra("show_camera", false);
 
         //标题
         toolbar.setTitle("");
@@ -145,6 +149,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
         List<String> choicePhoto = getIntent().getStringArrayListExtra("choiceList");
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         mPhotoAdapter = new PhotoAdapter(this::onPhotoItemClick);
+        mPhotoAdapter.showCamera(mShowCamera);
         mPhotoAdapter.setChoicePhotos(choicePhoto);
         recyclerView.setAdapter(mPhotoAdapter);
         recyclerView.setHasFixedSize(true);
@@ -207,7 +212,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
     /**
      * 刷新
      */
-    private void onRefresh(){
+    private void onRefresh() {
         ScanningLocalPhotoService.enqueueWork(this, new Intent(this, ScanningLocalPhotoService.class));
     }
 
@@ -218,7 +223,6 @@ public class ChoiceGalleryActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         if (!mLoadSucceed) {
-            Log.d("ChoiceGalleryActivity", "onStart");
             ScanningLocalPhotoService.enqueueWork(this, new Intent(this, ScanningLocalPhotoService.class));
         }
     }
@@ -257,7 +261,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
     }
 
     /**
-     * 加载错误
+     * 扫描结果事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScanningLocalPhotoResultEvent(LoadResultData data) {
@@ -276,11 +280,48 @@ public class ChoiceGalleryActivity extends BaseActivity {
     }
 
     /**
+     * 拍照结果
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCameraResultEvent(CameraResult data) {
+        final String path = data.getPath();
+        if (mCanCrop) {
+            //裁剪
+            GalleryCropFragment.start(this, path);
+        }
+
+        mPhotoAdapter.add(1, path);
+        if (mCanCrop) {
+            //裁剪-默认选中
+            mPhotoAdapter.setChoicePhotos(new ArrayList<>());
+            mPhotoAdapter.setChecked(1, true);
+        }
+        if (mCatalogAdapter.getCount() > 0) {
+            mCatalogAdapter.getItem(0).getPhotoList().add(0, path);
+            for (int i = 0; i < mCatalogAdapter.getCount(); i++) {
+                if (mCatalogAdapter.getItem(i).getPath().equals("Camera")) {
+                    mCatalogAdapter.getItem(i).getPhotoList().add(0, path);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 裁剪结果
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCropResultEvent(CropResult data) {
+        ChoiceGalleryReceiver.post(this, mTag, Collections.singletonList(data.getPath()));
+        finish();
+    }
+
+    /**
      * 目录Item点击事件
      */
     private void onCatalogItemClick(ArrayAdapter<PhotoData> catalogAdapter, int position) {
         mPhotoAdapter.setData(Objects.requireNonNull(catalogAdapter.getItem(position)).getPhotoList());
-        mTvTitle.setText(Objects.requireNonNull(catalogAdapter.getItem(position)).getChineseCatalog());
+        mTvTitle.setText(Objects.requireNonNull(catalogAdapter.getItem(position)).getCatalog());
         mLvCatalog.postDelayed(this::closeCatalogView, 200);
         mCatalogSelectedPosition = position;
     }
@@ -289,26 +330,19 @@ public class ChoiceGalleryActivity extends BaseActivity {
      * 照片点击事件
      */
     private void onPhotoItemClick(PhotoAdapter.OnItemClickType type, int position) {
-        if (mCanCrop) {
+        if (type == CAMERA) {
+            //相机
+            GalleryCameraFragment.start(this);
+        } else if (mCanCrop) {
+            //裁剪
             mPhotoAdapter.setChoicePhotos(new ArrayList<>());
             mPhotoAdapter.setChecked(position, true);
-            Uri source = Uri.fromFile(new File(mPhotoAdapter.getItem(position)));
-            File outFile = new File(getCacheDir(), "gallery_crop.png");
-            Uri destination = Uri.fromFile(outFile);
-
-            UCrop.Options options = mUCropOptions;
-            if (options == null) {
-                options = ChoiceGallery.getDefCropOptions(this);
-            }
-            Intent intent = UCrop.of(source, destination)
-                    .withOptions(options)
-                    .getIntent(this);
-            intent.setClass(this, GalleryUCropActivity.class);
-            startActivityForResult(intent,UCrop.REQUEST_CROP);
-        }else if (type == CHECKED) {
+            GalleryCropFragment.start(this, mPhotoAdapter.getItem(position));
+        } else if (type == CHECKED) {
+            //勾选
             boolean checked = mPhotoAdapter.getChecked(position);
             if (!checked && mPhotoAdapter.getChoicePhotoCount() >= mMaxChoice) {
-                Toast.makeText(this, getString(R.string.gallery_max_photo,mMaxChoice), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.gallery_max_photo, mMaxChoice), Toast.LENGTH_SHORT).show();
             } else {
                 mPhotoAdapter.setChecked(position, !checked);
                 mBtnChoiceComplete.setText(getString(R.string.gallery_catalog_complete, mPhotoAdapter.getChoicePhotoCount(), mMaxChoice));
@@ -316,6 +350,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
                 mBtnPreview.setEnabled(mBtnChoiceComplete.isEnabled());
             }
         } else {
+            //查看(预览)
             GalleryPreviewActivity.start(this, mPhotoAdapter.getData(), mPhotoAdapter.getChoicePhotos(), position, mMaxChoice);
         }
     }
@@ -355,16 +390,6 @@ public class ChoiceGalleryActivity extends BaseActivity {
                 mBtnChoiceComplete.setText(getString(R.string.gallery_catalog_complete, mPhotoAdapter.getChoicePhotoCount(), mMaxChoice));
                 mBtnChoiceComplete.setEnabled(mPhotoAdapter.getChoicePhotoCount() > 0);
                 mBtnPreview.setEnabled(mBtnChoiceComplete.isEnabled());
-            }
-        }
-        if (requestCode == UCrop.REQUEST_CROP && resultCode == Activity.RESULT_OK && data != null) {
-            //完成裁剪
-            final Uri resultUri = UCrop.getOutput(data);
-            if (resultUri != null) {
-                ChoiceGalleryReceiver.post(this, mTag, Collections.singletonList(resultUri.getPath()));
-                finish();
-            }else{
-                Toast.makeText(this, "裁剪失败", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -421,7 +446,8 @@ public class ChoiceGalleryActivity extends BaseActivity {
 
     /**
      * 关闭目录
-     * @return true关闭成功,false已经处于关闭状态
+     *
+     * @return true关闭成功, false已经处于关闭状态
      */
     private boolean closeCatalogView() {
         if (mLvCatalog == null || mLvCatalog.getVisibility() != View.VISIBLE) {
@@ -489,16 +515,16 @@ public class ChoiceGalleryActivity extends BaseActivity {
 
     private boolean mIsFinished;
 
-    private void onFinish(){
+    private void onFinish() {
         mIsFinished = true;
+        GalleryCropFragment.mUCropOptions = null;
         EventBus.getDefault().unregister(this);
-        mUCropOptions = null;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (isFinishing()&&!mIsFinished) {
+        if (isFinishing() && !mIsFinished) {
             onFinish();
         }
     }

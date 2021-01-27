@@ -11,6 +11,15 @@
         <activity android:name=".GalleryPreviewActivity" android:theme="@style/Gallery_AppTheme_Light"/>
         <activity android:name=".GalleryUCropActivity" android:theme="@style/Gallery_AppTheme_Light"/>
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.github.gallery.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/gallery_file_paths" />
+        </provider>
         <service
             android:name=".ScanningLocalPhotoService"
             android:exported="true"

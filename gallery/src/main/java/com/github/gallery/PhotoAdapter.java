@@ -25,12 +25,15 @@ import androidx.recyclerview.widget.RecyclerView;
  *
  * 图片Adapter
  */
-final class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder> {
+final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final static String SHOW_CAMERA = "com.github.gallery.camera";
+    private final static int TYPE_CAMERA_HOLDER = 10;
     private final List<String> mData;
     private final List<String> mChoicePhotos;
     private final OnItemClickListener mOnItemClickListener;
     private int mImageSize;
+    private boolean mShowCamera;
 
     PhotoAdapter(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
@@ -39,10 +42,36 @@ final class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder> 
     }
 
     /**
+     * 是否显示拍照
+     */
+    public void showCamera(boolean show) {
+        mShowCamera = show;
+        if (show) {
+            if (mData.size() > 0 && mData.get(0).equals(SHOW_CAMERA)) {
+                return;
+            }
+            mData.add(0, SHOW_CAMERA);
+            notifyDataSetChanged();
+        } else{
+            if (mData.remove(SHOW_CAMERA)) {
+                notifyDataSetChanged();
+            }
+        }
+    }
+
+    public void add(int position, String path) {
+        mData.add(position, path);
+        notifyDataSetChanged();
+    }
+
+    /**
      * 重新设置图片路径
      */
     public PhotoAdapter setData(List<String> data) {
         mData.clear();
+        if (mShowCamera) {
+            mData.add(SHOW_CAMERA);
+        }
         if (data != null) mData.addAll(data);
         notifyDataSetChanged();
         return this;
@@ -133,22 +162,41 @@ final class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder> 
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (mData.size() > 0) {
+            if (SHOW_CAMERA.equals(mData.get(position))) {
+                return TYPE_CAMERA_HOLDER;
+            }
+        }
+        return super.getItemViewType(position);
+    }
+
     @NonNull
     @Override
-    public PhotoHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         if (mImageSize == 0) {
             mImageSize = viewGroup.getContext().getResources().getDisplayMetrics().widthPixels / 4;
+        }
+        if (viewType == TYPE_CAMERA_HOLDER) {
+            return new CameraHolder(viewGroup, mOnItemClickListener);
         }
         return new PhotoHolder(viewGroup, mOnItemClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PhotoHolder holder, int position) {
-        final String path = mData.get(position);
-        final int indexOfChoicePhotos = mChoicePhotos.indexOf(path);
-        holder.setImage(path, mImageSize);
-        holder.setButtonText(indexOfChoicePhotos >= 0 ? String.valueOf(indexOfChoicePhotos + 1) : null);
-        holder.setButtonForeground(Color.parseColor(indexOfChoicePhotos >= 0 ? "#80000000" : "#00000000"));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        //if (holder instanceof CameraHolder) {
+        //    CameraHolder cameraHolder = (CameraHolder) holder;
+        //}
+        if (holder instanceof PhotoHolder) {
+            PhotoHolder photoHolder = (PhotoHolder) holder;
+            final String path = mData.get(position);
+            final int indexOfChoicePhotos = mChoicePhotos.indexOf(path);
+            photoHolder.setImage(path, mImageSize);
+            photoHolder.setButtonText(indexOfChoicePhotos >= 0 ? String.valueOf(indexOfChoicePhotos + 1) : null);
+            photoHolder.setButtonForeground(Color.parseColor(indexOfChoicePhotos >= 0 ? "#80000000" : "#00000000"));
+        }
     }
 
     @Override
@@ -163,8 +211,8 @@ final class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder> 
         void onItemClick(OnItemClickType type, int position);
     }
 
-    enum OnItemClickType{
-        CHECKED,OTHER
+    enum OnItemClickType {
+        CHECKED, CAMERA, OTHER,
     }
 
     /**
@@ -198,6 +246,14 @@ final class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder> 
 
         private void setButtonForeground(int color) {
             mButton.setBackgroundColor(color);
+        }
+    }
+
+    static class CameraHolder extends RecyclerView.ViewHolder{
+
+        public CameraHolder(@NonNull ViewGroup parent, final OnItemClickListener l) {
+            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.gallery_item_camera, parent, false));
+            itemView.setOnClickListener(v -> l.onItemClick(OnItemClickType.CAMERA, getAdapterPosition()));
         }
     }
 

@@ -38,6 +38,7 @@ public class ChoiceGallery {
     //单选裁剪
     private boolean cropWhiteSingle;
     private UCrop.Options uCropOptions;
+    private boolean showCamera;
 
     public ChoiceGallery(Context context) {
         mContext = context;
@@ -75,6 +76,14 @@ public class ChoiceGallery {
     public ChoiceGallery setCropWhiteSingle(UCrop.Options uCropOptions) {
         this.cropWhiteSingle = true;
         this.uCropOptions = uCropOptions;
+        return this;
+    }
+
+    /**
+     * 是否显示拍照按钮
+     */
+    public ChoiceGallery setShowCamera(boolean showCamera) {
+        this.showCamera = showCamera;
         return this;
     }
 
@@ -121,6 +130,10 @@ public class ChoiceGallery {
 
     boolean isCropWhiteSingle() {
         return cropWhiteSingle;
+    }
+
+    boolean isShowCamera() {
+        return showCamera;
     }
 
     UCrop.Options getCropOptions() {

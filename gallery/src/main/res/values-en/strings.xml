@@ -6,4 +6,10 @@
     <string name="gallery_catalog_all">All</string>
     <string name="gallery_catalog_complete">Complete(%1$d/%2$d)</string>
     <string name="gallery_max_photo">"You can only select %1$d pictures at most"</string>
+    <string name="gallery_wei_xin">WeChat</string>
+    <string name="gallery_pictures">pictures</string>
+    <string name="gallery_screen_shots">Screenshots</string>
+    <string name="gallery_download">Download</string>
+    <string name="gallery_camera">Camera</string>
+    <string name="gallery_dcim">DCIM</string>
 </resources>

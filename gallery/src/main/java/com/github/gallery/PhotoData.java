@@ -1,5 +1,7 @@
 package com.github.gallery;
 
+import android.text.TextUtils;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -11,9 +13,13 @@ import androidx.annotation.NonNull;
 class PhotoData {
 
     private String catalog;
+    private String path;
     private List<String> photoList;
 
     public String getCatalog() {
+        if (TextUtils.isEmpty(catalog)) {
+            catalog = path;
+        }
         return catalog;
     }
 
@@ -31,14 +37,13 @@ class PhotoData {
         return this;
     }
 
-    String getChineseCatalog() {
-        if ("WeiXin".equalsIgnoreCase(catalog)) return "微信";
-        if ("pictures".equalsIgnoreCase(catalog)) return "图片(pictures)";
-        if ("Screenshots".equalsIgnoreCase(catalog)) return "截屏";
-        if ("Download".equalsIgnoreCase(catalog)) return "下载";
-        if ("Camera".equalsIgnoreCase(catalog)) return "相机";
-        if ("DCIM".equalsIgnoreCase(catalog)) return "相册(DCIM)";
-        return catalog != null ? catalog : "";
+    String getPath() {
+        return path;
+    }
+
+    PhotoData setPath(String path) {
+        this.path = path;
+        return this;
     }
 
     @Override
@@ -57,6 +62,6 @@ class PhotoData {
     @NonNull
     @Override
     public String toString() {
-        return getChineseCatalog() + ("（" + (photoList != null ? photoList.size() : 0) + "）");
+        return getCatalog() + ("（" + (photoList != null ? photoList.size() : 0) + "）");
     }
 }

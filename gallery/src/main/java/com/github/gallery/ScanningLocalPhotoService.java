@@ -72,7 +72,7 @@ public class ScanningLocalPhotoService extends JobIntentService {
             return;
         }
 
-        data.add(new PhotoData().setCatalog(getResources().getString(R.string.gallery_catalog_all)).setPhotoList(new ArrayList<>()));
+        data.add(new PhotoData().setPath(getResources().getString(R.string.gallery_catalog_all)).setPhotoList(new ArrayList<>()));
 
         while (cursor.moveToNext()) {
             //获取图片的路径
@@ -90,7 +90,7 @@ public class ScanningLocalPhotoService extends JobIntentService {
             File parentFile = new File(path).getParentFile();
             if (parentFile != null) {
                 String parentName = parentFile.getName();
-                PhotoData photoData = new PhotoData().setCatalog(parentName);
+                PhotoData photoData = new PhotoData().setPath(parentName).setCatalog(getCatalog(getResources(), parentName));
                 int index = data.indexOf(photoData);
                 if (index > 0) {
                     data.get(index).getPhotoList().add(path);
@@ -108,6 +108,16 @@ public class ScanningLocalPhotoService extends JobIntentService {
         cursor.close();
 
         stopSelf();
+    }
+
+    private String getCatalog(Resources resources, String path) {
+        if ("WeiXin".equalsIgnoreCase(path)) return resources.getString(R.string.gallery_wei_xin);
+        if ("pictures".equalsIgnoreCase(path)) return resources.getString(R.string.gallery_pictures);
+        if ("Screenshots".equalsIgnoreCase(path)) return resources.getString(R.string.gallery_screen_shots);
+        if ("Download".equalsIgnoreCase(path)) return resources.getString(R.string.gallery_download);
+        if ("Camera".equalsIgnoreCase(path)) return resources.getString(R.string.gallery_camera);
+        if ("DCIM".equalsIgnoreCase(path)) return resources.getString(R.string.gallery_dcim);
+        return path;
     }
 
     @Override
