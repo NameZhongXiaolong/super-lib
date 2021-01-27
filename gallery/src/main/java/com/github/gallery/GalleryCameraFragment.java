@@ -85,7 +85,7 @@ public class GalleryCameraFragment extends Fragment {
                     return;
                 }
             }
-            mFrontFile = File.createTempFile("camera", ".jpg", cameraCacheFile);
+            mFrontFile = new File(cameraCacheFile, System.currentTimeMillis() + ".png");
             Uri uri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 PackageManager packageManager = requireContext().getPackageManager();
