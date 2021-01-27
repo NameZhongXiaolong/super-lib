@@ -148,7 +148,7 @@ public class GalleryPreviewActivity extends BaseActivity {
                     mBtnChoiceComplete.setText(getString(R.string.gallery_catalog_complete, mChoicePhotos.size(), mMaxChoice));
                     mBtnChoiceComplete.setEnabled(mChoicePhotos.size() > 0);
                 } else {
-                    Toast.makeText(this, getString(R.string.gallery_max_photo, mMaxChoice), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.gallery_max_photo, mMaxChoice), Toast.LENGTH_SHORT).show();
                     mCheckBox.setChecked(false);
                 }
             }

@@ -342,7 +342,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
             //勾选
             boolean checked = mPhotoAdapter.getChecked(position);
             if (!checked && mPhotoAdapter.getChoicePhotoCount() >= mMaxChoice) {
-                Toast.makeText(this, getString(R.string.gallery_max_photo, mMaxChoice), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.gallery_max_photo, mMaxChoice), Toast.LENGTH_SHORT).show();
             } else {
                 mPhotoAdapter.setChecked(position, !checked);
                 mBtnChoiceComplete.setText(getString(R.string.gallery_catalog_complete, mPhotoAdapter.getChoicePhotoCount(), mMaxChoice));
