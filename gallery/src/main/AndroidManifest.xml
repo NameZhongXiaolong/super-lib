@@ -13,7 +13,7 @@
 
         <provider
             android:name=".GalleryFileProvider"
-            android:authorities="com.github.gallery.fileprovider"
+            android:authorities="${applicationId}.gallery.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

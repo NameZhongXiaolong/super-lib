@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                     ImageView image = findViewById(R.id.image_view);
                     image.setImageBitmap(BitmapFactory.decodeFile(photos.get(0)));
                 })
+                .setShowCamera(true)
                 .setCropWhiteSingle(options)
                 .start();
     }
