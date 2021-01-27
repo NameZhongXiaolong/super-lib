@@ -12,7 +12,7 @@
         <activity android:name=".GalleryUCropActivity" android:theme="@style/Gallery_AppTheme_Light"/>
 
         <provider
-            android:name="androidx.core.content.FileProvider"
+            android:name=".GalleryFileProvider"
             android:authorities="com.github.gallery.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
