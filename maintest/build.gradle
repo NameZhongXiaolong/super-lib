@@ -51,7 +51,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.1'
 //    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    
+
 //    implementation project(path: ':gallery')
     implementation(name:'gallery.1.2', ext:'aar')
 

@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application>
         <activity android:name=".ChoiceGalleryActivity" android:theme="@style/Gallery_AppTheme_Light"/>
         <activity android:name=".GalleryPreviewActivity" android:theme="@style/Gallery_AppTheme_Light"/>

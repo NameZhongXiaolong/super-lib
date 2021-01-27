@@ -3,6 +3,7 @@ package com.github.gallery;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -87,7 +88,10 @@ public class GalleryCameraFragment extends Fragment {
             mFrontFile = File.createTempFile("camera", ".jpg", cameraCacheFile);
             Uri uri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                uri = FileProvider.getUriForFile(requireContext(), "com.github.gallery.fileprovider", mFrontFile);
+                PackageManager packageManager = requireContext().getPackageManager();
+                PackageInfo packageInfo = packageManager.getPackageInfo(requireActivity().getApplicationContext().getPackageName(), 0);
+                String authority = packageInfo.packageName + ".gallery.fileprovider";
+                uri = FileProvider.getUriForFile(requireContext(), authority, mFrontFile);
             } else {
                 uri = Uri.fromFile(mFrontFile);
             }
@@ -124,7 +128,7 @@ public class GalleryCameraFragment extends Fragment {
      */
     private void remove() {
         if (isAdded()) {
-            getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
+            requireFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
 }

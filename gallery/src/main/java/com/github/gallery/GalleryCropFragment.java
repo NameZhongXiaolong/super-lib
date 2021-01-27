@@ -84,7 +84,7 @@ public class GalleryCropFragment extends Fragment {
      */
     private void remove() {
         if (isAdded()) {
-            getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
+            requireFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
 }
