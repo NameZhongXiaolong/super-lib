@@ -12,4 +12,8 @@
     <string name="gallery_download">Download</string>
     <string name="gallery_camera">Camera</string>
     <string name="gallery_dcim">DCIM</string>
+    <string name="gallery_hint_tip">Tip</string>
+    <string name="gallery_hint_need_sd_permission">Storage permissions required!</string>
+    <string name="gallery_go_setting">Yes</string>
+    <string name="gallery_exit">No</string>
 </resources>

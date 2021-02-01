@@ -467,11 +467,11 @@ public class ChoiceGalleryActivity extends BaseActivity {
             return;
         }
         mPermissionDialog = new AlertDialog
-                .Builder(this)
-                .setTitle("提示")
-                .setMessage("需要存储权限才能使用app")
+                .Builder(this, R.style.Gallery_AlertDialogTheme)
+                .setTitle(R.string.gallery_hint_tip)
+                .setMessage(R.string.gallery_hint_need_sd_permission)
                 .setCancelable(false)
-                .setPositiveButton("去设置", (dialog, which) -> {
+                .setPositiveButton(R.string.gallery_go_setting, (dialog, which) -> {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
@@ -486,7 +486,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton("退出", (dialog, which) -> {
+                .setNegativeButton(R.string.gallery_exit, (dialog, which) -> {
                     dialog.dismiss();
                     new Handler(getMainLooper()).postDelayed(this::finish, 300);
                 })

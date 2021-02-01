@@ -12,4 +12,8 @@
     <string name="gallery_download">下载</string>
     <string name="gallery_camera">相机</string>
     <string name="gallery_dcim">相册(DCIM)</string>
+    <string name="gallery_hint_tip">提示</string>
+    <string name="gallery_hint_need_sd_permission">需要存储权限才能访问相册</string>
+    <string name="gallery_go_setting">去设置</string>
+    <string name="gallery_exit">退出</string>
 </resources>

@@ -42,4 +42,12 @@
         <item name="colorAccent">@color/gallery_milachat_colorAccent</item>
     </style>
 
+    <!--dialog主题-->
+    <style name="Gallery_AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:layout_width">300dp</item>
+        <item name="android:windowBackground">@color/gallery_white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">#333333</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+    </style>
 </resources>
