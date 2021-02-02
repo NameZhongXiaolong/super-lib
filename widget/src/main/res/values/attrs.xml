@@ -60,4 +60,44 @@
         <attr name="textColorPressed" />
     </declare-styleable>
 
+    <declare-styleable name="SuperTextView">
+        <attr name="drawableStartWidth" />
+        <attr name="drawableStartHeight" />
+        <attr name="drawableEndWidth" />
+        <attr name="drawableEndHeight" />
+        <attr name="drawableTopWidth" />
+        <attr name="drawableTopHeight" />
+        <attr name="drawableBottomWidth" />
+        <attr name="drawableBottomHeight" />
+
+        <!--是否左右半圆-->
+        <attr name="backgroundArc" />
+        <!--圆角-->
+        <attr name="android:radius" />
+        <!--圆角-->
+        <attr name="android:topLeftRadius" />
+        <attr name="android:topRightRadius" />
+        <attr name="android:bottomLeftRadius" />
+        <attr name="android:bottomRightRadius" />
+
+        <!--背景颜色-->
+        <attr name="backgroundColor" />
+        <!--不可点击时的背景颜色-->
+        <attr name="backgroundColorEnabled" />
+        <!--点击时的背景颜色-->
+        <attr name="backgroundColorPressed" />
+        <!--背景描边宽度-->
+        <attr name="strokeWidth" />
+        <!--背景描边颜色-->
+        <attr name="strokeColor" />
+        <!--背景描边不可点击时的颜色-->
+        <attr name="strokeColorEnabled" />
+        <!--背景描边点击时的颜色-->
+        <attr name="strokeColorPressed" />
+        <!--文字不可点击时的颜色-->
+        <attr name="textColorEnabled" />
+        <!--文字点击时的颜色-->
+        <attr name="textColorPressed" />
+    </declare-styleable>
+
 </resources>
