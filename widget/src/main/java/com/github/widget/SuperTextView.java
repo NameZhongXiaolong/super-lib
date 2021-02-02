@@ -57,7 +57,7 @@ public class SuperTextView extends AppCompatTextView {
     }
 
     public SuperTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.buttonStyle);
+        this(context, attrs, android.R.attr.textViewStyle);
     }
 
     public SuperTextView(Context context, AttributeSet attrs, int defStyleAttr) {
