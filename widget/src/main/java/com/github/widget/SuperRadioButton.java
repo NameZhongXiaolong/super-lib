@@ -9,7 +9,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
 
-import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatRadioButton;
 
 /**
  * Created by ZhongXiaolong on 2020/7/7 6:51 PM.
@@ -36,7 +36,7 @@ import androidx.appcompat.widget.AppCompatButton;
  *  *  * <!--文字点击时的颜色-->
  *  *  * <attr name="textColorPressed" />
  */
-public class SuperRadioButton extends AppCompatButton {
+public class SuperRadioButton extends AppCompatRadioButton {
 
     private final boolean mBackgroundArc;
     private final float mRadius;
