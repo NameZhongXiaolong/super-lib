@@ -51,7 +51,7 @@ public class ChoiceGallerySetting {
     }
 
     String getLanguage() {
-        return mSharedPrefs.getString("language", "zh_cn");
+        return mSharedPrefs.getString("language", "");
     }
 
     int getTheme() {
