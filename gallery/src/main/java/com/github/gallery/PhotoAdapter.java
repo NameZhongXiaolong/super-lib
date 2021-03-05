@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final static String SHOW_CAMERA = "com.github.gallery.camera";
+    public final static String SHOW_CAMERA = "com.github.gallery.camera";
     private final static int TYPE_CAMERA_HOLDER = 10;
     private final List<String> mData;
     private final List<String> mChoicePhotos;

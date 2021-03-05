@@ -351,7 +351,15 @@ public class ChoiceGalleryActivity extends BaseActivity {
             }
         } else {
             //查看(预览)
-            GalleryPreviewActivity.start(this, mPhotoAdapter.getData(), mPhotoAdapter.getChoicePhotos(), position, mMaxChoice);
+            List<String> data = new ArrayList<>(mPhotoAdapter.getData());
+            int checkedPosition = position;
+            if (mShowCamera) {
+                //如果显示了相机去掉相机的数据
+                if (data.remove(PhotoAdapter.SHOW_CAMERA)) {
+                    checkedPosition -= 1;
+                }
+            }
+            GalleryPreviewActivity.start(this, data, mPhotoAdapter.getChoicePhotos(), checkedPosition, mMaxChoice);
         }
     }
 
