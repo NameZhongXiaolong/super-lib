@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     //图片选择器
     public void onSelectImage(View view) {
         boolean crop = true;
-        new ChoiceGallerySetting(this).setLanguage(ChoiceGallerySetting.LANGUAGE_EN).setMeStoreTheme().build();
+        new ChoiceGallerySetting(this).setLanguage(ChoiceGallerySetting.LANGUAGE_EN).setMilaChatTheme().build();
 //        new ChoiceGallerySetting(this).setMilaChatTheme().setLanguage(ChoiceGallerySetting.LANGUAGE_ZH_CN).build();
 
         UCrop.Options options = ChoiceGallery.getDefCropOptions(this);
