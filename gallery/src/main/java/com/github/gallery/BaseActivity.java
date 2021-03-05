@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * Created by ZhongXiaolong on 2020/12/30 2:38 PM.
@@ -21,12 +22,14 @@ class BaseActivity extends AppCompatActivity {
     private String mLanguage;
     private int mColorPrimary;
     private int mColorPrimaryDark;
+    private int mBackIcon;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ChoiceGallerySetting choiceGallerySetting = new ChoiceGallerySetting(this);
+        mBackIcon = choiceGallerySetting.getNavigationIcon();
         int theme = choiceGallerySetting.getTheme();
         mLanguage = choiceGallerySetting.getLanguage();
 
@@ -75,6 +78,11 @@ class BaseActivity extends AppCompatActivity {
         return resources;
     }
 
+    @Override
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        toolbar.setNavigationIcon(mBackIcon);
+        super.setSupportActionBar(toolbar);
+    }
 
     public int getColorAccent() {
         return mColorAccent;
