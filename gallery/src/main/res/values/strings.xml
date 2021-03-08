@@ -2,6 +2,7 @@
 <resources>
     <string name="gallery_checked">选择</string>
     <string name="gallery_image_scanning">正在扫描图片&#8230;</string>
+    <string name="gallery_video_scanning">正在视频图片&#8230;</string>
     <string name="gallery_preview">预览</string>
     <string name="gallery_catalog_all">全部</string>
     <string name="gallery_catalog_complete">完成(%1$d/%2$d)</string>
@@ -16,4 +17,6 @@
     <string name="gallery_hint_need_sd_permission">需要存储权限才能访问相册</string>
     <string name="gallery_go_setting">去设置</string>
     <string name="gallery_exit">退出</string>
+    <string name="gallery_video">视频</string>
+    <string name="gallery_max_video">"最多只能选择%1$d个视频"</string>
 </resources>

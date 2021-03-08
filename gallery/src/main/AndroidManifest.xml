@@ -22,9 +22,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/gallery_file_paths" />
         </provider>
+
         <service
             android:name=".ScanningLocalPhotoService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity android:name=".ChoiceVideoActivity" />
+
+        <activity android:name=".GalleryVideoPlayerActivity" />
     </application>
 </manifest>

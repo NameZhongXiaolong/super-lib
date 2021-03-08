@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="1dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@id/gallery_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:background="#EDEDED"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@id/gallery_view_selected"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80000000"
+        app:layout_constraintBottom_toBottomOf="@id/gallery_image_view"
+        app:layout_constraintLeft_toLeftOf="@id/gallery_image_view"
+        app:layout_constraintRight_toRightOf="@id/gallery_image_view"
+        app:layout_constraintTop_toTopOf="@id/gallery_image_view" />
+
+    <View
+        android:id="@id/gallery_flag"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@color/gallery_transparent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical" />
+
+    <View
+        android:id="@id/gallery_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/gallery_transparent"
+        android:gravity="top|end"
+        android:padding="8dp"
+        android:textColor="@color/gallery_white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/gallery_flag"
+        app:layout_constraintLeft_toLeftOf="@id/gallery_flag"
+        app:layout_constraintRight_toRightOf="@id/gallery_image_view"
+        app:layout_constraintTop_toTopOf="@id/gallery_image_view" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@id/gallery_check_num"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        android:background="@drawable/gallery_select_normal"
+        android:gravity="center"
+        android:textColor="@color/gallery_white"
+        android:textSize="12sp"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintHeight_min="20dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="spread"
+        app:layout_constraintWidth_min="20dp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:adjustViewBounds="true"
+        android:alpha="0.8"
+        android:scaleType="fitXY"
+        android:src="@drawable/gallery_ic_video"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

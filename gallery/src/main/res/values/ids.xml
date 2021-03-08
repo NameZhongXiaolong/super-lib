@@ -24,5 +24,6 @@
      <item name="gallery_progress_layout" type="id" />
      <item name="gallery_tool_bar_parent" type="id" />
      <item name="gallery_bottom_parent" type="id" />
+     <item name="gallery_video_view" type="id" />
 
 </resources>
