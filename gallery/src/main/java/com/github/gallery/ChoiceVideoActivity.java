@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -45,6 +46,8 @@ public class ChoiceVideoActivity extends BaseActivity {
     private SwipeRefreshLayout mRefreshLayout;
     private AlertDialog mPermissionDialog;//权限弹出框
     private boolean mLoadSuccess;
+    private long mVideoMinSize;
+    private long mVideoMaxSize;
 
     public static void start(ChoiceVideo choiceVideo) {
         Intent starter = new Intent(choiceVideo.getContext(), ChoiceVideoActivity.class);
@@ -101,10 +104,10 @@ public class ChoiceVideoActivity extends BaseActivity {
 
     private void getVideoData() {
         mLoadSuccess = true;
-        final int videoMin = getIntent().getIntExtra("video_min", 0);
-        final int videoMax = getIntent().getIntExtra("video_max", Integer.MAX_VALUE);
+        mVideoMinSize = getIntent().getLongExtra("video_min", 0);
+        mVideoMaxSize = getIntent().getLongExtra("video_max", Integer.MAX_VALUE);
         Executors.newCachedThreadPool().submit(() -> {
-            List<String> data = new ArrayList<>();
+            List<VideoData> data = new ArrayList<>();
 
             ContentResolver contentResolver = getContentResolver();
             Uri videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
@@ -117,8 +120,8 @@ public class ChoiceVideoActivity extends BaseActivity {
                     MediaStore.Video.Media.DATE_MODIFIED
             };
             //只查询视频
-            String selection = "_size >? and _size<? and (mime_type = ? or mime_type = ? or mime_type =?) ";
-            String[] selectionArgs = {String.valueOf(videoMin), String.valueOf(videoMax), "video/mp4", "video/mpg", "video/avi"};
+            String selection = "_size >30 and (mime_type = ? or mime_type = ? or mime_type =?) ";
+            String[] selectionArgs = {"video/mp4", "video/mpg", "video/avi"};
             String sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " desc ";
             Cursor cursor = contentResolver.query(videoUri, projection, selection, selectionArgs, sortOrder);
 
@@ -130,9 +133,10 @@ public class ChoiceVideoActivity extends BaseActivity {
             while (cursor.moveToNext()) {
                 //获取视频的路径
                 String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+                long size = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.SIZE));
 
                 //添加
-                data.add(path);
+                data.add(new VideoData(size, path));
             }
 
             cursor.close();
@@ -141,7 +145,7 @@ public class ChoiceVideoActivity extends BaseActivity {
         });
     }
 
-    private void onGetVideoSuccess(List<String> data) {
+    private void onGetVideoSuccess(List<VideoData> data) {
         mRefreshLayout.setRefreshing(false);
         mRefreshLayout.setVisibility(View.VISIBLE);
 
@@ -162,7 +166,11 @@ public class ChoiceVideoActivity extends BaseActivity {
      * 完成事件
      */
     private void onCompleteClick(View view) {
-        ChoiceVideoReceiver.post(ChoiceVideoActivity.this, mTag, mAdapter.getCheckedData());
+        List<String> paths = new ArrayList<>();
+        for (VideoData checkedDatum : mAdapter.getCheckedData()) {
+            paths.add(checkedDatum.getPath());
+        }
+        ChoiceVideoReceiver.post(ChoiceVideoActivity.this, mTag, paths);
         mSendChoiceVideoReceiver = true;
         finish();
     }
@@ -170,8 +178,8 @@ public class ChoiceVideoActivity extends BaseActivity {
     /**
      * 列表点击事件
      */
-    private void onItemClick(View view, int position, String path) {
-        GalleryVideoPlayerActivity.start(this, path);
+    private void onItemClick(View view, int position, VideoData videoData) {
+        GalleryVideoPlayerActivity.start(this, videoData.getPath());
     }
 
     /**
@@ -181,10 +189,38 @@ public class ChoiceVideoActivity extends BaseActivity {
 
         @Override
         public boolean onCheckedChangeBefore(View view, int position, boolean isChecked) {
-            if (isChecked && mAdapter.getCheckedSize() == mMaxChoice) {
-                Toast.makeText(ChoiceVideoActivity.this, getString(R.string.gallery_max_video, mMaxChoice), Toast.LENGTH_SHORT).show();
-                return false;
+            if (isChecked) {
+                if (mAdapter.getCheckedSize() == mMaxChoice) {
+                    Toast.makeText(ChoiceVideoActivity.this, getString(R.string.gallery_max_video, mMaxChoice), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                long length = mAdapter.getDatum(position).getLength();
+                if (mVideoMaxSize > 0 && length > mVideoMaxSize) {
+                    float m = (mVideoMaxSize / 1024.0f) / 1024.0f;
+                    float g = m / 1024.0f;
+                    if (g > 1) {
+                        String msg = getString(R.string.gallery_video_size_max, new DecimalFormat("#0.00").format(g) + "G");
+                        Toast.makeText(ChoiceVideoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }else{
+                        String msg = getString(R.string.gallery_video_size_max, new DecimalFormat("#0.00").format(m) + "M");
+                        Toast.makeText(ChoiceVideoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                    return false;
+                }
+                if (length < mVideoMinSize) {
+                    float m = (mVideoMinSize / 1024.0f) / 1024.0f;
+                    float g = m / 1024.0f;
+                    if (g > 1) {
+                        String msg = getString(R.string.gallery_video_size_min, new DecimalFormat("#0.00").format(g) + "G");
+                        Toast.makeText(ChoiceVideoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }else{
+                        String msg = getString(R.string.gallery_video_size_min, new DecimalFormat("#0.00").format(m) + "M");
+                        Toast.makeText(ChoiceVideoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                    return false;
+                }
             }
+
             return true;
         }
 

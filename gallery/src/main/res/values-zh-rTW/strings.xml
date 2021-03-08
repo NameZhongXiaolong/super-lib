@@ -19,4 +19,6 @@
     <string name="gallery_exit">退出</string>
     <string name="gallery_video">視頻</string>
     <string name="gallery_max_video">"最多只能选择%1$d個視頻"</string>
+    <string name="gallery_video_size_max">視頻不能超過%1$s</string>
+    <string name="gallery_video_size_min">視頻不能小於%1$s</string>
 </resources>

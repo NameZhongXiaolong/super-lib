@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,16 +24,18 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> {
 
-    private final List<String> mData;
-    private final List<String> mCheckedData;
+    private final List<VideoData> mData;
+    private final List<VideoData> mCheckedData;
     private final ColorDrawable mPlaceholderDrawable;
     private OnCheckedChangeListener mOnCheckedChangeListener;
     private OnItemClickListener mOnItemClickListener;
+    private final DecimalFormat mDecimalFormat;
 
     public VideoAdapter() {
         mData = new ArrayList<>();
         mCheckedData = new ArrayList<>();
         mPlaceholderDrawable = new ColorDrawable(Color.parseColor("#EDEDED"));
+        mDecimalFormat = new DecimalFormat("#0.00");
     }
 
     @NonNull
@@ -43,9 +46,9 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull VideoHolder holder, int position) {
-        final String datum = mData.get(position);
+        final VideoData datum = mData.get(position);
 
-        Glide.with(holder.mContext).load(new File(datum)).placeholder(mPlaceholderDrawable).into(holder.mImageView);
+        Glide.with(holder.mContext).load(new File(datum.getPath())).placeholder(mPlaceholderDrawable).into(holder.mImageView);
 
         final int index = mCheckedData.indexOf(datum);
 
@@ -57,6 +60,15 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
             holder.mViewSelected.setVisibility(View.INVISIBLE);
             holder.mTvCheckedNum.setText(null);
             holder.mTvCheckedNum.setBackgroundResource(R.drawable.gallery_select_normal);
+        }
+
+        float m = (datum.getLength() / 1024.0f) / 1024.0f;
+        float g = m / 1024.0f;
+
+        if (g > 1) {
+            holder.mTvSize.setText((mDecimalFormat.format(g) + "G"));
+        }else{
+            holder.mTvSize.setText((mDecimalFormat.format(m) + "M"));
         }
 
         holder.mViewChecked.setOnClickListener(v -> {
@@ -89,7 +101,7 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
         return mData.size();
     }
 
-    public void setData(List<String> data) {
+    public void setData(List<VideoData> data) {
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();
@@ -99,7 +111,11 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
         return mCheckedData.size();
     }
 
-    public List<String> getCheckedData(){
+    public VideoData getDatum(int position) {
+        return mData.get(position);
+    }
+
+    public List<VideoData> getCheckedData(){
         return mCheckedData;
     }
 
@@ -128,12 +144,13 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
     }
 
     public interface OnItemClickListener{
-        void onItemClick(View view, int position, String path);
+        void onItemClick(View view, int position, VideoData path);
     }
 
     final static class VideoHolder extends RecyclerView.ViewHolder{
 
         private final TextView mTvCheckedNum;
+        private final TextView mTvSize;
         private final View mViewChecked;
         private final View mViewSelected;
         private final ImageView mImageView;
@@ -146,6 +163,7 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
             mViewSelected = itemView.findViewById(R.id.gallery_view_selected);
             mViewChecked = itemView.findViewById(R.id.gallery_view);
             mTvCheckedNum = itemView.findViewById(R.id.gallery_check_num);
+            mTvSize = itemView.findViewById(R.id.text);
         }
     }
 }

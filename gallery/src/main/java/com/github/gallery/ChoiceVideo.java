@@ -12,13 +12,12 @@ public class ChoiceVideo {
     private final Context mContext;
     private int maxChoice;
     private OnChoiceVideoCallback mOnChoiceVideoCallback;
-    private int mVideoMaxSize;
-    private int mVideoMinSize;
+    private long mVideoMaxSize;
+    private long mVideoMinSize;
 
     public ChoiceVideo(Context context) {
         mContext = context;
         mVideoMinSize = 30;
-        mVideoMaxSize = Integer.MAX_VALUE;
     }
 
     public ChoiceVideo setMaxChoice(int maxChoice) {
@@ -48,11 +47,11 @@ public class ChoiceVideo {
         return maxChoice;
     }
 
-    int getVideoMaxSize() {
+    long getVideoMaxSize() {
         return mVideoMaxSize;
     }
 
-    int getVideoMinSize() {
+    long getVideoMinSize() {
         return mVideoMinSize;
     }
 

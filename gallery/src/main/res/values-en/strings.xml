@@ -19,4 +19,6 @@
     <string name="gallery_exit">No</string>
     <string name="gallery_video">Video</string>
     <string name="gallery_max_video">"You can only select %1$d videos at most"</string>
+    <string name="gallery_video_size_max">Video cannot exceed%1$s</string>
+    <string name="gallery_video_size_min">Video cannot be less than%1$s</string>
 </resources>
