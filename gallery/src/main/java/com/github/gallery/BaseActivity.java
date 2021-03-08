@@ -80,7 +80,9 @@ class BaseActivity extends AppCompatActivity {
 
     @Override
     public void setSupportActionBar(@Nullable Toolbar toolbar) {
-        toolbar.setNavigationIcon(mBackIcon);
+        if (toolbar != null) {
+            toolbar.setNavigationIcon(mBackIcon);
+        }
         super.setSupportActionBar(toolbar);
     }
 
