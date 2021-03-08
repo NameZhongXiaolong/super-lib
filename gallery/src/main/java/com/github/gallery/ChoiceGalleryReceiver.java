@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Binder;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +15,10 @@ import java.util.List;
  */
 class ChoiceGalleryReceiver extends BroadcastReceiver {
 
-    private static final String ACTION = "com.github.application.base.choice.gallery.receiver";
-    private Context mContext;
-    private OnChoiceGalleryCallback mOnReceiveCall;
-    private String mTag;
+    private static final String ACTION = ".choice.gallery.receiver";
+    private final Context mContext;
+    private final OnChoiceGalleryCallback mOnReceiveCall;
+    private final String mTag;
 
     public ChoiceGalleryReceiver(Context context, String tag, OnChoiceGalleryCallback onReceiveCall) {
         mContext = context;
@@ -25,14 +27,21 @@ class ChoiceGalleryReceiver extends BroadcastReceiver {
     }
 
     public void register() {
+        String callingApp = mContext.getPackageManager().getNameForUid(Binder.getCallingUid());
+        String action = TextUtils.isEmpty(callingApp) ? ACTION : callingApp + ACTION;
+
+        //设置action
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION);
+        filter.addAction(action);
         mContext.registerReceiver(this, filter);
     }
 
     public static void post(Context context, String tag, List<String> photos) {
+        String callingApp = context.getPackageManager().getNameForUid(Binder.getCallingUid());
+
         //设置Action
-        Intent intent = new Intent(ACTION);
+        String action = TextUtils.isEmpty(callingApp) ? ACTION : callingApp + ACTION;
+        Intent intent = new Intent(action);
 
         //传递数据
         intent.putExtra("tag", tag);

@@ -52,14 +52,12 @@
         app:layout_constraintRight_toRightOf="@id/gallery_image_view"
         app:layout_constraintTop_toTopOf="@id/gallery_image_view" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@id/gallery_check_num"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="3dp"
-        android:background="@drawable/gallery_select_bg"
-        android:button="@null"
-        android:checked="true"
+        android:background="@drawable/gallery_select_normal"
         android:gravity="center"
         android:textColor="@color/gallery_white"
         android:textSize="12sp"

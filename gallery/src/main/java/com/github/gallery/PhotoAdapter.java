@@ -2,12 +2,11 @@ package com.github.gallery;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
@@ -194,7 +193,7 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final String path = mData.get(position);
             final int indexOfChoicePhotos = mChoicePhotos.indexOf(path);
             photoHolder.setImage(path, mImageSize);
-            photoHolder.setButtonText(indexOfChoicePhotos >= 0 ? String.valueOf(indexOfChoicePhotos + 1) : null);
+            photoHolder.setChecked(indexOfChoicePhotos + 1, indexOfChoicePhotos >= 0);
             photoHolder.setButtonForeground(Color.parseColor(indexOfChoicePhotos >= 0 ? "#80000000" : "#00000000"));
         }
     }
@@ -222,16 +221,16 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private final ImageView mImage;
         private final View mButton;
-        private final CheckBox mCheckBox;
+        private final TextView mTvCheck;
 
         private PhotoHolder(@NonNull ViewGroup parent, final OnItemClickListener l) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.gallery_item_photo, parent, false));
             mImage = itemView.findViewById(R.id.gallery_image_view);
             mButton = itemView.findViewById(R.id.gallery_view_selected);
-            mCheckBox = itemView.findViewById(R.id.gallery_check_num);
+            mTvCheck = itemView.findViewById(R.id.gallery_check_num);
             View button2 = itemView.findViewById(R.id.gallery_view);
             mButton.setOnClickListener(v -> l.onItemClick(OnItemClickType.OTHER, getAdapterPosition()));
-            mCheckBox.setOnClickListener(v -> l.onItemClick(OnItemClickType.CHECKED, getAdapterPosition()));
+            mTvCheck.setOnClickListener(v -> l.onItemClick(OnItemClickType.CHECKED, getAdapterPosition()));
             button2.setOnClickListener(v -> l.onItemClick(OnItemClickType.CHECKED, getAdapterPosition()));
         }
 
@@ -239,9 +238,9 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             Glide.with(mImage).load(path).override(overrideSize).centerCrop().into(mImage);
         }
 
-        private void setButtonText(String text) {
-            mCheckBox.setText(text);
-            mCheckBox.setChecked(!TextUtils.isEmpty(text));
+        private void setChecked(int num, boolean isChecked) {
+            mTvCheck.setText(num > 0 ? String.valueOf(num) : null);
+            mTvCheck.setBackgroundResource(isChecked ? R.drawable.gallery_select_checked : R.drawable.gallery_select_normal);
         }
 
         private void setButtonForeground(int color) {
