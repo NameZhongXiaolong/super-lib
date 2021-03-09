@@ -1,32 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/gallery_white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@id/gallery_tool_bar"
+    <VideoView
+        android:id="@id/gallery_video_view"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:navigationIcon="@drawable/gallery_ic_back"
-        app:titleTextColor="@color/gallery_transparent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#333333" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <VideoView
-            android:id="@id/gallery_video_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
-</LinearLayout>
+</FrameLayout>

@@ -45,7 +45,6 @@ public class ChoiceVideoActivity extends BaseActivity {
     private boolean mSendChoiceVideoReceiver;
     private SwipeRefreshLayout mRefreshLayout;
     private AlertDialog mPermissionDialog;//权限弹出框
-    private boolean mLoadSuccess;
     private long mVideoMinSize;
     private long mVideoMaxSize;
 
@@ -103,7 +102,6 @@ public class ChoiceVideoActivity extends BaseActivity {
     }
 
     private void getVideoData() {
-        mLoadSuccess = true;
         mVideoMinSize = getIntent().getLongExtra("video_min", 0);
         mVideoMaxSize = getIntent().getLongExtra("video_max", Integer.MAX_VALUE);
         Executors.newCachedThreadPool().submit(() -> {
