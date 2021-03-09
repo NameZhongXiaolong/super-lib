@@ -30,6 +30,8 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gallery_activity_video_player);
 
+        setSupportActionBar(findViewById(R.id.gallery_tool_bar));
+
         mVideoView = findViewById(R.id.gallery_video_view);
 
         final String path = getIntent().getStringExtra("path");
@@ -46,6 +48,8 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         mVideoView.requestFocus();
 
         mVideoView.start();
+
+        mVideoView.postDelayed(mediaController::show, 500);
     }
 
     @Override

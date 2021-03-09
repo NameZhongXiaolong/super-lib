@@ -1,13 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gallery_white"
+    android:orientation="vertical">
 
-    <VideoView
-        android:id="@id/gallery_video_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@id/gallery_tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:navigationIcon="@drawable/gallery_ic_back"
+            app:titleTextColor="@color/gallery_transparent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/gallery_video"
+            android:layout_gravity="center"
+            android:textColor="#333333" />
+
+        <View
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#333333" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:background="#333333"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <VideoView
+            android:id="@id/gallery_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+</LinearLayout>
