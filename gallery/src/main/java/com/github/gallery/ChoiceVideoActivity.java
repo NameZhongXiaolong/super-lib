@@ -1,6 +1,7 @@
 package com.github.gallery;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -48,7 +49,7 @@ public class ChoiceVideoActivity extends BaseActivity {
     private long mVideoMinSize;
     private long mVideoMaxSize;
 
-    public static void start(ChoiceVideo choiceVideo) {
+    static void start(ChoiceVideo choiceVideo) {
         Intent starter = new Intent(choiceVideo.getContext(), ChoiceVideoActivity.class);
         String tag = "tag" + System.currentTimeMillis();
         starter.putExtra("tag", tag);
@@ -174,10 +175,51 @@ public class ChoiceVideoActivity extends BaseActivity {
     }
 
     /**
-     * 列表点击事件
+     * 列表点击事件,预览视频
      */
     private void onItemClick(View view, int position, VideoData videoData) {
-        GalleryVideoPlayerActivity.start(this, videoData.getPath());
+        boolean showButton = !mAdapter.getCheckedData().contains(videoData) && mAdapter.getCheckedSize() < mMaxChoice;
+        Intent intent = GalleryVideoPlayerActivity.getIntent(this, videoData, showButton);
+        startActivityForResult(intent, 81);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 81 && resultCode == Activity.RESULT_OK && data != null) {
+            //添加视频
+            String path = data.getStringExtra("path");
+            long length = data.getLongExtra("length", 0);
+            if (mVideoMaxSize > 0 && length > mVideoMaxSize) {
+                float m = (mVideoMaxSize / 1024.0f) / 1024.0f;
+                float g = m / 1024.0f;
+                if (g > 1) {
+                    String msg = getString(R.string.gallery_video_size_max, new DecimalFormat("#0.00").format(g) + "G");
+                    Toast.makeText(ChoiceVideoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }else{
+                    String msg = getString(R.string.gallery_video_size_max, new DecimalFormat("#0.00").format(m) + "M");
+                    Toast.makeText(ChoiceVideoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            if (length < mVideoMinSize) {
+                float m = (mVideoMinSize / 1024.0f) / 1024.0f;
+                float g = m / 1024.0f;
+                if (g > 1) {
+                    String msg = getString(R.string.gallery_video_size_min, new DecimalFormat("#0.00").format(g) + "G");
+                    Toast.makeText(ChoiceVideoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }else{
+                    String msg = getString(R.string.gallery_video_size_min, new DecimalFormat("#0.00").format(m) + "M");
+                    Toast.makeText(ChoiceVideoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            if (mAdapter.addCheckedData(new VideoData(length, path))) {
+                mBtnComplete.setText(getString(R.string.gallery_catalog_complete, mAdapter.getCheckedSize(), mMaxChoice));
+                mBtnComplete.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     /**

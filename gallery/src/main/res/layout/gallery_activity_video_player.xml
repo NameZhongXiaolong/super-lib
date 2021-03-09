@@ -25,6 +25,24 @@
             android:layout_gravity="center"
             android:textColor="#333333" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@id/gallery_button_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/gallery_complete_button"
+            android:minWidth="80dp"
+            android:minHeight="30dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textAllCaps="false"
+            android:textColor="@color/gallery_white"
+            android:textSize="14sp"
+            android:text="@string/gallery_checked"
+            android:visibility="visible"/>
+
         <View
             android:layout_gravity="bottom"
             android:layout_width="match_parent"

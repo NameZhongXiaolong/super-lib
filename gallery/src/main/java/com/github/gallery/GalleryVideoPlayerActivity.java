@@ -1,9 +1,12 @@
 package com.github.gallery;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -25,6 +28,14 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         context.startActivity(starter);
     }
 
+    static Intent getIntent(Context context, VideoData videoData, boolean showCheckButton) {
+        Intent intent = new Intent(context, GalleryVideoPlayerActivity.class);
+        intent.putExtra("path", videoData.getPath());
+        intent.putExtra("length", videoData.getLength());
+        intent.putExtra("show_button", showCheckButton);
+        return intent;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +44,11 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         setSupportActionBar(findViewById(R.id.gallery_tool_bar));
 
         mVideoView = findViewById(R.id.gallery_video_view);
+        Button btnComplete = findViewById(R.id.gallery_button_complete);
 
         final String path = getIntent().getStringExtra("path");
+        final long length = getIntent().getLongExtra("length", 0);
+        final boolean showButton = getIntent().getBooleanExtra("show_button", false);
 
         mVideoView.setVideoPath(path);
 
@@ -50,6 +64,15 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         mVideoView.start();
 
         mVideoView.postDelayed(mediaController::show, 500);
+
+        btnComplete.setVisibility(showButton ? View.VISIBLE : View.GONE);
+        btnComplete.setOnClickListener(v -> {
+            Intent data = new Intent();
+            data.putExtra("path", path);
+            data.putExtra("length", length);
+            setResult(Activity.RESULT_OK,data);
+            finish();
+        });
     }
 
     @Override

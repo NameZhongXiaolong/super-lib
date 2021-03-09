@@ -119,6 +119,16 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
         return mCheckedData;
     }
 
+    public boolean addCheckedData(VideoData datum) {
+        int index = mData.indexOf(datum);
+        if (index >= 0) {
+            mCheckedData.add(datum);
+            notifyItemChanged(index);
+            return true;
+        }
+        return false;
+    }
+
     public VideoAdapter setOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
         mOnCheckedChangeListener = onCheckedChangeListener;
         return this;
