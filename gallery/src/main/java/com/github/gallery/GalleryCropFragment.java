@@ -11,6 +11,8 @@ import com.yalantis.ucrop.UCrop;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -45,10 +47,22 @@ public class GalleryCropFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        File cropDir = new File(requireContext().getCacheDir(), "gallery_crop");
+        if (!cropDir.exists()) {
+            //创建裁剪文件夹，最多只有一张图片
+            boolean mkdir = cropDir.mkdir();
+        } else {
+            //删除裁剪文件夹的其他图片
+            LinkedList<File> files = new LinkedList<>(Arrays.asList(cropDir.listFiles()));
+            while (files.size() > 0) {
+                boolean delete = files.poll().delete();
+            }
+        }
+
         String path = getArguments() != null ? getArguments().getString("path", null) : null;
         if (!TextUtils.isEmpty(path)) {
             Uri source = Uri.fromFile(new File(path));
-            File outFile = new File(requireContext().getCacheDir(), "gallery_crop_" + System.currentTimeMillis() + ".png");
+            File outFile = new File(cropDir, "CROP_" + System.currentTimeMillis() + ".png");
             Uri destination = Uri.fromFile(outFile);
 
             UCrop.Options options = mUCropOptions;
