@@ -48,7 +48,7 @@ public class GalleryCropFragment extends Fragment {
         String path = getArguments() != null ? getArguments().getString("path", null) : null;
         if (!TextUtils.isEmpty(path)) {
             Uri source = Uri.fromFile(new File(path));
-            File outFile = new File(requireContext().getCacheDir(), "gallery_crop.png");
+            File outFile = new File(requireContext().getCacheDir(), "gallery_crop_" + System.currentTimeMillis() + ".png");
             Uri destination = Uri.fromFile(outFile);
 
             UCrop.Options options = mUCropOptions;
