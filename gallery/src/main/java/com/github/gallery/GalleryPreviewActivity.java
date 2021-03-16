@@ -95,8 +95,15 @@ public class GalleryPreviewActivity extends BaseActivity {
 
         //完成按钮
         mBtnChoiceComplete.setOnClickListener(this::onCompleteClick);
-        mBtnChoiceComplete.setText(getString(R.string.gallery_catalog_complete, mChoicePhotos.size(), mMaxChoice));
-        mBtnChoiceComplete.setEnabled(mChoicePhotos.size() > 0);
+        if (mMaxChoice == 1) {
+            mBtnChoiceComplete.setText(R.string.gallery_complete);
+            mBtnChoiceComplete.setEnabled(true);
+            //单选不显示底部预览
+            mGroupBottomParent.setAlpha(0);
+        } else {
+            mBtnChoiceComplete.setText(getString(R.string.gallery_catalog_complete, mChoicePhotos.size(), mMaxChoice));
+            mBtnChoiceComplete.setEnabled(mChoicePhotos.size() > 0);
+        }
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -169,6 +176,10 @@ public class GalleryPreviewActivity extends BaseActivity {
      * 完成事件
      */
     private void onCompleteClick(View view) {
+        if (mMaxChoice == 1 && mChoicePhotos.size() == 0) {
+            //如果单选同时没有选中的照片,添加当前的照片(单选完成按钮可以点击)
+            mChoicePhotos.add(mPhotos.get(mViewPager.getCurrentItem()));
+        }
         Intent data = new Intent();
         data.putStringArrayListExtra("choicePhotos", new ArrayList<>(mChoicePhotos));
         setResult(Code.RESULT_OK, data);

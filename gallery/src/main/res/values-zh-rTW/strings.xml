@@ -5,6 +5,7 @@
     <string name="gallery_video_scanning">正在搜尋視頻&#8230;</string>
     <string name="gallery_preview">預覽</string>
     <string name="gallery_catalog_all">全部</string>
+    <string name="gallery_complete">完畢</string>
     <string name="gallery_catalog_complete">完畢(%1$d/%2$d)</string>
     <string name="gallery_max_photo">"最多只能選擇%1$d張圖片"</string>
     <string name="gallery_wei_xin">WeChat</string>

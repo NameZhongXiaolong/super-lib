@@ -5,6 +5,7 @@
     <string name="gallery_video_scanning">Scanning video&#8230;</string>
     <string name="gallery_preview">Preview</string>
     <string name="gallery_catalog_all">All</string>
+    <string name="gallery_complete">Complete</string>
     <string name="gallery_catalog_complete">Complete(%1$d/%2$d)</string>
     <string name="gallery_max_photo">"You can only select %1$d pictures at most"</string>
     <string name="gallery_wei_xin">WeChat</string>
