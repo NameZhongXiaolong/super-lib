@@ -100,6 +100,7 @@ public class GalleryPreviewActivity extends BaseActivity {
             mBtnChoiceComplete.setEnabled(true);
             //单选不显示底部预览
             mGroupBottomParent.setAlpha(0);
+            mCheckBox.setVisibility(View.GONE);
         } else {
             mBtnChoiceComplete.setText(getString(R.string.gallery_catalog_complete, mChoicePhotos.size(), mMaxChoice));
             mBtnChoiceComplete.setEnabled(mChoicePhotos.size() > 0);

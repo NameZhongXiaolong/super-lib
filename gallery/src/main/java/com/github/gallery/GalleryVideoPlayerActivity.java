@@ -1,7 +1,6 @@
 package com.github.gallery;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,20 +19,20 @@ import androidx.annotation.Nullable;
  */
 public class GalleryVideoPlayerActivity extends BaseActivity {
 
-    private VideoView mVideoView;
-
-    static void start(Context context, String path) {
-        Intent starter = new Intent(context, GalleryVideoPlayerActivity.class);
-        starter.putExtra("path", path);
-        context.startActivity(starter);
+    interface Code {
+        int REQUEST_CODE = 63;
+        int RESULT_OK = 167;
     }
 
-    static Intent getIntent(Context context, VideoData videoData, boolean showCheckButton) {
-        Intent intent = new Intent(context, GalleryVideoPlayerActivity.class);
+    private VideoView mVideoView;
+
+    static void start(Activity activity, VideoData videoData, boolean showCheckButton,CharSequence buttonText) {
+        Intent intent = new Intent(activity, GalleryVideoPlayerActivity.class);
         intent.putExtra("path", videoData.getPath());
         intent.putExtra("length", videoData.getLength());
         intent.putExtra("show_button", showCheckButton);
-        return intent;
+        intent.putExtra("button_text", buttonText);
+        activity.startActivityForResult(intent, Code.REQUEST_CODE);
     }
 
     @Override
@@ -49,6 +48,7 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         final String path = getIntent().getStringExtra("path");
         final long length = getIntent().getLongExtra("length", 0);
         final boolean showButton = getIntent().getBooleanExtra("show_button", false);
+        final String buttonText = getIntent().getStringExtra("button_text");
 
         mVideoView.setVideoPath(path);
 
@@ -66,11 +66,12 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         mVideoView.postDelayed(mediaController::show, 500);
 
         btnComplete.setVisibility(showButton ? View.VISIBLE : View.GONE);
+        btnComplete.setText(buttonText);
         btnComplete.setOnClickListener(v -> {
             Intent data = new Intent();
             data.putExtra("path", path);
             data.putExtra("length", length);
-            setResult(Activity.RESULT_OK,data);
+            setResult(Code.RESULT_OK, data);
             finish();
         });
     }
