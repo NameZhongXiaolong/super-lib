@@ -49,13 +49,17 @@ public class GalleryCropFragment extends Fragment {
 
         File cropDir = new File(requireContext().getCacheDir(), "gallery_crop");
         if (!cropDir.exists()) {
-            //创建裁剪文件夹，最多只有一张图片
+            //创建裁剪文件夹
             boolean mkdir = cropDir.mkdir();
         } else {
-            //删除裁剪文件夹的其他图片
-            LinkedList<File> files = new LinkedList<>(Arrays.asList(cropDir.listFiles()));
+            final long currentTimeMillis = System.currentTimeMillis();
+            //删除在裁剪文件夹超过一天的图片
+            final LinkedList<File> files = new LinkedList<>(Arrays.asList(cropDir.listFiles()));
             while (files.size() > 0) {
-                boolean delete = files.poll().delete();
+                final File pollFile = files.poll();
+                if (currentTimeMillis - pollFile.lastModified() > 1000 * 60 * 60 * 24) {
+                    boolean delete = pollFile.delete();
+                }
             }
         }
 
