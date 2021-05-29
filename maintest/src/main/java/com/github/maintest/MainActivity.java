@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 /**
  * MainActivity
  *
- * 测试用
+ * 测试用。。
  */
 public class MainActivity extends AppCompatActivity {
 
