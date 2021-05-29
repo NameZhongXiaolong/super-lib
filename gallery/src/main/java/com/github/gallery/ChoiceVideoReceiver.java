@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Binder;
 import android.text.TextUtils;
 
@@ -17,13 +18,29 @@ class ChoiceVideoReceiver extends BroadcastReceiver {
 
     private static final String ACTION = ".choice.video.receiver";
     private final Context mContext;
-    private final OnChoiceVideoCallback mOnReceiveCall;
+    private OnMediaVideoCallback onMediaVideoCallback;
+    private OnVideoUriCallback onVideoUriCallback;
+    private OnVideoPathCallback onVideoPathCallback;
     private final String mTag;
 
-    public ChoiceVideoReceiver(Context context, String tag, OnChoiceVideoCallback onReceiveCall) {
+    public ChoiceVideoReceiver(Context context, String tag) {
         mContext = context;
         mTag = tag;
-        mOnReceiveCall = onReceiveCall;
+    }
+
+    public ChoiceVideoReceiver setOnMediaVideoCallback(OnMediaVideoCallback onMediaVideoCallback) {
+        this.onMediaVideoCallback = onMediaVideoCallback;
+        return this;
+    }
+
+    public ChoiceVideoReceiver setOnVideoUriCallback(OnVideoUriCallback onVideoUriCallback) {
+        this.onVideoUriCallback = onVideoUriCallback;
+        return this;
+    }
+
+    public ChoiceVideoReceiver setOnVideoPathCallback(OnVideoPathCallback onVideoPathCallback) {
+        this.onVideoPathCallback = onVideoPathCallback;
+        return this;
     }
 
     public void register() {
@@ -36,7 +53,7 @@ class ChoiceVideoReceiver extends BroadcastReceiver {
         mContext.registerReceiver(this, filter);
     }
 
-    public static void post(Context context, String tag, List<MediaVideo> mediaVideoList) {
+    public static void post(Context context, String tag, List<MediaVideo> mediaVideos) {
         String callingApp = context.getPackageManager().getNameForUid(Binder.getCallingUid());
 
         //设置Action
@@ -45,7 +62,7 @@ class ChoiceVideoReceiver extends BroadcastReceiver {
 
         //传递数据
         intent.putExtra("tag", tag);
-        intent.putParcelableArrayListExtra("videos", new ArrayList<>(mediaVideoList));
+        intent.putParcelableArrayListExtra("media_videos", new ArrayList<>(mediaVideos));
 
         //发送广播
         context.sendBroadcast(intent);
@@ -54,10 +71,26 @@ class ChoiceVideoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent data) {
         String startTag = data.getStringExtra("tag");
-        List<MediaVideo> photos = data.getParcelableArrayListExtra("videos");
+        List<MediaVideo> mediaVideos = data.getParcelableArrayListExtra("media_videos");
         if (mTag.equalsIgnoreCase(startTag)) {
-            if (mOnReceiveCall != null && photos != null && photos.size() > 0) {
-                mOnReceiveCall.onChoiceVideoComplete(photos);
+            if ( mediaVideos != null && mediaVideos.size() > 0) {
+                if (onMediaVideoCallback != null) {
+                    onMediaVideoCallback.onChoiceVideoComplete(mediaVideos);
+                }
+                if (onVideoUriCallback != null) {
+                    List<Uri> uris = new ArrayList<>();
+                    for (MediaVideo mediaVideo : mediaVideos) {
+                        uris.add(mediaVideo.getUri());
+                    }
+                    onVideoUriCallback.onChoiceVideoComplete(uris);
+                }
+                if (onVideoPathCallback != null) {
+                    List<String> paths = new ArrayList<>();
+                    for (MediaVideo mediaVideo : mediaVideos) {
+                        paths.add(mediaVideo.getAbsolutePath());
+                    }
+                    onVideoPathCallback.onChoiceVideoComplete(paths);
+                }
             }
             mContext.unregisterReceiver(this);
         }

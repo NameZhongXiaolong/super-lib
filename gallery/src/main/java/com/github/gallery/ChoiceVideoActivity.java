@@ -56,7 +56,14 @@ public class ChoiceVideoActivity extends BaseActivity {
         starter.putExtra("video_min", choiceVideo.getVideoMinSize());
         starter.putExtra("video_max", choiceVideo.getVideoMaxSize());
         choiceVideo.getContext().startActivity(starter);
-        new ChoiceVideoReceiver(choiceVideo.getContext(), tag, choiceVideo.getOnChoiceVideoCallback()).register();
+        ChoiceVideoReceiver choiceVideoReceiver = new ChoiceVideoReceiver(choiceVideo.getContext(), tag);
+        if (choiceVideo.getOnVideoPathCallback() != null) {
+            choiceVideoReceiver.setOnVideoPathCallback(choiceVideo.getOnVideoPathCallback()).register();
+        } else if (choiceVideo.getOnVideoUriCallback() != null) {
+            choiceVideoReceiver.setOnVideoUriCallback(choiceVideo.getOnVideoUriCallback()).register();
+        } else if (choiceVideo.getOnMediaVideoCallback() != null) {
+            choiceVideoReceiver.setOnMediaVideoCallback(choiceVideo.getOnMediaVideoCallback()).register();
+        }
     }
 
     @Override

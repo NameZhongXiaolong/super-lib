@@ -11,7 +11,9 @@ public class ChoiceVideo {
 
     private final Context mContext;
     private int maxChoice;
-    private OnChoiceVideoCallback mOnChoiceVideoCallback;
+    private OnMediaVideoCallback onMediaVideoCallback;
+    private OnVideoUriCallback onVideoUriCallback;
+    private OnVideoPathCallback onVideoPathCallback;
     private long mVideoMaxSize;
     private long mVideoMinSize;
 
@@ -25,8 +27,32 @@ public class ChoiceVideo {
         return this;
     }
 
-    public ChoiceVideo setCallback(OnChoiceVideoCallback onChoiceVideoCallback) {
-        mOnChoiceVideoCallback = onChoiceVideoCallback;
+    /**
+     * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
+     * 设置地址回调,注意android10以上没有设置文件管理权限不可以直接获取file
+     * 因此更推荐使用{@link #setCallback(com.github.gallery.OnVideoUriCallback)}{@link #setCallback(com.github.gallery.OnMediaVideoCallback)}
+     */
+    public ChoiceVideo setCallback(OnVideoPathCallback onVideoPathCallback) {
+        this.onVideoPathCallback = onVideoPathCallback;
+        return this;
+    }
+
+
+    /**
+     * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
+     * 文件Uri回调
+     */
+    public ChoiceVideo setCallback(OnVideoUriCallback onVideoUriCallback) {
+        this.onVideoUriCallback = onVideoUriCallback;
+        return this;
+    }
+
+    /**
+     * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
+     * 文件信息回调
+     */
+    public ChoiceVideo setCallback(OnMediaVideoCallback onMediaVideoCallback) {
+        this.onMediaVideoCallback = onMediaVideoCallback;
         return this;
     }
 
@@ -55,8 +81,16 @@ public class ChoiceVideo {
         return mVideoMinSize;
     }
 
-    OnChoiceVideoCallback getOnChoiceVideoCallback() {
-        return mOnChoiceVideoCallback;
+    OnMediaVideoCallback getOnMediaVideoCallback() {
+        return onMediaVideoCallback;
+    }
+
+    OnVideoUriCallback getOnVideoUriCallback() {
+        return onVideoUriCallback;
+    }
+
+    OnVideoPathCallback getOnVideoPathCallback() {
+        return onVideoPathCallback;
     }
 
     public void start() {

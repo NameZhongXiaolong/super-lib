@@ -3,11 +3,9 @@ package com.github.gallery;
 import java.util.List;
 
 /**
- * Created by ZhongXiaolong on 2021/3/8 10:24 AM.
- *
- * 接收视频回调
+ * Created by ZhongXiaolong on 2021/5/30 1:41.
  */
-public interface OnChoiceVideoCallback {
+public interface OnMediaVideoCallback {
 
     void onChoiceVideoComplete(List<MediaVideo> mediaVideos);
 

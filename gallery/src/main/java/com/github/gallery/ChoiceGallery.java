@@ -34,7 +34,10 @@ public class ChoiceGallery {
     private final Context mContext;
     private int maxChoice;
     private List<MediaImage> choiceList;
-    private OnChoiceGalleryCallback onChoiceGalleryCallback;
+    private OnGalleryPathCallback OnGalleryPathCallback;
+    private OnGalleryUriCallback OnGalleryUriCallback;
+    private OnGalleryMediaImageCallback OnGalleryMediaImageCallback;
+
     //单选裁剪
     private boolean cropWhiteSingle;
     private UCrop.Options uCropOptions;
@@ -108,9 +111,29 @@ public class ChoiceGallery {
 
     /**
      * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
+     * 设置地址回调,注意android10以上没有设置文件管理权限不可以直接获取file
+     * 因此更推荐使用{@link #setCallback(com.github.gallery.OnGalleryUriCallback)}{@link #setCallback(com.github.gallery.OnGalleryMediaImageCallback)}
      */
-    public ChoiceGallery setCallback(OnChoiceGalleryCallback onChoiceGalleryCallback) {
-        this.onChoiceGalleryCallback = onChoiceGalleryCallback;
+    public ChoiceGallery setCallback(OnGalleryPathCallback onGalleryPathCallback) {
+        this.OnGalleryPathCallback = onGalleryPathCallback;
+        return this;
+    }
+
+    /**
+     * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
+     * 文件Uri回调
+     */
+    public ChoiceGallery setCallback(OnGalleryUriCallback OnGalleryUriCallback) {
+        this.OnGalleryUriCallback = OnGalleryUriCallback;
+        return this;
+    }
+
+    /**
+     * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
+     * 文件信息回调
+     */
+    public ChoiceGallery setCallback(OnGalleryMediaImageCallback OnGalleryMediaImageCallback) {
+        this.OnGalleryMediaImageCallback = OnGalleryMediaImageCallback;
         return this;
     }
 
@@ -143,8 +166,16 @@ public class ChoiceGallery {
         return choiceList;
     }
 
-    OnChoiceGalleryCallback getCallback() {
-        return onChoiceGalleryCallback;
+    OnGalleryPathCallback getOnGalleryPathCallback() {
+        return OnGalleryPathCallback;
+    }
+
+    OnGalleryUriCallback getOnGalleryUriCallback() {
+        return OnGalleryUriCallback;
+    }
+
+    OnGalleryMediaImageCallback getOnGalleryMediaImageCallback() {
+        return OnGalleryMediaImageCallback;
     }
 
     boolean isCropWhiteSingle() {

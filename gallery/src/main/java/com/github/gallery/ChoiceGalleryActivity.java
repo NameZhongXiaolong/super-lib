@@ -91,7 +91,14 @@ public class ChoiceGalleryActivity extends BaseActivity {
         GalleryCropFragment.mUCropOptions = choiceGallery.getCropOptions();
         starter.putParcelableArrayListExtra("choiceList", new ArrayList<>(choiceGallery.getChoiceList()));
         choiceGallery.getContext().startActivity(starter);
-        new ChoiceGalleryReceiver(choiceGallery.getContext(), tag, choiceGallery.getCallback()).register();
+        ChoiceGalleryReceiver choiceGalleryReceiver = new ChoiceGalleryReceiver(choiceGallery.getContext(), tag);
+        if (choiceGallery.getOnGalleryPathCallback() != null) {
+            choiceGalleryReceiver.setOnGalleryPathCallback(choiceGallery.getOnGalleryPathCallback()).register();
+        } else if (choiceGallery.getOnGalleryUriCallback() != null) {
+            choiceGalleryReceiver.setOnGalleryUriCallback(choiceGallery.getOnGalleryUriCallback()).register();
+        } else if (choiceGallery.getOnGalleryMediaImageCallback() != null) {
+            choiceGalleryReceiver.setOnGalleryMediaImageCallback(choiceGallery.getOnGalleryMediaImageCallback()).register();
+        }
     }
 
     @Override

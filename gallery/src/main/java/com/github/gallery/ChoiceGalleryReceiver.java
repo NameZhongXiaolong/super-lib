@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Binder;
 import android.text.TextUtils;
 
@@ -17,13 +18,29 @@ class ChoiceGalleryReceiver extends BroadcastReceiver {
 
     private static final String ACTION = ".choice.gallery.receiver";
     private final Context mContext;
-    private final OnChoiceGalleryCallback mOnReceiveCall;
+    private OnGalleryPathCallback OnGalleryPathCallback;
+    private OnGalleryUriCallback OnGalleryUriCallback;
+    private OnGalleryMediaImageCallback OnGalleryMediaImageCallback;
     private final String mTag;
 
-    public ChoiceGalleryReceiver(Context context, String tag, OnChoiceGalleryCallback onReceiveCall) {
+    public ChoiceGalleryReceiver(Context context, String tag) {
         mContext = context;
         mTag = tag;
-        mOnReceiveCall = onReceiveCall;
+    }
+
+    public ChoiceGalleryReceiver setOnGalleryPathCallback(com.github.gallery.OnGalleryPathCallback onGalleryPathCallback) {
+        OnGalleryPathCallback = onGalleryPathCallback;
+        return this;
+    }
+
+    public ChoiceGalleryReceiver setOnGalleryUriCallback(com.github.gallery.OnGalleryUriCallback onGalleryUriCallback) {
+        OnGalleryUriCallback = onGalleryUriCallback;
+        return this;
+    }
+
+    public ChoiceGalleryReceiver setOnGalleryMediaImageCallback(com.github.gallery.OnGalleryMediaImageCallback onGalleryMediaImageCallback) {
+        OnGalleryMediaImageCallback = onGalleryMediaImageCallback;
+        return this;
     }
 
     public void register() {
@@ -45,7 +62,7 @@ class ChoiceGalleryReceiver extends BroadcastReceiver {
 
         //传递数据
         intent.putExtra("tag", tag);
-        intent.putParcelableArrayListExtra("photos", new ArrayList<>(photos));
+        intent.putParcelableArrayListExtra("media_images", new ArrayList<>(photos));
 
         //发送广播
         context.sendBroadcast(intent);
@@ -54,10 +71,29 @@ class ChoiceGalleryReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent data) {
         String startTag = data.getStringExtra("tag");
-        List<MediaImage> photos = data.getParcelableArrayListExtra("photos");
+        List<MediaImage> mediaImages = data.getParcelableArrayListExtra("media_images");
         if (mTag.equalsIgnoreCase(startTag)) {
-            if (mOnReceiveCall != null && photos != null && photos.size() > 0) {
-                mOnReceiveCall.onChoiceGalleryComplete(photos);
+            if ( mediaImages != null && mediaImages.size() > 0) {
+                //地址回调
+                if (OnGalleryPathCallback != null) {
+                    List<String> paths = new ArrayList<>();
+                    for (MediaImage mediaImage : mediaImages) {
+                        paths.add(mediaImage.getAbsolutePath());
+                    }
+                    OnGalleryPathCallback.onChoiceGalleryComplete(paths);
+                }
+                //Uri回调
+                if (OnGalleryUriCallback != null) {
+                    List<Uri> uris = new ArrayList<>();
+                    for (MediaImage mediaImage : mediaImages) {
+                        uris.add(mediaImage.getUri());
+                    }
+                    OnGalleryUriCallback.onChoiceGalleryComplete(uris);
+                }
+                //对象回调
+                if (OnGalleryMediaImageCallback != null) {
+                    OnGalleryMediaImageCallback.onChoiceGalleryComplete(mediaImages);
+                }
             }
             mContext.unregisterReceiver(this);
         }
