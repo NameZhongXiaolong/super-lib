@@ -3,8 +3,6 @@ plugins {
     id 'com.android.library'
 }
 
-group 'com.github.NameZhongXiaolong'
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
