@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.yalantis.ucrop.UCrop;
 
@@ -13,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -27,18 +27,18 @@ public class GalleryCropFragment extends Fragment {
 
     public static UCrop.Options mUCropOptions;
 
-    public static void start(FragmentActivity activity, String path) {
+    public static void start(FragmentActivity activity, MediaImage mediaImage) {
         GalleryCropFragment cropFragment = new GalleryCropFragment();
         Bundle args = new Bundle();
-        args.putString("path", path);
+        args.putParcelable("media_image", mediaImage);
         cropFragment.setArguments(args);
         activity.getSupportFragmentManager().beginTransaction().add(cropFragment, "crop").commitAllowingStateLoss();
     }
 
-    public static void start(Fragment fragment, String path) {
+    public static void start(Fragment fragment, MediaImage mediaImage) {
         GalleryCropFragment cropFragment = new GalleryCropFragment();
         Bundle args = new Bundle();
-        args.putString("path", path);
+        args.putParcelable("media_image", mediaImage);
         cropFragment.setArguments(args);
         fragment.getChildFragmentManager().beginTransaction().add(cropFragment, "crop").commitAllowingStateLoss();
     }
@@ -54,18 +54,21 @@ public class GalleryCropFragment extends Fragment {
         } else {
             final long currentTimeMillis = System.currentTimeMillis();
             //删除在裁剪文件夹超过一天的图片
-            final LinkedList<File> files = new LinkedList<>(Arrays.asList(cropDir.listFiles()));
+            final LinkedList<File> files = new LinkedList<>(Arrays.asList(Objects.requireNonNull(cropDir.listFiles())));
             while (files.size() > 0) {
                 final File pollFile = files.poll();
-                if (currentTimeMillis - pollFile.lastModified() > 1000 * 60 * 60 * 24) {
+                if (pollFile != null && currentTimeMillis - pollFile.lastModified() > 1000 * 60 * 60 * 24) {
                     boolean delete = pollFile.delete();
                 }
             }
         }
 
-        String path = getArguments() != null ? getArguments().getString("path", null) : null;
-        if (!TextUtils.isEmpty(path)) {
-            Uri source = Uri.fromFile(new File(path));
+        MediaImage mediaImage = getArguments() != null ? getArguments().getParcelable("media_image") : null;
+        if (mediaImage != null) {
+            Uri source = mediaImage.getUri();
+            if (source == null) {
+                source = Uri.fromFile(new File(mediaImage.getAbsolutePath()));
+            }
             File outFile = new File(cropDir, "CROP_" + System.currentTimeMillis() + ".png");
             Uri destination = Uri.fromFile(outFile);
 
@@ -77,7 +80,7 @@ public class GalleryCropFragment extends Fragment {
                     .withOptions(options)
                     .getIntent(requireContext());
             intent.setClass(requireContext(), GalleryUCropActivity.class);
-            startActivityForResult(intent,UCrop.REQUEST_CROP);
+            startActivityForResult(intent, UCrop.REQUEST_CROP);
         }
     }
 

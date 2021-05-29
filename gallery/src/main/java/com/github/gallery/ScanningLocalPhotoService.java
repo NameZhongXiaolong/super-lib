@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -52,6 +53,7 @@ public class ScanningLocalPhotoService extends JobIntentService {
         ContentResolver contentResolver = this.getContentResolver();
         Uri imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
+                MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.DISPLAY_NAME,
                 MediaStore.Images.Media.SIZE,
@@ -72,11 +74,19 @@ public class ScanningLocalPhotoService extends JobIntentService {
             return;
         }
 
-        data.add(new PhotoData().setPath(getResources().getString(R.string.gallery_catalog_all)).setPhotoList(new ArrayList<>()));
+        data.add(new PhotoData().setParentName(getResources().getString(R.string.gallery_catalog_all)).setPhotoList(new ArrayList<>()));
 
         while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+
+            //获取uri
+            Uri uri = Uri.withAppendedPath(Uri.parse("content://media/external/images/media"), "" + id);
+
             //获取图片的路径
             String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+
+            //图片信息
+            MediaImage mediaImage = new MediaImage(uri, path);
 
             //不显示保存路径图片(太耗性能了,在sql里面加判断)
 //            if (path.contains(MainApplication.getFileRoot())) {
@@ -84,18 +94,18 @@ public class ScanningLocalPhotoService extends JobIntentService {
 //            }
 
             //往全部里添加
-            data.get(0).getPhotoList().add(path);
+            data.get(0).getPhotoList().add(mediaImage);
 
             //按路径名添加,获取该图片的父路径名
             File parentFile = new File(path).getParentFile();
             if (parentFile != null) {
                 String parentName = parentFile.getName();
-                PhotoData photoData = new PhotoData().setPath(parentName).setCatalog(getCatalog(getResources(), parentName));
+                PhotoData photoData = new PhotoData().setParentName(parentName).setCatalog(getCatalog(getResources(), parentName));
                 int index = data.indexOf(photoData);
                 if (index > 0) {
-                    data.get(index).getPhotoList().add(path);
+                    data.get(index).getPhotoList().add(mediaImage);
                 }else{
-                    photoData.setPhotoList(new ArrayList<>(Collections.singleton(path)));
+                    photoData.setPhotoList(new ArrayList<>(Collections.singleton(mediaImage)));
                     data.add(photoData);
                 }
             }

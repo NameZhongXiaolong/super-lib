@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ class ChoiceVideoReceiver extends BroadcastReceiver {
         mContext.registerReceiver(this, filter);
     }
 
-    public static void post(Context context, String tag, List<String> photos) {
+    public static void post(Context context, String tag, List<MediaVideo> mediaVideoList) {
         String callingApp = context.getPackageManager().getNameForUid(Binder.getCallingUid());
 
         //设置Action
@@ -46,7 +45,7 @@ class ChoiceVideoReceiver extends BroadcastReceiver {
 
         //传递数据
         intent.putExtra("tag", tag);
-        intent.putStringArrayListExtra("videos", new ArrayList<>(photos));
+        intent.putParcelableArrayListExtra("videos", new ArrayList<>(mediaVideoList));
 
         //发送广播
         context.sendBroadcast(intent);
@@ -55,7 +54,7 @@ class ChoiceVideoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent data) {
         String startTag = data.getStringExtra("tag");
-        List<String> photos = data.getStringArrayListExtra("videos");
+        List<MediaVideo> photos = data.getParcelableArrayListExtra("videos");
         if (mTag.equalsIgnoreCase(startTag)) {
             if (mOnReceiveCall != null && photos != null && photos.size() > 0) {
                 mOnReceiveCall.onChoiceVideoComplete(photos);

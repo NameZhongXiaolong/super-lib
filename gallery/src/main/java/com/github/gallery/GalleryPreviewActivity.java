@@ -47,19 +47,19 @@ public class GalleryPreviewActivity extends BaseActivity {
     private ViewGroup mGroupToolBarParent;
     private TextView mTvTitle;
 
-    private List<String> mChoicePhotos;
-    private List<String> mPhotos;
+    private List<MediaImage> mChoicePhotos;
+    private List<MediaImage> mPhotos;
     private ViewPager mViewPager;
     private GalleryPreviewAdapter mAdapter;
     private CheckBox mCheckBox;
     private RecyclerView mRecyclerView;
     private int mMaxChoice;
 
-    static void start(Activity activity, List<String> photos, List<String> choicePhotos, int checkedPosition, int max) {
+    static void start(Activity activity, List<MediaImage> photos, List<MediaImage> choicePhotos, int checkedPosition, int max) {
         Intent starter = new Intent(activity, GalleryPreviewActivity.class);
         //防止数据太大造成异常,使用Eventbus粘性事件传递数据
         EventBus.getDefault().postSticky(new PreviewDataSticky(photos));
-        starter.putStringArrayListExtra("choicePhotos", new ArrayList<>(choicePhotos));
+        starter.putParcelableArrayListExtra("choicePhotos", new ArrayList<>(choicePhotos));
         starter.putExtra("checked", checkedPosition);
         starter.putExtra("max", max);
         activity.startActivityForResult(starter, Code.REQUEST_CODE);
@@ -82,7 +82,7 @@ public class GalleryPreviewActivity extends BaseActivity {
 
         final int position = getIntent().getIntExtra("checked", 0);
         mMaxChoice = getIntent().getIntExtra("max", 0);
-        mChoicePhotos = getIntent().getStringArrayListExtra("choicePhotos");
+        mChoicePhotos = getIntent().getParcelableArrayListExtra("choicePhotos");
 
         Toolbar toolbar = findViewById(R.id.gallery_tool_bar);
         mViewPager = findViewById(R.id.gallery_view_pager);
@@ -135,7 +135,7 @@ public class GalleryPreviewActivity extends BaseActivity {
         });
     }
 
-    private void onItemClick(String photo, int position) {
+    private void onItemClick(MediaImage photo, int position) {
         int index = mPhotos.indexOf(photo);
         if (index >= 0) {
             mViewPager.setCurrentItem(index, true);
@@ -145,7 +145,7 @@ public class GalleryPreviewActivity extends BaseActivity {
     }
 
     private void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        String photo = mPhotos.get(mViewPager.getCurrentItem());
+        MediaImage photo = mPhotos.get(mViewPager.getCurrentItem());
         if (isChecked) {
             if (!mChoicePhotos.contains(photo)) {
                 if (mChoicePhotos.size() < mMaxChoice) {
@@ -182,7 +182,7 @@ public class GalleryPreviewActivity extends BaseActivity {
             mChoicePhotos.add(mPhotos.get(mViewPager.getCurrentItem()));
         }
         Intent data = new Intent();
-        data.putStringArrayListExtra("choicePhotos", new ArrayList<>(mChoicePhotos));
+        data.putParcelableArrayListExtra("choicePhotos", new ArrayList<>(mChoicePhotos));
         setResult(Code.RESULT_OK, data);
         finish();
     }
@@ -247,7 +247,7 @@ public class GalleryPreviewActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         Intent data = new Intent();
-        data.putStringArrayListExtra("choicePhotos", new ArrayList<>(mChoicePhotos));
+        data.putParcelableArrayListExtra("choicePhotos", new ArrayList<>(mChoicePhotos));
         setResult(Code.RESULT_CANCEL, data);
         finish();
     }
@@ -263,9 +263,9 @@ public class GalleryPreviewActivity extends BaseActivity {
 
     private static class PhotoAdapter extends FragmentPagerAdapter {
 
-        private final List<String> mPhotos;
+        private final List<MediaImage> mPhotos;
 
-        public PhotoAdapter(@NonNull FragmentManager fm, List<String> photos) {
+        public PhotoAdapter(@NonNull FragmentManager fm, List<MediaImage> photos) {
             super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             mPhotos = photos;
         }

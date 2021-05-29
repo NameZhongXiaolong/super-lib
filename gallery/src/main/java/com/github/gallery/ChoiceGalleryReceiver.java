@@ -36,7 +36,7 @@ class ChoiceGalleryReceiver extends BroadcastReceiver {
         mContext.registerReceiver(this, filter);
     }
 
-    public static void post(Context context, String tag, List<String> photos) {
+    public static void post(Context context, String tag, List<MediaImage> photos) {
         String callingApp = context.getPackageManager().getNameForUid(Binder.getCallingUid());
 
         //设置Action
@@ -45,7 +45,7 @@ class ChoiceGalleryReceiver extends BroadcastReceiver {
 
         //传递数据
         intent.putExtra("tag", tag);
-        intent.putStringArrayListExtra("photos", new ArrayList<>(photos));
+        intent.putParcelableArrayListExtra("photos", new ArrayList<>(photos));
 
         //发送广播
         context.sendBroadcast(intent);
@@ -54,7 +54,7 @@ class ChoiceGalleryReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent data) {
         String startTag = data.getStringExtra("tag");
-        List<String> photos = data.getStringArrayListExtra("photos");
+        List<MediaImage> photos = data.getParcelableArrayListExtra("photos");
         if (mTag.equalsIgnoreCase(startTag)) {
             if (mOnReceiveCall != null && photos != null && photos.size() > 0) {
                 mOnReceiveCall.onChoiceGalleryComplete(photos);

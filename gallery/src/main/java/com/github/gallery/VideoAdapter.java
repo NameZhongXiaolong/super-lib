@@ -3,6 +3,8 @@ package com.github.gallery;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> {
 
-    private final List<VideoData> mData;
-    private final List<VideoData> mCheckedData;
+    private final List<MediaVideo> mData;
+    private final List<MediaVideo> mCheckedData;
     private final ColorDrawable mPlaceholderDrawable;
     private OnCheckedChangeListener mOnCheckedChangeListener;
     private OnItemClickListener mOnItemClickListener;
@@ -46,9 +48,16 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull VideoHolder holder, int position) {
-        final VideoData datum = mData.get(position);
+        final MediaVideo datum = mData.get(position);
 
-        Glide.with(holder.mContext).load(new File(datum.getPath())).placeholder(mPlaceholderDrawable).into(holder.mImageView);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Uri uri = datum.getUri();
+            if (uri != null) {
+                Glide.with(holder.mContext).load(uri).placeholder(mPlaceholderDrawable).into(holder.mImageView);
+            }
+        } else {
+            Glide.with(holder.mContext).load(new File(datum.getAbsolutePath())).placeholder(mPlaceholderDrawable).into(holder.mImageView);
+        }
 
         final int index = mCheckedData.indexOf(datum);
 
@@ -101,7 +110,7 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
         return mData.size();
     }
 
-    public void setData(List<VideoData> data) {
+    public void setData(List<MediaVideo> data) {
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();
@@ -111,15 +120,15 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
         return mCheckedData.size();
     }
 
-    public VideoData getDatum(int position) {
+    public MediaVideo getDatum(int position) {
         return mData.get(position);
     }
 
-    public List<VideoData> getCheckedData(){
+    public List<MediaVideo> getCheckedData(){
         return mCheckedData;
     }
 
-    public boolean addCheckedData(VideoData datum) {
+    public boolean addCheckedData(MediaVideo datum) {
         if (!mCheckedData.contains(datum)) {
             int index = mData.indexOf(datum);
             if (index >= 0) {
@@ -156,7 +165,7 @@ final class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> 
     }
 
     public interface OnItemClickListener{
-        void onItemClick(View view, int position, VideoData path);
+        void onItemClick(View view, int position, MediaVideo path);
     }
 
     final static class VideoHolder extends RecyclerView.ViewHolder{

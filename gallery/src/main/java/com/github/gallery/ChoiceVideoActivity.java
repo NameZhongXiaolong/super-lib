@@ -105,12 +105,14 @@ public class ChoiceVideoActivity extends BaseActivity {
         mVideoMinSize = getIntent().getLongExtra("video_min", 0);
         mVideoMaxSize = getIntent().getLongExtra("video_max", Integer.MAX_VALUE);
         Executors.newCachedThreadPool().submit(() -> {
-            List<VideoData> data = new ArrayList<>();
+            List<MediaVideo> data = new ArrayList<>();
 
             ContentResolver contentResolver = getContentResolver();
             Uri videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
             String[] projection = {
+                    MediaStore.Images.Media._ID,
                     MediaStore.Video.Media.DATA,
+                    MediaStore.Video.Media.ALBUM,
 //上级目录           MediaStore.Video.Media.RELATIVE_PATH,
                     MediaStore.Video.Media.DISPLAY_NAME,
                     MediaStore.Video.Media.SIZE,
@@ -127,14 +129,20 @@ public class ChoiceVideoActivity extends BaseActivity {
                 return;
             }
 
-
             while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+
+                //获取uri
+                Uri uri = Uri.withAppendedPath(Uri.parse("content://media/external/video/media"), "" + id);
+
                 //获取视频的路径
                 String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+
+                //视频长度
                 long size = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.SIZE));
 
                 //添加
-                data.add(new VideoData(size, path));
+                data.add(new MediaVideo(uri, path, size));
             }
 
             cursor.close();
@@ -143,7 +151,7 @@ public class ChoiceVideoActivity extends BaseActivity {
         });
     }
 
-    private void onGetVideoSuccess(List<VideoData> data) {
+    private void onGetVideoSuccess(List<MediaVideo> data) {
         mRefreshLayout.setRefreshing(false);
         mRefreshLayout.setVisibility(View.VISIBLE);
 
@@ -164,11 +172,8 @@ public class ChoiceVideoActivity extends BaseActivity {
      * 完成事件
      */
     private void onCompleteClick(View view) {
-        List<String> paths = new ArrayList<>();
-        for (VideoData checkedDatum : mAdapter.getCheckedData()) {
-            paths.add(checkedDatum.getPath());
-        }
-        ChoiceVideoReceiver.post(ChoiceVideoActivity.this, mTag, paths);
+        List<MediaVideo> mediaVideo = new ArrayList<>(mAdapter.getCheckedData());
+        ChoiceVideoReceiver.post(ChoiceVideoActivity.this, mTag, mediaVideo);
         mSendChoiceVideoReceiver = true;
         finish();
     }
@@ -176,19 +181,20 @@ public class ChoiceVideoActivity extends BaseActivity {
     /**
      * 列表点击事件,预览视频
      */
-    private void onItemClick(View view, int position, VideoData videoData) {
-        boolean showButton = (mMaxChoice == 1) || (!mAdapter.getCheckedData().contains(videoData) && mAdapter.getCheckedSize() < mMaxChoice);
+    private void onItemClick(View view, int position, MediaVideo mediaVideo) {
+        boolean showButton = (mMaxChoice == 1) || (!mAdapter.getCheckedData().contains(mediaVideo) && mAdapter.getCheckedSize() < mMaxChoice);
         String buttonText = getString(mMaxChoice == 1 ? R.string.gallery_complete : R.string.gallery_checked);
-        GalleryVideoPlayerActivity.start(this, videoData, showButton, buttonText);
+        GalleryVideoPlayerActivity.start(this, mediaVideo, showButton, buttonText);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GalleryVideoPlayerActivity.Code.REQUEST_CODE && resultCode == GalleryVideoPlayerActivity.Code.RESULT_OK && data != null) {
+            final MediaVideo mediaVideo = data.getParcelableExtra("video_info");
+
             //添加视频
-            String path = data.getStringExtra("path");
-            long length = data.getLongExtra("length", 0);
+            long length = mediaVideo.getLength();
             if (mVideoMaxSize > 0 && length > mVideoMaxSize) {
                 float m = (mVideoMaxSize / 1024.0f) / 1024.0f;
                 float g = m / 1024.0f;
@@ -214,7 +220,7 @@ public class ChoiceVideoActivity extends BaseActivity {
                 return;
             }
 
-            if (mAdapter.addCheckedData(new VideoData(length, path))) {
+            if (mAdapter.addCheckedData(mediaVideo)) {
                 mBtnComplete.setText(getString(R.string.gallery_catalog_complete, mAdapter.getCheckedSize(), mMaxChoice));
                 mBtnComplete.setVisibility(View.VISIBLE);
             }

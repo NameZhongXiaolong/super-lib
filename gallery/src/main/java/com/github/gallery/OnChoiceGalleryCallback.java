@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface OnChoiceGalleryCallback {
 
-    void onChoiceGalleryComplete(List<String> photos);
+    void onChoiceGalleryComplete(List<MediaImage> mediaImages);
 
 }

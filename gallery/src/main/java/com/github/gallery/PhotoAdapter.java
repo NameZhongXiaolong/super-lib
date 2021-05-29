@@ -1,7 +1,9 @@
 package com.github.gallery;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +28,10 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public final static String SHOW_CAMERA = "com.github.gallery.camera";
+    public final static MediaImage SHOW_CAMERA = new MediaImage("com.github.gallery.camera");
     private final static int TYPE_CAMERA_HOLDER = 10;
-    private final List<String> mData;
-    private final List<String> mChoicePhotos;
+    private final List<MediaImage> mData;
+    private final List<MediaImage> mChoicePhotos;
     private final OnItemClickListener mOnItemClickListener;
     private int mImageSize;
     private boolean mShowCamera;
@@ -58,15 +60,15 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void add(int position, String path) {
-        mData.add(position, path);
+    public void add(int position, MediaImage mediaImage) {
+        mData.add(position, mediaImage);
         notifyDataSetChanged();
     }
 
     /**
      * 重新设置图片路径
      */
-    public PhotoAdapter setData(List<String> data) {
+    public PhotoAdapter setData(List<MediaImage> data) {
         mData.clear();
         if (mShowCamera) {
             mData.add(SHOW_CAMERA);
@@ -79,28 +81,28 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * 设置选中图片
      */
-    void setChoicePhotos(List<String> choicePhotos) {
-        List<String> tmpChoicePhotos = new ArrayList<>(mChoicePhotos);
+    void setChoicePhotos(List<MediaImage> choicePhotos) {
+        List<MediaImage> tmpChoicePhotos = new ArrayList<>(mChoicePhotos);
         tmpChoicePhotos.addAll(choicePhotos);
 
         mChoicePhotos.clear();
         mChoicePhotos.addAll(choicePhotos);
 
         //局部刷新
-        new ChoicePhotoDataAsyncTask(this).execute(tmpChoicePhotos.toArray(new String[]{}));
+        new ChoicePhotoDataAsyncTask(this).execute(tmpChoicePhotos.toArray(new MediaImage[]{}));
     }
 
     /**
      * 获取数据
      */
-    List<String> getData() {
+    List<MediaImage> getData() {
         return mData;
     }
 
     /**
      * 获取选中图片
      */
-    List<String> getChoicePhotos() {
+    List<MediaImage> getChoicePhotos() {
         return mChoicePhotos;
     }
 
@@ -121,11 +123,11 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * 根据下标获取图片路径
      */
-    String getItem(int position) {
+    MediaImage getItem(int position) {
         return mData.get(position);
     }
 
-    int indexOf(String photo) {
+    int indexOf(MediaImage photo) {
         return mData.indexOf(photo);
     }
 
@@ -133,15 +135,15 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      * 设置是否选中
      */
     void setChecked(int position, boolean isChecked) {
-        String path = mData.get(position);
+        MediaImage mediaImage = mData.get(position);
         if (isChecked) {
-            if (!mChoicePhotos.contains(path)) {
+            if (!mChoicePhotos.contains(mediaImage)) {
                 //添加成功刷新状态
-                mChoicePhotos.add(path);
+                mChoicePhotos.add(mediaImage);
                 notifyItemChanged(position);
             }
         } else {
-            int index = mChoicePhotos.indexOf(path);
+            int index = mChoicePhotos.indexOf(mediaImage);
             if (index >= 0) {
                 //删除成功刷新状态
                 mChoicePhotos.remove(index);
@@ -154,7 +156,7 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    void setChecked(String path, boolean isChecked) {
+    void setChecked(MediaImage path, boolean isChecked) {
         int position = mData.indexOf(path);
         if (position >= 0) {
             setChecked(position,isChecked);
@@ -190,9 +192,9 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         //}
         if (holder instanceof PhotoHolder) {
             PhotoHolder photoHolder = (PhotoHolder) holder;
-            final String path = mData.get(position);
-            final int indexOfChoicePhotos = mChoicePhotos.indexOf(path);
-            photoHolder.setImage(path, mImageSize);
+            final MediaImage mediaImage = mData.get(position);
+            final int indexOfChoicePhotos = mChoicePhotos.indexOf(mediaImage);
+            photoHolder.setImage(mediaImage, mImageSize);
             photoHolder.setChecked(indexOfChoicePhotos + 1, indexOfChoicePhotos >= 0);
             photoHolder.setButtonForeground(Color.parseColor(indexOfChoicePhotos >= 0 ? "#80000000" : "#00000000"));
         }
@@ -234,8 +236,15 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             button2.setOnClickListener(v -> l.onItemClick(OnItemClickType.CHECKED, getAdapterPosition()));
         }
 
-        private void setImage(String path, int overrideSize) {
-            Glide.with(mImage).load(path).override(overrideSize).centerCrop().into(mImage);
+        private void setImage(MediaImage mediaImage, int overrideSize) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Uri uri = mediaImage.getUri();
+                if (uri != null) {
+                    Glide.with(mImage).load(uri).override(overrideSize).centerCrop().into(mImage);
+                }
+            } else {
+                Glide.with(mImage).load(mediaImage.getAbsolutePath()).override(overrideSize).centerCrop().into(mImage);
+            }
         }
 
         private void setChecked(int num, boolean isChecked) {
@@ -256,7 +265,7 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    static class ChoicePhotoDataAsyncTask extends AsyncTask<String, Void, Set<Integer>>{
+    static class ChoicePhotoDataAsyncTask extends AsyncTask<MediaImage, Void, Set<Integer>>{
 
         private final WeakReference<PhotoAdapter> mReferenceAdapter;
 
@@ -265,11 +274,11 @@ final class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         @Override
-        protected Set<Integer> doInBackground(String... choicePhoto) {
+        protected Set<Integer> doInBackground(MediaImage... choicePhoto) {
             Set<Integer> positions = new HashSet<>();
             PhotoAdapter photoAdapter = mReferenceAdapter.get();
             if (photoAdapter != null) {
-                for (String s : choicePhoto) {
+                for (MediaImage s : choicePhoto) {
                     positions.add(photoAdapter.mData.indexOf(s));
                 }
             }

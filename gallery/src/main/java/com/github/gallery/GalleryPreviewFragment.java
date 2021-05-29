@@ -1,5 +1,7 @@
 package com.github.gallery;
 
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,9 +23,9 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  */
 public class GalleryPreviewFragment extends Fragment {
 
-    static GalleryPreviewFragment newInstance(String photo) {
+    static GalleryPreviewFragment newInstance(MediaImage photo) {
         Bundle args = new Bundle();
-        args.putString("photo", photo);
+        args.putParcelable("photo", photo);
         GalleryPreviewFragment fragment = new GalleryPreviewFragment();
         fragment.setArguments(args);
         return fragment;
@@ -47,9 +49,20 @@ public class GalleryPreviewFragment extends Fragment {
 
         ZoomImageView imageView = view.findViewById(R.id.image);
 
-        String photo = getArguments() != null ? getArguments().getString("photo", "") : "";
-
-        Glide.with(requireContext()).load(photo).into(imageView);
+        Bundle args = getArguments();
+        if (args != null) {
+            MediaImage mediaImage = args.getParcelable("photo");
+            if (mediaImage != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    Uri uri = mediaImage.getUri();
+                    if (uri != null) {
+                        Glide.with(requireContext()).load(uri).into(imageView);
+                    }
+                } else {
+                    Glide.with(requireContext()).load(mediaImage.getAbsolutePath()).into(imageView);
+                }
+            }
+        }
 
         imageView.setOnClickListener(v -> {
             if (getActivity() instanceof GalleryPreviewActivity) {

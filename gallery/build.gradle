@@ -30,7 +30,7 @@ android {
     android.libraryVariants.all { variant ->
         variant.outputs.each { output ->
             variant.outputs.all {
-                def fileName = "gallery.1.3.aar"
+                def fileName = "gallery.1.5.aar"
                 outputFileName = fileName
             }
         }

@@ -33,7 +33,7 @@ public class ChoiceGallery {
 
     private final Context mContext;
     private int maxChoice;
-    private List<String> choiceList;
+    private List<MediaImage> choiceList;
     private OnChoiceGalleryCallback onChoiceGalleryCallback;
     //单选裁剪
     private boolean cropWhiteSingle;
@@ -57,8 +57,27 @@ public class ChoiceGallery {
         return this;
     }
 
-    public ChoiceGallery setChoiceList(List<String> choiceList) {
-        this.choiceList = choiceList;
+    public ChoiceGallery setChoiceListByString(List<String> choiceList) {
+        if (this.choiceList == null) {
+            this.choiceList = new ArrayList<>();
+        } else {
+            this.choiceList.clear();
+        }
+
+        for (String path : choiceList) {
+            this.choiceList.add(new MediaImage(mContext, path));
+        }
+        return this;
+    }
+
+    public ChoiceGallery setChoiceList(List<MediaImage> choiceList) {
+        if (this.choiceList == null) {
+            this.choiceList = new ArrayList<>();
+        } else {
+            this.choiceList.clear();
+        }
+
+        this.choiceList.addAll(choiceList);
         return this;
     }
 
@@ -120,7 +139,7 @@ public class ChoiceGallery {
         return maxChoice;
     }
 
-    List<String> getChoiceList() {
+    List<MediaImage> getChoiceList() {
         return choiceList;
     }
 

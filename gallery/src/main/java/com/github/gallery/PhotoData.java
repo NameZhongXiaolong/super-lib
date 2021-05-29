@@ -9,16 +9,29 @@ import androidx.annotation.NonNull;
 
 /**
  * Created by ZhongXiaolong on 2020/4/16 17:08.
+ *
+ * 图片路径信息
  */
 class PhotoData {
 
+    /**
+     * 图片的父目录(也可以是"全部")
+     */
+    private String parentName;
+
+    /**
+     * 图片的标签,根据parentName获取
+     */
     private String catalog;
-    private String path;
-    private List<String> photoList;
+
+    /**
+     * 图片在parentName路径下的所有图片
+     */
+    private List<MediaImage> photoList;
 
     public String getCatalog() {
         if (TextUtils.isEmpty(catalog)) {
-            catalog = path;
+            catalog = parentName;
         }
         return catalog;
     }
@@ -28,21 +41,21 @@ class PhotoData {
         return this;
     }
 
-    List<String> getPhotoList() {
+    List<MediaImage> getPhotoList() {
         return photoList;
     }
 
-    PhotoData setPhotoList(List<String> photoList) {
+    PhotoData setPhotoList(List<MediaImage> photoList) {
         this.photoList = photoList;
         return this;
     }
 
-    String getPath() {
-        return path;
+    String getParentName() {
+        return parentName;
     }
 
-    PhotoData setPath(String path) {
-        this.path = path;
+    PhotoData setParentName(String parentName) {
+        this.parentName = parentName;
         return this;
     }
 

@@ -1,10 +1,5 @@
 package com.github.gallery;
 
-import android.text.TextUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,34 +10,16 @@ import java.util.List;
  */
 class PreviewDataSticky {
 
-    private List<String> photos;
-    private String photoJson;
+    private final List<MediaImage> photos;
 
-    public PreviewDataSticky(List<String> photos) {
+    public PreviewDataSticky(List<MediaImage> photos) {
+        this.photos = new ArrayList<>();
         if (photos != null) {
-            JSONArray jsonArray = new JSONArray();
-            for (String photo : photos) {
-                jsonArray.put(photo);
-            }
-            photoJson = jsonArray.toString();
+            this.photos.addAll(photos);
         }
     }
 
-    public List<String> getPhotos() {
-        if (photos == null) {
-            photos = new ArrayList<>();
-            if (!TextUtils.isEmpty(photoJson)) {
-                try {
-                    JSONArray jsonArray = new JSONArray(photoJson);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        photos.add(jsonArray.get(i).toString());
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
+    public List<MediaImage> getPhotos() {
         return photos;
     }
 }

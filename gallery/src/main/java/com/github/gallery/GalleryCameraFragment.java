@@ -114,7 +114,7 @@ public class GalleryCameraFragment extends Fragment {
                 String[] paths = {mFrontFile.getAbsolutePath()};
                 String[] mimeTypes = new String[]{"image/jpeg", "image/jpg", "image/png"};
                 MediaScannerConnection.scanFile(requireContext(), paths, mimeTypes, (path, uri) -> {
-                    EventBus.getDefault().post(new CameraResult(path));
+                    EventBus.getDefault().post(new CameraResult(path, uri));
                     remove();
                 });
             } else {

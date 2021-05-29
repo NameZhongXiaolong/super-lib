@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface OnChoiceVideoCallback {
 
-    void onChoiceVideoComplete(List<String> videos);
+    void onChoiceVideoComplete(List<MediaVideo> mediaVideos);
 
 }

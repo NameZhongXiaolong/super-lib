@@ -30,6 +30,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -88,7 +89,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
         starter.putExtra("crop", choiceGallery.getMaxChoice() == 1 && choiceGallery.isCropWhiteSingle());
         starter.putExtra("show_camera", choiceGallery.isShowCamera());
         GalleryCropFragment.mUCropOptions = choiceGallery.getCropOptions();
-        starter.putStringArrayListExtra("choiceList", new ArrayList<>(choiceGallery.getChoiceList()));
+        starter.putParcelableArrayListExtra("choiceList", new ArrayList<>(choiceGallery.getChoiceList()));
         choiceGallery.getContext().startActivity(starter);
         new ChoiceGalleryReceiver(choiceGallery.getContext(), tag, choiceGallery.getCallback()).register();
     }
@@ -146,11 +147,12 @@ public class ChoiceGalleryActivity extends BaseActivity {
         mLvCatalog.setBackground(listViewBackground);
 
         //初始化照片列表
-        List<String> choicePhoto = getIntent().getStringArrayListExtra("choiceList");
+        List<MediaImage> choicePhotos = getIntent().getParcelableArrayListExtra("choiceList");
+
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         mPhotoAdapter = new PhotoAdapter(this::onPhotoItemClick);
         mPhotoAdapter.showCamera(mShowCamera);
-        mPhotoAdapter.setChoicePhotos(choicePhoto);
+        mPhotoAdapter.setChoicePhotos(choicePhotos);
         recyclerView.setAdapter(mPhotoAdapter);
         recyclerView.setHasFixedSize(true);
 
@@ -283,23 +285,23 @@ public class ChoiceGalleryActivity extends BaseActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCameraResultEvent(CameraResult data) {
-        final String path = data.getPath();
+        final MediaImage mediaImage = new MediaImage(data.getUri(), data.getPath());
         if (mCanCrop) {
             //裁剪
-            GalleryCropFragment.start(this, path);
+            GalleryCropFragment.start(this, mediaImage);
         }
 
-        mPhotoAdapter.add(1, path);
+        mPhotoAdapter.add(1, mediaImage);
         if (mCanCrop) {
             //裁剪-默认选中
             mPhotoAdapter.setChoicePhotos(new ArrayList<>());
             mPhotoAdapter.setChecked(1, true);
         }
         if (mCatalogAdapter.getCount() > 0) {
-            mCatalogAdapter.getItem(0).getPhotoList().add(0, path);
+            mCatalogAdapter.getItem(0).getPhotoList().add(0, mediaImage);
             for (int i = 0; i < mCatalogAdapter.getCount(); i++) {
-                if (mCatalogAdapter.getItem(i).getPath().equals("Camera")) {
-                    mCatalogAdapter.getItem(i).getPhotoList().add(0, path);
+                if (mCatalogAdapter.getItem(i).getParentName().equals("Camera")) {
+                    mCatalogAdapter.getItem(i).getPhotoList().add(0, mediaImage);
                     break;
                 }
             }
@@ -311,7 +313,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCropResultEvent(CropResult data) {
-        ChoiceGalleryReceiver.post(this, mTag, Collections.singletonList(data.getPath()));
+        ChoiceGalleryReceiver.post(this, mTag, Collections.singletonList(new MediaImage(Uri.fromFile(new File(data.getPath())), data.getPath())));
         finish();
     }
 
@@ -350,7 +352,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
             }
         } else {
             //查看(预览)
-            List<String> data = new ArrayList<>(mPhotoAdapter.getData());
+            List<MediaImage> data = new ArrayList<>(mPhotoAdapter.getData());
             int checkedPosition = position;
             if (mShowCamera) {
                 //如果显示了相机去掉相机的数据
@@ -358,6 +360,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
                     checkedPosition -= 1;
                 }
             }
+
             GalleryPreviewActivity.start(this, data, mPhotoAdapter.getChoicePhotos(), checkedPosition, mMaxChoice);
         }
     }
@@ -366,7 +369,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
      * 预览
      */
     private void onStartPreview(View view) {
-        List<String> choicePhotos = mPhotoAdapter.getChoicePhotos();
+        List<MediaImage> choicePhotos = mPhotoAdapter.getChoicePhotos();
         GalleryPreviewActivity.start(this, choicePhotos, choicePhotos, 0, mMaxChoice);
     }
 
@@ -386,13 +389,13 @@ public class ChoiceGalleryActivity extends BaseActivity {
         if (requestCode == GalleryPreviewActivity.Code.REQUEST_CODE && data != null) {
             if (resultCode == GalleryPreviewActivity.Code.RESULT_OK) {
                 //完成,回调
-                List<String> photos = data.getStringArrayListExtra("choicePhotos");
+                List<MediaImage> photos = data.getParcelableArrayListExtra("choicePhotos");
                 ChoiceGalleryReceiver.post(this, mTag, photos);
                 finish();
             }
             if (resultCode == GalleryPreviewActivity.Code.RESULT_CANCEL) {
                 //取消,更新 mPhotoAdapter
-                List<String> photos = data.getStringArrayListExtra("choicePhotos");
+                List<MediaImage> photos = data.getParcelableArrayListExtra("choicePhotos");
                 mPhotoAdapter.setChoicePhotos(photos);
                 mBtnChoiceComplete.setText(getString(R.string.gallery_catalog_complete, mPhotoAdapter.getChoicePhotoCount(), mMaxChoice));
                 mBtnChoiceComplete.setEnabled(mPhotoAdapter.getChoicePhotoCount() > 0);

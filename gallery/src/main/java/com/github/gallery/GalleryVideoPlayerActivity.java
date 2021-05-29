@@ -2,6 +2,8 @@ package com.github.gallery;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +28,9 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
 
     private VideoView mVideoView;
 
-    static void start(Activity activity, VideoData videoData, boolean showCheckButton,CharSequence buttonText) {
+    static void start(Activity activity, MediaVideo mediaVideo, boolean showCheckButton, CharSequence buttonText) {
         Intent intent = new Intent(activity, GalleryVideoPlayerActivity.class);
-        intent.putExtra("path", videoData.getPath());
-        intent.putExtra("length", videoData.getLength());
+        intent.putExtra("video_info", mediaVideo);
         intent.putExtra("show_button", showCheckButton);
         intent.putExtra("button_text", buttonText);
         activity.startActivityForResult(intent, Code.REQUEST_CODE);
@@ -45,12 +46,18 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         mVideoView = findViewById(R.id.gallery_video_view);
         Button btnComplete = findViewById(R.id.gallery_button_complete);
 
-        final String path = getIntent().getStringExtra("path");
-        final long length = getIntent().getLongExtra("length", 0);
+        final MediaVideo mediaVideo = getIntent().getParcelableExtra("video_info");
         final boolean showButton = getIntent().getBooleanExtra("show_button", false);
         final String buttonText = getIntent().getStringExtra("button_text");
 
-        mVideoView.setVideoPath(path);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Uri uri = mediaVideo.getUri();
+            if (uri != null) {
+                mVideoView.setVideoURI(uri);
+            }
+        } else {
+            mVideoView.setVideoPath(mediaVideo.getAbsolutePath());
+        }
 
         //创建MediaController对象
         MediaController mediaController = new MediaController(this);
@@ -69,8 +76,7 @@ public class GalleryVideoPlayerActivity extends BaseActivity {
         btnComplete.setText(buttonText);
         btnComplete.setOnClickListener(v -> {
             Intent data = new Intent();
-            data.putExtra("path", path);
-            data.putExtra("length", length);
+            data.putExtra("video_info", mediaVideo);
             setResult(Code.RESULT_OK, data);
             finish();
         });
