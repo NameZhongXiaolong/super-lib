@@ -52,12 +52,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
 //    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
-    implementation project(path: ':gallery')
+//    implementation project(path: ':gallery')
 //    implementation(name:'gallery.1.2', ext:'aar')
 
-    implementation project(path: ':dialog')
-    implementation project(path: ':widget')
-    implementation 'com.github.yalantis:ucrop:2.2.6'
-    //事件传递
-    implementation 'org.greenrobot:eventbus:3.1.1'
+//    implementation project(path: ':dialog')
+//    implementation project(path: ':widget')
 }
