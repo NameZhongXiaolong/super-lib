@@ -14,6 +14,9 @@ import com.yalantis.ucrop.UCrop;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * MainActivity
+ */
 public class MainActivity extends AppCompatActivity {
 
     private Dialog mDialog;
