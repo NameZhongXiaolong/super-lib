@@ -1,4 +1,4 @@
-rootProject.name = "maintest"
+rootProject.name = "super-lib"
 include ':gallery'
 include ':dialog'
 include ':widget'
