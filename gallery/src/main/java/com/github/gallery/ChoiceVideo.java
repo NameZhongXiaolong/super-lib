@@ -30,9 +30,9 @@ public class ChoiceVideo {
     /**
      * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
      * 设置地址回调,注意android10以上没有设置文件管理权限不可以直接获取file
-     * 因此更推荐使用{@link #setCallback(com.github.gallery.OnVideoUriCallback)}{@link #setCallback(com.github.gallery.OnMediaVideoCallback)}
+     * 因此更推荐使用{@link #setOnUriCallback(com.github.gallery.OnVideoUriCallback)}{@link #setOnMediaVideoCallback(com.github.gallery.OnMediaVideoCallback)}
      */
-    public ChoiceVideo setCallback(OnVideoPathCallback onVideoPathCallback) {
+    public ChoiceVideo setOnPathCallback(OnVideoPathCallback onVideoPathCallback) {
         this.onVideoPathCallback = onVideoPathCallback;
         return this;
     }
@@ -42,7 +42,7 @@ public class ChoiceVideo {
      * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
      * 文件Uri回调
      */
-    public ChoiceVideo setCallback(OnVideoUriCallback onVideoUriCallback) {
+    public ChoiceVideo setOnUriCallback(OnVideoUriCallback onVideoUriCallback) {
         this.onVideoUriCallback = onVideoUriCallback;
         return this;
     }
@@ -51,6 +51,15 @@ public class ChoiceVideo {
      * 为方便使用,回调方式结合广播接收者,不用在onActivityResult()中回调,广播{@link ChoiceGalleryReceiver}
      * 文件信息回调
      */
+    public ChoiceVideo setOnMediaVideoCallback(OnMediaVideoCallback onMediaVideoCallback) {
+        this.onMediaVideoCallback = onMediaVideoCallback;
+        return this;
+    }
+
+    /**
+     * 兼容旧的api
+     */
+    @Deprecated
     public ChoiceVideo setCallback(OnMediaVideoCallback onMediaVideoCallback) {
         this.onMediaVideoCallback = onMediaVideoCallback;
         return this;
