@@ -1,4 +1,5 @@
 rootProject.name = "super-lib"
+include ':ImagePicker'
 include ':gallery'
 include ':dialog'
 include ':widget'
