@@ -247,16 +247,25 @@ public class SuperTextView extends AppCompatTextView {
         if (mBackgroundArc) {
             StateListDrawable stateListDrawable = new StateListDrawable();
 
+            GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, h * 0.5f, null, mStrokeWidth, mStrokeColor);
+
             //点击状态
-            GradientDrawable pressedDrawable = getGradientDrawable(mBackgroundColorPressed, h * 0.5f, null, mStrokeWidth, mStrokeColorPressed);
-            stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+            if (mBackgroundColorPressed == 0) {
+                stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, normalDrawable);
+            } else {
+                GradientDrawable pressedDrawable = getGradientDrawable(mBackgroundColorPressed, h * 0.5f, null, mStrokeWidth, mStrokeColorPressed);
+                stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+            }
 
             //不可点击状态
-            GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorEnabled, h * 0.5f, null, mStrokeWidth, mStrokeColorEnabled);
-            stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
+            if (mBackgroundColorEnabled == 0) {
+                stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, normalDrawable);
+            } else {
+                GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorEnabled, h * 0.5f, null, mStrokeWidth, mStrokeColorEnabled);
+                stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
+            }
 
             //默认背景要放最后
-            GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, h * 0.5f, null, mStrokeWidth, mStrokeColor);
             stateListDrawable.addState(new int[]{}, normalDrawable);
 
             setBackground(stateListDrawable);
@@ -269,16 +278,25 @@ public class SuperTextView extends AppCompatTextView {
 
             StateListDrawable stateListDrawable = new StateListDrawable();
 
+            GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, 0, radii, mStrokeWidth, mStrokeColor);
+
             //点击状态
-            GradientDrawable pressedDrawable = getGradientDrawable(mBackgroundColorPressed, 0, radii, mStrokeWidth, mStrokeColorPressed);
-            stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+            if (mBackgroundColorPressed == 0) {
+                stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, normalDrawable);
+            } else {
+                GradientDrawable pressedDrawable = getGradientDrawable(mBackgroundColorPressed, 0, radii, mStrokeWidth, mStrokeColorPressed);
+                stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+            }
 
             //不可点击状态
-            GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorEnabled, 0, radii, mStrokeWidth, mStrokeColorEnabled);
-            stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
+            if (mBackgroundColorEnabled == 0) {
+                stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, normalDrawable);
+            } else {
+                GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorEnabled, 0, radii, mStrokeWidth, mStrokeColorEnabled);
+                stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
+            }
 
             //默认背景要放最后
-            GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, 0, radii, mStrokeWidth, mStrokeColor);
             stateListDrawable.addState(new int[]{}, normalDrawable);
 
             setBackground(stateListDrawable);
@@ -288,16 +306,21 @@ public class SuperTextView extends AppCompatTextView {
 
         StateListDrawable stateListDrawable = new StateListDrawable();
 
+        GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, mRadius, null, mStrokeWidth, mStrokeColor);
+
         //点击状态
-        GradientDrawable pressedDrawable = getGradientDrawable(mBackgroundColorPressed, mRadius, null, mStrokeWidth, mStrokeColorPressed);
-        stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+        if (mBackgroundColorPressed == 0) {
+            stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, normalDrawable);
+        } else {
+            GradientDrawable pressedDrawable = getGradientDrawable(mBackgroundColorPressed, mRadius, null, mStrokeWidth, mStrokeColorPressed);
+            stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+        }
 
         //不可点击状态
         GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorEnabled, mRadius, null, mStrokeWidth, mStrokeColorEnabled);
         stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
 
         //默认背景要放最后
-        GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, mRadius, null, mStrokeWidth, mStrokeColor);
         stateListDrawable.addState(new int[]{}, normalDrawable);
 
         setBackground(stateListDrawable);
