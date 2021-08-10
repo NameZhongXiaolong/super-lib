@@ -7,7 +7,12 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.appcompat.widget.AppCompatRadioButton;
 
@@ -51,6 +56,8 @@ public class SuperRadioButton extends AppCompatRadioButton {
     private final int mStrokeColor;
     private final int mStrokeColorEnabled;
     private final int mStrokeColorPressed;
+    private GradientDrawable.Orientation mBackgroundOrientation;
+    private int[] mBackgroundColors;
 
     public SuperRadioButton(Context context) {
         this(context, null);
@@ -96,8 +103,47 @@ public class SuperRadioButton extends AppCompatRadioButton {
         mStrokeColorPressed = a.getColor(R.styleable.SuperRadioButton_strokeColorPressed, mStrokeColor);
         int textColorEnabled = a.getColor(R.styleable.SuperRadioButton_textColorEnabled, Color.TRANSPARENT);
         int textColorPressed = a.getColor(R.styleable.SuperRadioButton_textColorPressed, Color.TRANSPARENT);
+        String backgroundColorsString = a.getString(R.styleable.SuperRadioButton_backgroundColors);
+        int backgroundOrientation = a.getInt(R.styleable.SuperRadioButton_backgroundOrientation, 0);
 
         a.recycle();
+
+        //渐变的颜色数值
+        List<Integer> backgroundColors = new ArrayList<>();
+        if (!TextUtils.isEmpty(backgroundColorsString)) {
+            int index;
+            while ((index = backgroundColorsString.indexOf(",")) > 0) {
+                try {
+                    String colorString = backgroundColorsString.substring(0, index).trim();
+                    backgroundColors.add(Color.parseColor(colorString));
+                    backgroundColorsString = backgroundColorsString.substring(index + 1);
+                } catch (Exception e) {
+                    backgroundColorsString = backgroundColorsString.substring(index + 1);
+                }
+            }
+
+            try {
+                backgroundColors.add(Color.parseColor(backgroundColorsString));
+            } catch (Exception e) {
+                Log.d("SuperButton", "e:" + e);
+            }
+
+            if (backgroundColors.size() > 0) {
+                mBackgroundColors = new int[backgroundColors.size()];
+                for (int i = 0; i < backgroundColors.size(); i++) {
+                    mBackgroundColors[i] = backgroundColors.get(i);
+                }
+            }
+
+            if (backgroundOrientation == 1) mBackgroundOrientation = GradientDrawable.Orientation.TOP_BOTTOM;
+            else if (backgroundOrientation == 2) mBackgroundOrientation = GradientDrawable.Orientation.TR_BL;
+            else if (backgroundOrientation == 3) mBackgroundOrientation = GradientDrawable.Orientation.RIGHT_LEFT;
+            else if (backgroundOrientation == 4) mBackgroundOrientation = GradientDrawable.Orientation.BR_TL;
+            else if (backgroundOrientation == 5) mBackgroundOrientation = GradientDrawable.Orientation.BOTTOM_TOP;
+            else if (backgroundOrientation == 6) mBackgroundOrientation = GradientDrawable.Orientation.BL_TR;
+            else if (backgroundOrientation == 7) mBackgroundOrientation = GradientDrawable.Orientation.LEFT_RIGHT;
+            else mBackgroundOrientation = GradientDrawable.Orientation.TL_BR;
+        }
 
         //重设drawableStart/drawableTop/drawableEnd/drawableBottom  宽高
 
@@ -195,7 +241,7 @@ public class SuperRadioButton extends AppCompatRadioButton {
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        if (mBackgroundColor == Color.TRANSPARENT && mBackgroundColorPressed == Color.TRANSPARENT && mBackgroundColorEnabled == Color.TRANSPARENT && mStrokeColor == Color.TRANSPARENT && mStrokeColorPressed == Color.TRANSPARENT && mStrokeColorEnabled == Color.TRANSPARENT) {
+        if (mBackgroundColors == null && mBackgroundColor == Color.TRANSPARENT && mBackgroundColorPressed == Color.TRANSPARENT && mBackgroundColorEnabled == Color.TRANSPARENT && mStrokeColor == Color.TRANSPARENT && mStrokeColorPressed == Color.TRANSPARENT && mStrokeColorEnabled == Color.TRANSPARENT) {
             return;
         }
 
@@ -211,7 +257,7 @@ public class SuperRadioButton extends AppCompatRadioButton {
             stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
 
             //默认背景要放最后
-            GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColor, h * 0.5f, null, mStrokeWidth, mStrokeColor);
+            GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, h * 0.5f, null, mStrokeWidth, mStrokeColor);
             stateListDrawable.addState(new int[]{}, normalDrawable);
 
             setBackground(stateListDrawable);
@@ -233,7 +279,7 @@ public class SuperRadioButton extends AppCompatRadioButton {
             stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
 
             //默认背景要放最后
-            GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColor, 0, radii, mStrokeWidth, mStrokeColor);
+            GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, 0, radii, mStrokeWidth, mStrokeColor);
             stateListDrawable.addState(new int[]{}, normalDrawable);
 
             setBackground(stateListDrawable);
@@ -252,7 +298,7 @@ public class SuperRadioButton extends AppCompatRadioButton {
         stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
 
         //默认背景要放最后
-        GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColor, mRadius, null, mStrokeWidth, mStrokeColor);
+        GradientDrawable normalDrawable = getGradientDrawable(mBackgroundColors, mBackgroundColor, mRadius, null, mStrokeWidth, mStrokeColor);
         stateListDrawable.addState(new int[]{}, normalDrawable);
 
         setBackground(stateListDrawable);
@@ -260,8 +306,29 @@ public class SuperRadioButton extends AppCompatRadioButton {
     }
 
     private GradientDrawable getGradientDrawable(int color, float radius, float[] radii, int strokeWidth, int strokeColor) {
+        return getGradientDrawable(null, color, radius, radii, strokeWidth, strokeColor);
+    }
+
+    private GradientDrawable getGradientDrawable(int[] colors, int color, float radius, float[] radii, int strokeWidth, int strokeColor) {
         GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setColor(color);
+        if (colors != null && colors.length > 0) {
+            if (colors.length == 1) {
+                gradientDrawable.setColor(colors[0]);
+            } else if (colors.length > 2) {
+                gradientDrawable.setColors(colors);
+                gradientDrawable.setOrientation(mBackgroundOrientation);
+            } else {
+                int[] newColors = new int[3];
+                newColors[0] = colors[0];
+                newColors[1] = colors[0];
+                newColors[2] = colors[1];
+                gradientDrawable.setColors(newColors);
+                gradientDrawable.setOrientation(mBackgroundOrientation);
+            }
+        } else {
+            gradientDrawable.setColor(color);
+        }
+
         if (radius > 0) {
             gradientDrawable.setCornerRadius(radius);
         } else if (radii != null && radii.length >= 8) {
@@ -274,4 +341,5 @@ public class SuperRadioButton extends AppCompatRadioButton {
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         return gradientDrawable;
     }
+
 }

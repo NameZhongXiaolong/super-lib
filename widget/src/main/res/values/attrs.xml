@@ -20,6 +20,21 @@
     <attr name="textColorPressed" format="color" />
     <attr name="textColorEnabled" format="color" />
 
+    <attr name="strokeWidth" format="dimension" />
+    <attr name="strokeColor" format="color" />
+
+    <attr name="backgroundColors" format="string" />
+    <attr name="backgroundOrientation" format="enum">
+        <enum name="TOP_BOTTOM" value="0" />
+        <enum name="TR_BL" value="1" />
+        <enum name="RIGHT_LEFT" value="2" />
+        <enum name="BR_TL" value="3" />
+        <enum name="BOTTOM_TOP" value="4" />
+        <enum name="BL_TR" value="5" />
+        <enum name="LEFT_RIGHT" value="6" />
+        <enum name="TL_BR" value="7" />
+    </attr>
+
     <declare-styleable name="SuperButton">
         <attr name="drawableStartWidth" />
         <attr name="drawableStartHeight" />
@@ -58,6 +73,10 @@
         <attr name="textColorEnabled" />
         <!--文字点击时的颜色-->
         <attr name="textColorPressed" />
+        <!--渐变的颜色-->
+        <attr name="backgroundColors" />
+        <!--渐变的颜色的方向-->
+        <attr name="backgroundOrientation" />
     </declare-styleable>
 
     <declare-styleable name="SuperTextView">
@@ -98,6 +117,10 @@
         <attr name="textColorEnabled" />
         <!--文字点击时的颜色-->
         <attr name="textColorPressed" />
+        <!--渐变的颜色-->
+        <attr name="backgroundColors" />
+        <!--渐变的颜色的方向-->
+        <attr name="backgroundOrientation" />
     </declare-styleable>
 
     <declare-styleable name="SuperRadioButton">
@@ -138,6 +161,10 @@
         <attr name="textColorEnabled" />
         <!--文字点击时的颜色-->
         <attr name="textColorPressed" />
+        <!--渐变的颜色-->
+        <attr name="backgroundColors" />
+        <!--渐变的颜色的方向-->
+        <attr name="backgroundOrientation" />
     </declare-styleable>
 
     <declare-styleable name="ShapeFrameLayout">
@@ -165,6 +192,10 @@
         <attr name="strokeColorEnabled" />
         <!--背景描边点击时的颜色-->
         <attr name="strokeColorPressed" />
+        <!--渐变的颜色-->
+        <attr name="backgroundColors" />
+        <!--渐变的颜色的方向-->
+        <attr name="backgroundOrientation" />
     </declare-styleable>
 
 </resources>
