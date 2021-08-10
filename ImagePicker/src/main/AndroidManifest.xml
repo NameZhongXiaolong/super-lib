@@ -8,4 +8,22 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <application>
+<!--        <activity android:name=".ChoiceGalleryActivity" android:theme="@style/Gallery_AppTheme_Light"/>-->
+<!--        <activity android:name=".GalleryPreviewActivity" android:theme="@style/Gallery_AppTheme_Light"/>-->
+<!--        <activity android:name=".GalleryUCropActivity" android:theme="@style/Gallery_AppTheme_Light"/>-->
+
+        <provider
+            android:name=".ImagePickerFileProvider"
+            android:authorities="${applicationId}.gallery.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/image_picker_file_paths" />
+        </provider>
+
+        <activity android:name=".ImagePickerActivity" android:theme="@style/ImagePicker_AppTheme_Light"/>
+    </application>
+
 </manifest>

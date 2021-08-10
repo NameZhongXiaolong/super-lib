@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ip_white">#FFFFFF</color>
+    <color name="ip_transparent">#00FFFFFF</color>
+    <color name="ip_color_333333">#333333</color>
+    <color name="ip_color_grey">#666666</color>
+    <color name="ip_colorAccentTranslucent">#80333333</color>
+    <color name="ip_milachat_colorAccent">#FC535B</color>
+</resources>

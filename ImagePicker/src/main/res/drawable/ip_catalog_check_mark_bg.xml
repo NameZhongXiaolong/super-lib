@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--目录,对勾选中背景-->
+    <item android:state_activated="true" android:drawable="@color/ip_transparent"/>
+    <item  android:drawable="@color/ip_white"/>
+</selector>
