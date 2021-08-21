@@ -19,10 +19,10 @@ import androidx.appcompat.widget.Toolbar;
 class BaseActivity extends AppCompatActivity {
 
     private int mColorAccent;
-    private String mLanguage;
     private int mColorPrimary;
     private int mColorPrimaryDark;
     private int mBackIcon;
+    private Resources mResources;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +31,6 @@ class BaseActivity extends AppCompatActivity {
         ChoiceGallerySetting choiceGallerySetting = new ChoiceGallerySetting(this);
         mBackIcon = choiceGallerySetting.getNavigationIcon();
         int theme = choiceGallerySetting.getTheme();
-        mLanguage = choiceGallerySetting.getLanguage();
 
         setTheme(theme);
 
@@ -44,38 +43,10 @@ class BaseActivity extends AppCompatActivity {
 
     @Override
     public Resources getResources() {
-        Resources resources = super.getResources();
-        if (resources != null) {
-            Configuration configuration = resources.getConfiguration();
-            if (configuration != null) {
-                Locale defLocale = configuration.locale;
-
-                //简体中文
-                if (ChoiceGallerySetting.LANGUAGE_ZH_CN.equals(mLanguage)) {
-                    if (!Objects.equals("zh",defLocale.getLanguage()) || !Objects.equals("CN",defLocale.getCountry())) {
-                        configuration.setLocale(Locale.SIMPLIFIED_CHINESE);
-                        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-                    }
-                }
-
-                //繁体中文
-                if (ChoiceGallerySetting.LANGUAGE_ZH_TW.equals(mLanguage)) {
-                    if (!Objects.equals("zh",defLocale.getLanguage()) || !Objects.equals("TW",defLocale.getCountry())) {
-                        configuration.setLocale(Locale.TRADITIONAL_CHINESE);
-                        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-                    }
-                }
-
-                //英文
-                if (ChoiceGallerySetting.LANGUAGE_EN.equals(mLanguage)) {
-                    if (!Objects.equals("en", defLocale.getLanguage())) {
-                        configuration.setLocale(Locale.ENGLISH);
-                        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-                    }
-                }
-            }
+        if (mResources == null) {
+            mResources = ResourcesConfigUtil.create(getBaseContext(), super.getResources());
         }
-        return resources;
+        return mResources;
     }
 
     @Override

@@ -130,41 +130,13 @@ public class ScanningLocalPhotoService extends JobIntentService {
         return path;
     }
 
+    private Resources mResources;
+
     @Override
     public Resources getResources() {
-        Resources resources = super.getResources();
-        if (resources != null) {
-            Configuration configuration = resources.getConfiguration();
-            if (configuration != null) {
-                String language = new ChoiceGallerySetting(getBaseContext()).getLanguage();
-                Locale defLocale = configuration.locale;
-
-                //简体中文
-                if (ChoiceGallerySetting.LANGUAGE_ZH_CN.equals(language)) {
-                    if (!Objects.equals("zh",defLocale.getLanguage()) || !Objects.equals("CN",defLocale.getCountry())) {
-                        configuration.setLocale(Locale.SIMPLIFIED_CHINESE);
-                        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-                    }
-                }
-
-                //繁体中文
-                if (ChoiceGallerySetting.LANGUAGE_ZH_TW.equals(language)) {
-                    if (!Objects.equals("zh",defLocale.getLanguage()) || !Objects.equals("TW",defLocale.getCountry())) {
-                        configuration.setLocale(Locale.TRADITIONAL_CHINESE);
-                        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-                    }
-                }
-
-                //英文
-                if (ChoiceGallerySetting.LANGUAGE_EN.equals(language)) {
-                    configuration.setLocale(Locale.ENGLISH);
-                    if (!Objects.equals("en", defLocale.getLanguage())) {
-                        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-                    }
-                }
-            }
+        if (mResources == null) {
+            mResources = ResourcesConfigUtil.create(getBaseContext(), super.getResources());
         }
-        return resources;
+        return mResources;
     }
-
 }
