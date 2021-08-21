@@ -14,8 +14,8 @@ import androidx.annotation.DrawableRes;
  */
 public class ChoiceGallerySetting {
 
-    public static final String LANGUAGE_ZH_CN = "zh_cn";
-    public static final String LANGUAGE_ZH_TW = "zh_tw";
+    public static final String LANGUAGE_ZH_CN = "zh_CN";
+    public static final String LANGUAGE_ZH_TW = "zh_TW";
     public static final String LANGUAGE_EN = "en";
 
     private static final String SP_NAME = "ChoiceGallerySetting";
