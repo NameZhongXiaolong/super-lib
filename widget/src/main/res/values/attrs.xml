@@ -13,12 +13,15 @@
     <attr name="backgroundArc" format="boolean" />
     <attr name="backgroundColorPressed" format="color" />
     <attr name="backgroundColorEnabled" format="color" />
+    <attr name="backgroundColorChecked" format="color" />
 
     <attr name="strokeColorPressed" format="color" />
     <attr name="strokeColorEnabled" format="color" />
+    <attr name="strokeColorChecked" format="color" />
 
     <attr name="textColorPressed" format="color" />
     <attr name="textColorEnabled" format="color" />
+    <attr name="textColorChecked" format="color" />
 
     <attr name="strokeWidth" format="dimension" />
     <attr name="strokeColor" format="color" />
@@ -61,6 +64,8 @@
         <attr name="backgroundColorEnabled" />
         <!--点击时的背景颜色-->
         <attr name="backgroundColorPressed" />
+        <!--选中时的背景颜色-->
+        <attr name="backgroundColorChecked" />
         <!--背景描边宽度-->
         <attr name="strokeWidth" />
         <!--背景描边颜色-->
@@ -69,10 +74,14 @@
         <attr name="strokeColorEnabled" />
         <!--背景描边点击时的颜色-->
         <attr name="strokeColorPressed" />
+        <!--背景描边选中时的颜色-->
+        <attr name="strokeColorChecked" />
         <!--文字不可点击时的颜色-->
         <attr name="textColorEnabled" />
         <!--文字点击时的颜色-->
         <attr name="textColorPressed" />
+        <!--文字选中时的颜色-->
+        <attr name="textColorChecked" />
         <!--渐变的颜色-->
         <attr name="backgroundColors" />
         <!--渐变的颜色的方向-->
@@ -105,6 +114,8 @@
         <attr name="backgroundColorEnabled" />
         <!--点击时的背景颜色-->
         <attr name="backgroundColorPressed" />
+        <!--选中时的背景颜色-->
+        <attr name="backgroundColorChecked" />
         <!--背景描边宽度-->
         <attr name="strokeWidth" />
         <!--背景描边颜色-->
@@ -113,10 +124,14 @@
         <attr name="strokeColorEnabled" />
         <!--背景描边点击时的颜色-->
         <attr name="strokeColorPressed" />
+        <!--背景描边选中时的颜色-->
+        <attr name="strokeColorChecked" />
         <!--文字不可点击时的颜色-->
         <attr name="textColorEnabled" />
         <!--文字点击时的颜色-->
         <attr name="textColorPressed" />
+        <!--文字选中时的颜色-->
+        <attr name="textColorChecked" />
         <!--渐变的颜色-->
         <attr name="backgroundColors" />
         <!--渐变的颜色的方向-->
@@ -149,6 +164,8 @@
         <attr name="backgroundColorEnabled" />
         <!--点击时的背景颜色-->
         <attr name="backgroundColorPressed" />
+        <!--选中时的背景颜色-->
+        <attr name="backgroundColorChecked" />
         <!--背景描边宽度-->
         <attr name="strokeWidth" />
         <!--背景描边颜色-->
@@ -157,10 +174,14 @@
         <attr name="strokeColorEnabled" />
         <!--背景描边点击时的颜色-->
         <attr name="strokeColorPressed" />
+        <!--背景描边选中时的颜色-->
+        <attr name="strokeColorChecked" />
         <!--文字不可点击时的颜色-->
         <attr name="textColorEnabled" />
         <!--文字点击时的颜色-->
         <attr name="textColorPressed" />
+        <!--文字选中时的颜色-->
+        <attr name="textColorChecked" />
         <!--渐变的颜色-->
         <attr name="backgroundColors" />
         <!--渐变的颜色的方向-->
@@ -184,6 +205,8 @@
         <attr name="backgroundColorEnabled" />
         <!--点击时的背景颜色-->
         <attr name="backgroundColorPressed" />
+        <!--选中时的背景颜色-->
+        <attr name="backgroundColorChecked" />
         <!--背景描边宽度-->
         <attr name="strokeWidth" />
         <!--背景描边颜色-->
@@ -192,6 +215,8 @@
         <attr name="strokeColorEnabled" />
         <!--背景描边点击时的颜色-->
         <attr name="strokeColorPressed" />
+        <!--背景描边选中时的颜色-->
+        <attr name="strokeColorChecked" />
         <!--渐变的颜色-->
         <attr name="backgroundColors" />
         <!--渐变的颜色的方向-->
