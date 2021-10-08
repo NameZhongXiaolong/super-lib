@@ -1,17 +1,11 @@
 package com.github.widget;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.core.content.ContextCompat;
 
 /**
  * Created by ZhongXiaolong on 2021/9/23 3:52 下午.

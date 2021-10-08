@@ -24,7 +24,7 @@ class DrawableSizeHelper {
 
     private DrawableSizeHelper() {}
 
-    public static DrawableSizeHelper create(View view, AttributeSet attrs) {
+    public static DrawableSizeHelper wrap(View view, AttributeSet attrs) {
         DrawableSizeHelper helper = new DrawableSizeHelper();
         final Context context = view.getContext();
         helper.mView = view;
@@ -74,16 +74,16 @@ class DrawableSizeHelper {
         Drawable drawableBottom = compoundDrawablesRelative[3];
 
         textView.setCompoundDrawables(
-                wrap(drawableStart, mDrawableStartWidth, mDrawableStartHeight),
-                wrap(drawableTop, mDrawableTopWidth, mDrawableTopHeight),
-                wrap(drawableEnd, mDrawableEndWidth, mDrawableEndHeight),
-                wrap(drawableBottom, mDrawableBottomWidth, mDrawableBottomHeight));
+                wrapDrawable(drawableStart, mDrawableStartWidth, mDrawableStartHeight),
+                wrapDrawable(drawableTop, mDrawableTopWidth, mDrawableTopHeight),
+                wrapDrawable(drawableEnd, mDrawableEndWidth, mDrawableEndHeight),
+                wrapDrawable(drawableBottom, mDrawableBottomWidth, mDrawableBottomHeight));
     }
 
     /**
      * 获取自适应的Drawable
      */
-    public Drawable wrap(Drawable drawable, int width, int height) {
+    public Drawable wrapDrawable(Drawable drawable, int width, int height) {
         if (width > 0 || height > 0) {
             if (drawable != null) {
                 if (width == 0) {
@@ -111,10 +111,10 @@ class DrawableSizeHelper {
 
         ((TextView) mView).
                 setCompoundDrawables(
-                        wrap(left, mDrawableStartWidth, mDrawableStartHeight),
-                        wrap(top, mDrawableTopWidth, mDrawableTopHeight),
-                        wrap(right, mDrawableEndWidth, mDrawableEndHeight),
-                        wrap(bottom, mDrawableBottomWidth, mDrawableBottomHeight)
+                        wrapDrawable(left, mDrawableStartWidth, mDrawableStartHeight),
+                        wrapDrawable(top, mDrawableTopWidth, mDrawableTopHeight),
+                        wrapDrawable(right, mDrawableEndWidth, mDrawableEndHeight),
+                        wrapDrawable(bottom, mDrawableBottomWidth, mDrawableBottomHeight)
                 );
     }
 

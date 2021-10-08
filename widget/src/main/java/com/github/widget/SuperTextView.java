@@ -55,7 +55,7 @@ public class SuperTextView extends AppCompatTextView {
 
         mColorStateHelper = ColorStateHelper.wrap(this, attrs);
 
-        mDrawableSizeHelper = DrawableSizeHelper.create(this, attrs);
+        mDrawableSizeHelper = DrawableSizeHelper.wrap(this, attrs);
     }
 
     @Override

@@ -53,7 +53,7 @@ public class SuperRadioButton extends AppCompatRadioButton {
         super(context, attrs, defStyleAttr);
         mColorStateHelper = ColorStateHelper.wrap(this, attrs);
 
-        mDrawableSizeHelper = DrawableSizeHelper.create(this, attrs);
+        mDrawableSizeHelper = DrawableSizeHelper.wrap(this, attrs);
     }
 
     @Override
