@@ -1,12 +1,17 @@
 package com.github.widget;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * Created by ZhongXiaolong on 2021/9/23 3:52 下午.
@@ -57,14 +62,19 @@ class ObjUtil {
         return arr;
     }
 
-    public static GradientDrawable.Orientation int2Orientation(int orientation) {
-        if (orientation == 1) return GradientDrawable.Orientation.TOP_BOTTOM;
-        else if (orientation == 2) return GradientDrawable.Orientation.TR_BL;
-        else if (orientation == 3) return GradientDrawable.Orientation.RIGHT_LEFT;
-        else if (orientation == 4) return GradientDrawable.Orientation.BR_TL;
-        else if (orientation == 5) return GradientDrawable.Orientation.BOTTOM_TOP;
-        else if (orientation == 6) return GradientDrawable.Orientation.BL_TR;
-        else if (orientation == 7) return GradientDrawable.Orientation.LEFT_RIGHT;
-        else return GradientDrawable.Orientation.TL_BR;
+    public static int parseInt(String intValue) {
+        try {
+            return Integer.parseInt(intValue);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public static float parseFloat(String intValue) {
+        try {
+            return Float.parseFloat(intValue);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

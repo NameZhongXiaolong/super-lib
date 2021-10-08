@@ -1,20 +1,10 @@
 package com.github.widget;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.StateListDrawable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import androidx.annotation.DrawableRes;
 import androidx.appcompat.widget.AppCompatButton;
 
 /**
@@ -48,7 +38,9 @@ import androidx.appcompat.widget.AppCompatButton;
  */
 public class SuperButton extends AppCompatButton {
 
-    private final StateListDrawableHelper mStateListDrawableHelper;
+    private final ColorStateHelper mColorStateHelper;
+
+    private final DrawableSizeHelper mDrawableSizeHelper;
 
     public SuperButton(Context context) {
         this(context, null);
@@ -60,143 +52,24 @@ public class SuperButton extends AppCompatButton {
 
     public SuperButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SuperButton);
-        int drawableStartWidth = a.getDimensionPixelSize(R.styleable.SuperButton_drawableStartWidth, 0);
-        int drawableStartHeight = a.getDimensionPixelSize(R.styleable.SuperButton_drawableStartHeight, 0);
 
-        Drawable drawableStart = ObjUtil.firstNotNull(getCompoundDrawablesRelative()[0], getCompoundDrawables()[0]);
-        Drawable drawableTop = getCompoundDrawablesRelative()[1];
-        Drawable drawableEnd = ObjUtil.firstNotNull(getCompoundDrawablesRelative()[2], getCompoundDrawables()[2]);
-        Drawable drawableBottom = getCompoundDrawablesRelative()[3];
+        mColorStateHelper = ColorStateHelper.wrap(this, attrs);
 
-        int drawableEndWidth = a.getDimensionPixelSize(R.styleable.SuperButton_drawableEndWidth, 0);
-        int drawableEndHeight = a.getDimensionPixelSize(R.styleable.SuperButton_drawableEndHeight, 0);
+        mDrawableSizeHelper = DrawableSizeHelper.create(this, attrs);
 
-        int drawableTopWidth = a.getDimensionPixelSize(R.styleable.SuperButton_drawableTopWidth, 0);
-        int drawableTopHeight = a.getDimensionPixelSize(R.styleable.SuperButton_drawableTopHeight, 0);
-
-        int drawableBottomWidth = a.getDimensionPixelSize(R.styleable.SuperButton_drawableBottomWidth, 0);
-        int drawableBottomHeight = a.getDimensionPixelSize(R.styleable.SuperButton_drawableBottomHeight, 0);
-
-        boolean backgroundArc = a.getBoolean(R.styleable.SuperButton_backgroundArc, false);
-        float radius = a.getDimension(R.styleable.SuperButton_android_radius, 0);
-        float topLeftRadius = a.getDimension(R.styleable.SuperButton_android_topLeftRadius, 0);
-        float topRightRadius = a.getDimension(R.styleable.SuperButton_android_topRightRadius, 0);
-        float bottomLeftRadius = a.getDimension(R.styleable.SuperButton_android_bottomLeftRadius, 0);
-        float bottomRightRadius = a.getDimension(R.styleable.SuperButton_android_bottomRightRadius, 0);
-
-        int backgroundColor = a.getColor(R.styleable.SuperButton_backgroundColor, Color.TRANSPARENT);
-        int backgroundColorEnabled = a.getColor(R.styleable.SuperButton_backgroundColorEnabled, StateListDrawableHelper.DEF_COLOR);
-        int backgroundColorPressed = a.getColor(R.styleable.SuperButton_backgroundColorPressed, StateListDrawableHelper.DEF_COLOR);
-        int backgroundColorChecked = a.getColor(R.styleable.SuperButton_backgroundColorChecked, StateListDrawableHelper.DEF_COLOR);
-        int strokeWidth = a.getDimensionPixelOffset(R.styleable.SuperButton_strokeWidth, 0);
-        int strokeColor = a.getColor(R.styleable.SuperButton_strokeColor, Color.TRANSPARENT);
-        int strokeColorEnabled = a.getColor(R.styleable.SuperButton_strokeColorEnabled, strokeColor);
-        int strokeColorPressed = a.getColor(R.styleable.SuperButton_strokeColorPressed, strokeColor);
-        int strokeColorChecked = a.getColor(R.styleable.SuperButton_strokeColorChecked, strokeColor);
-
-        int textColorEnabled = a.getColor(R.styleable.SuperButton_textColorEnabled, Color.TRANSPARENT);
-        int textColorPressed = a.getColor(R.styleable.SuperButton_textColorPressed, Color.TRANSPARENT);
-        String backgroundColorsString = a.getString(R.styleable.SuperButton_backgroundColors);
-        int backgroundOrientation = a.getInt(R.styleable.SuperButton_backgroundOrientation, 0);
-        a.recycle();
-
-        //渐变的颜色数值
-        int[] backgroundColors = ObjUtil.subInt(backgroundColorsString);
-        GradientDrawable.Orientation orientation = ObjUtil.int2Orientation(backgroundOrientation);
-
-
-        //重设drawableStart/drawableTop/drawableEnd/drawableBottom  宽高
-
-        //标记
-        boolean drawableChange = false;
-
-        //drawableStart
-        if (drawableStartWidth > 0 || drawableStartHeight > 0) {
-            if (drawableStart != null) {
-                if (drawableStartWidth == 0) {
-                    drawableStartWidth = drawableStart.getIntrinsicWidth() * drawableStartHeight / drawableStart.getIntrinsicHeight();
-                    drawableStart.setBounds(0, 0, drawableStartWidth, drawableStartHeight);
-                } else if (drawableStartHeight == 0) {
-                    drawableStartHeight = drawableStart.getIntrinsicHeight() * drawableStartWidth / drawableStart.getIntrinsicWidth();
-                    drawableStart.setBounds(0, 0, drawableStartWidth, drawableStartHeight);
-                } else {
-                    drawableStart.setBounds(0, 0, drawableStartWidth, drawableStartHeight);
-                }
-                drawableChange = true;
-            }
-        }
-
-        //drawableEnd
-        if (drawableEndWidth > 0 || drawableEndHeight > 0) {
-            if (drawableEnd != null) {
-                if (drawableEndWidth == 0) {
-                    drawableEndWidth = drawableEnd.getIntrinsicWidth() * drawableEndHeight / drawableEnd.getIntrinsicHeight();
-                    drawableEnd.setBounds(0, 0, drawableEndWidth, drawableEndHeight);
-                } else if (drawableEndHeight == 0) {
-                    drawableEndHeight = drawableEnd.getIntrinsicHeight() * drawableEndWidth / drawableEnd.getIntrinsicWidth();
-                    drawableEnd.setBounds(0, 0, drawableEndWidth, drawableEndHeight);
-                } else {
-                    drawableEnd.setBounds(0, 0, drawableEndWidth, drawableEndHeight);
-                }
-                drawableChange = true;
-            }
-        }
-
-        //drawableTop
-        if (drawableTopWidth > 0 || drawableTopHeight > 0) {
-            if (drawableTop != null) {
-                if (drawableTopWidth == 0) {
-                    drawableTopWidth = drawableTop.getIntrinsicWidth() * drawableTopHeight / drawableTop.getIntrinsicHeight();
-                    drawableTop.setBounds(0, 0, drawableTopWidth, drawableTopHeight);
-                } else if (drawableTopHeight == 0) {
-                    drawableTopHeight = drawableTop.getIntrinsicHeight() * drawableTopWidth / drawableTop.getIntrinsicWidth();
-                    drawableTop.setBounds(0, 0, drawableTopWidth, drawableTopHeight);
-                } else {
-                    drawableTop.setBounds(0, 0, drawableTopWidth, drawableTopHeight);
-                }
-                drawableChange = true;
-            }
-        }
-
-        //drawableBottom
-        if (drawableBottomWidth > 0 || drawableBottomHeight > 0) {
-            if (drawableBottom != null) {
-                if (drawableBottomWidth == 0) {
-                    drawableBottomWidth = drawableBottom.getIntrinsicWidth() * drawableBottomHeight / drawableBottom.getIntrinsicHeight();
-                    drawableBottom.setBounds(0, 0, drawableBottomWidth, drawableBottomHeight);
-                } else if (drawableBottomHeight == 0) {
-                    drawableBottomHeight = drawableBottom.getIntrinsicHeight() * drawableBottomWidth / drawableBottom.getIntrinsicWidth();
-                    drawableBottom.setBounds(0, 0, drawableBottomWidth, drawableBottomHeight);
-                } else {
-                    drawableBottom.setBounds(0, 0, drawableBottomWidth, drawableBottomHeight);
-                }
-                drawableChange = true;
-            }
-        }
-
-        if (drawableChange) {
-            setCompoundDrawables(drawableStart, drawableTop, drawableEnd, drawableBottom);
-        }
-
-        mStateListDrawableHelper = new StateListDrawableHelper(backgroundArc, radius, topLeftRadius, topRightRadius,
-                bottomLeftRadius, bottomRightRadius, backgroundColor, backgroundColorEnabled, backgroundColorPressed, backgroundColorChecked,
-                strokeWidth, strokeColor, strokeColorEnabled, strokeColorPressed, strokeColorChecked, orientation, backgroundColors);
-
-        //设置文字选择器
-        if (textColorPressed != Color.TRANSPARENT || textColorEnabled != Color.TRANSPARENT) {
-            int defaultColor = getTextColors().getDefaultColor();
-            int[][] states = {{android.R.attr.state_pressed}, {-android.R.attr.state_enabled}, {}};
-            int[] colors = {textColorPressed, textColorEnabled, defaultColor};
-            ColorStateList colorStateList = new ColorStateList(states, colors);
-            setTextColor(colorStateList);
-        }
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        setBackground(mStateListDrawableHelper.getStateListDrawable(h));
+        setBackground(mColorStateHelper.getStateListDrawable(h));
     }
 
+    public void setWrapCompoundDrawables(Drawable left, Drawable top, Drawable right, Drawable bottom) {
+        mDrawableSizeHelper.setWrapCompoundDrawables(left, top, right, bottom);
+    }
+
+    public void setWrapCompoundDrawables(@DrawableRes int left, @DrawableRes int top, @DrawableRes int right, @DrawableRes int bottom) {
+        mDrawableSizeHelper.setWrapCompoundDrawables(left, top, right, bottom);
+    }
 }
