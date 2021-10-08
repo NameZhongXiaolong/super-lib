@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import androidx.core.content.ContextCompat;
 
 /**
@@ -23,7 +26,7 @@ class AttrsParseUtil {
             try {
                 return context.getResources().getDimensionPixelOffset(attrs.getAttributeResourceValue(index, 0));
             } catch (Exception e) {
-                return attrs.getAttributeIntValue(index, 0);
+                return 0;
             }
         } else {
             if (value.endsWith("dip")) {
@@ -44,8 +47,13 @@ class AttrsParseUtil {
             } else if (value.endsWith("mm")) {
                 float arg = ObjUtil.parseFloat(value.substring(0, value.indexOf("mm")));
                 return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, arg, context.getResources().getDisplayMetrics());
+            } else {
+                //提取数字
+                String regEx = "[^0-9]";
+                Pattern p = Pattern.compile(regEx);
+                Matcher m = p.matcher(value);
+                return ObjUtil.parseInt(m.replaceAll("").trim());
             }
-            return attrs.getAttributeIntValue(index, 0);
         }
     }
 
@@ -56,7 +64,7 @@ class AttrsParseUtil {
                 int resColor = attrs.getAttributeResourceValue(index, 0);
                 return resColor == 0 ? DEF_COLOR : ContextCompat.getColor(context, resColor);
             } catch (Exception e) {
-                return attrs.getAttributeIntValue(index, DEF_COLOR);
+                return DEF_COLOR;
             }
         } else {
             return attrs.getAttributeIntValue(index, DEF_COLOR);
