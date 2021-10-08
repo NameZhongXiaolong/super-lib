@@ -29,7 +29,10 @@ class AttrsParseUtil {
                 return 0;
             }
         } else {
-            if (value.endsWith("dip")) {
+            if (value.endsWith("dp")) {
+                float arg = ObjUtil.parseFloat(value.substring(0, value.indexOf("dp")));
+                return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, arg, context.getResources().getDisplayMetrics());
+            } else if (value.endsWith("dip")) {
                 float arg = ObjUtil.parseFloat(value.substring(0, value.indexOf("dip")));
                 return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, arg, context.getResources().getDisplayMetrics());
             } else if (value.endsWith("px")) {
