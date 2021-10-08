@@ -2,6 +2,7 @@ package com.github.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -125,6 +126,8 @@ class ColorStateHelper {
             Drawable background = mView.getBackground();
             if (background instanceof ColorDrawable) {
                 normalDrawable = getGradientDrawable(((ColorDrawable) background).getColor(), radii, mStrokeColor);
+            } else if (mStrokeColor != DEF_COLOR && mStrokeWidth > 1) {
+                normalDrawable = getGradientDrawable(Color.TRANSPARENT, radii, mStrokeColor);
             } else {
                 normalDrawable = background;
             }
