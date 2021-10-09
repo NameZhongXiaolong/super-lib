@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
  * *  * <!--背景颜色-->
  * *  * <attr name="backgroundColor" />
  * *  * <!--不可点击时的背景颜色-->
+ * *  * <attr name="backgroundColorDisable" />
+ * *  * <!--可点击时的背景颜色-->
  * *  * <attr name="backgroundColorEnabled" />
  * *  * <!--点击时的背景颜色-->
  * *  * <attr name="backgroundColorPressed" />
@@ -25,6 +27,8 @@ import androidx.annotation.Nullable;
  * *  * <!--背景描边颜色-->
  * *  * <attr name="strokeColor" />
  * *  * <!--背景描边不可点击时的颜色-->
+ * *  * <attr name="strokeColorDisable" />
+ * *  * <!--背景描边可点击时的颜色-->
  * *  * <attr name="strokeColorEnabled" />
  * *  * <!--背景描边点击时的颜色-->
  * *  * <attr name="strokeColorPressed" />

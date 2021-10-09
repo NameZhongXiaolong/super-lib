@@ -28,14 +28,17 @@ class ColorStateHelper {
     private float mBottomRightRadius;
     private int mBackgroundColor = DEF_COLOR;
     private int mBackgroundColorEnabled = DEF_COLOR;
+    private int mBackgroundColorDisable = DEF_COLOR;
     private int mBackgroundColorPressed = DEF_COLOR;
     private int mBackgroundColorChecked = DEF_COLOR;
     private int mStrokeWidth;
     private int mStrokeColor = DEF_COLOR;
     private int mStrokeColorEnabled = DEF_COLOR;
+    private int mStrokeColorDisable = DEF_COLOR;
     private int mStrokeColorPressed = DEF_COLOR;
     private int mStrokeColorChecked = DEF_COLOR;
     private int mTextColorEnabled = DEF_COLOR;
+    private int mTextColorDisable = DEF_COLOR;
     private int mTextColorPressed = DEF_COLOR;
     private int mTextColorChecked = DEF_COLOR;
     private GradientDrawable.Orientation mBackgroundOrientation = GradientDrawable.Orientation.TL_BR;
@@ -54,6 +57,8 @@ class ColorStateHelper {
                     helper.mBackgroundColor = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("backgroundColorEnabled".equals(attributeName)) {
                     helper.mBackgroundColorEnabled = AttrsParseUtil.getColor(context, attrs, i);
+                } else if ("backgroundColorDisable".equals(attributeName)) {
+                    helper.mBackgroundColorDisable = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("backgroundColorPressed".equals(attributeName)) {
                     helper.mBackgroundColorPressed = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("backgroundColorChecked".equals(attributeName)) {
@@ -64,12 +69,16 @@ class ColorStateHelper {
                     helper.mStrokeColor = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("strokeColorEnabled".equals(attributeName)) {
                     helper.mStrokeColorEnabled = AttrsParseUtil.getColor(context, attrs, i);
+                } else if ("strokeColorDisable".equals(attributeName)) {
+                    helper.mStrokeColorDisable = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("strokeColorPressed".equals(attributeName)) {
                     helper.mStrokeColorPressed = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("strokeColorChecked".equals(attributeName)) {
                     helper.mStrokeColorChecked = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("textColorEnabled".equals(attributeName)) {
                     helper.mTextColorEnabled = AttrsParseUtil.getColor(context, attrs, i);
+                } else if ("textColorDisable".equals(attributeName)) {
+                    helper.mTextColorDisable = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("textColorPressed".equals(attributeName)) {
                     helper.mTextColorPressed = AttrsParseUtil.getColor(context, attrs, i);
                 } else if ("textColorChecked".equals(attributeName)) {
@@ -97,6 +106,7 @@ class ColorStateHelper {
         }
 
         helper.mStrokeColorEnabled = helper.firstNotDefColor(helper.mStrokeColorEnabled, helper.mStrokeColor);
+        helper.mStrokeColorDisable = helper.firstNotDefColor(helper.mStrokeColorDisable, helper.mStrokeColor);
         helper.mStrokeColorPressed = helper.firstNotDefColor(helper.mStrokeColorPressed, helper.mStrokeColor);
         helper.mStrokeColorChecked = helper.firstNotDefColor(helper.mStrokeColorChecked, helper.mStrokeColor);
 
@@ -158,9 +168,15 @@ class ColorStateHelper {
         }
 
         //不可点击状态
+        if (mBackgroundColorDisable != DEF_COLOR) {
+            GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorDisable, radii, mStrokeColorDisable);
+            stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
+        }
+
+        //可点击状态
         if (mBackgroundColorEnabled != DEF_COLOR) {
             GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorEnabled, radii, mStrokeColorEnabled);
-            stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
+            stateListDrawable.addState(new int[]{android.R.attr.state_enabled}, enabledDrawable);
         }
 
         //选中状态
@@ -211,9 +227,10 @@ class ColorStateHelper {
         if (mView instanceof TextView) {
             TextView textView = (TextView) mView;
             final int defaultTextColor = textView.getTextColors().getDefaultColor();
-            if (mTextColorEnabled != DEF_COLOR || mTextColorPressed != DEF_COLOR || mTextColorChecked != DEF_COLOR) {
-                int[][] states = {{-android.R.attr.state_enabled}, {android.R.attr.state_pressed}, {android.R.attr.state_checked}, {}};
+            if (mTextColorEnabled != DEF_COLOR || mTextColorPressed != DEF_COLOR || mTextColorChecked != DEF_COLOR || mTextColorDisable != DEF_COLOR) {
+                int[][] states = {{-android.R.attr.state_enabled},{android.R.attr.state_enabled}, {android.R.attr.state_pressed}, {android.R.attr.state_checked}, {}};
                 int[] colors = {
+                        firstNotDefColor(mTextColorDisable, defaultTextColor),
                         firstNotDefColor(mTextColorEnabled, defaultTextColor),
                         firstNotDefColor(mTextColorPressed, defaultTextColor),
                         firstNotDefColor(mTextColorChecked, defaultTextColor),
