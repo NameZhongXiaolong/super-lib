@@ -11,6 +11,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ZhongXiaolong on 2021/9/23 3:17 下午.
  * <p>
@@ -167,10 +170,10 @@ class ColorStateHelper {
             stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
         }
 
-        //不可点击状态
-        if (mBackgroundColorDisable != DEF_COLOR) {
-            GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorDisable, radii, mStrokeColorDisable);
-            stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
+        //选中状态
+        if (mBackgroundColorChecked != DEF_COLOR) {
+            GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorChecked, radii, mStrokeColorChecked);
+            stateListDrawable.addState(new int[]{android.R.attr.state_checked}, enabledDrawable);
         }
 
         //可点击状态
@@ -179,10 +182,10 @@ class ColorStateHelper {
             stateListDrawable.addState(new int[]{android.R.attr.state_enabled}, enabledDrawable);
         }
 
-        //选中状态
-        if (mBackgroundColorChecked != DEF_COLOR) {
-            GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorChecked, radii, mStrokeColorChecked);
-            stateListDrawable.addState(new int[]{android.R.attr.state_checked}, enabledDrawable);
+        //不可点击状态
+        if (mBackgroundColorDisable != DEF_COLOR) {
+            GradientDrawable enabledDrawable = getGradientDrawable(mBackgroundColorDisable, radii, mStrokeColorDisable);
+            stateListDrawable.addState(new int[]{-android.R.attr.state_enabled}, enabledDrawable);
         }
 
         //默认背景要放最后
@@ -227,18 +230,37 @@ class ColorStateHelper {
         if (mView instanceof TextView) {
             TextView textView = (TextView) mView;
             final int defaultTextColor = textView.getTextColors().getDefaultColor();
-            if (mTextColorEnabled != DEF_COLOR || mTextColorPressed != DEF_COLOR || mTextColorChecked != DEF_COLOR || mTextColorDisable != DEF_COLOR) {
-                int[][] states = {{-android.R.attr.state_enabled},{android.R.attr.state_enabled}, {android.R.attr.state_pressed}, {android.R.attr.state_checked}, {}};
-                int[] colors = {
-                        firstNotDefColor(mTextColorDisable, defaultTextColor),
-                        firstNotDefColor(mTextColorEnabled, defaultTextColor),
-                        firstNotDefColor(mTextColorPressed, defaultTextColor),
-                        firstNotDefColor(mTextColorChecked, defaultTextColor),
-                        defaultTextColor
-                };
-                ColorStateList colorStateList = new ColorStateList(states, colors);
-                textView.setTextColor(colorStateList);
+            List<Integer> states = new ArrayList<>();
+            List<Integer> colors = new ArrayList<>();
+
+            if (mTextColorPressed != DEF_COLOR) {
+                states.add(android.R.attr.state_pressed);
+                colors.add(mTextColorPressed);
             }
+            if (mTextColorChecked != DEF_COLOR) {
+                states.add(android.R.attr.state_checked);
+                colors.add(mTextColorChecked);
+            }
+            if (mTextColorEnabled != DEF_COLOR) {
+                states.add(android.R.attr.state_enabled);
+                colors.add(mTextColorEnabled);
+            }
+            if (mTextColorDisable != DEF_COLOR) {
+                states.add(-android.R.attr.state_enabled);
+                colors.add(mTextColorDisable);
+            }
+
+            int[][] statesArr = new int[states.size() + 1][1];
+            int[] colorsArr = new int[colors.size() + 1];
+            for (int i = 0; i < states.size(); i++) {
+                statesArr[i] = new int[]{states.get(i)};
+                colorsArr[i] = colors.get(i);
+            }
+
+            colorsArr[colorsArr.length - 1] = defaultTextColor;
+
+            ColorStateList colorStateList = new ColorStateList(statesArr, colorsArr);
+            textView.setTextColor(colorStateList);
         }
     }
 }
