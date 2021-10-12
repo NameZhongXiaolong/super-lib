@@ -109,6 +109,10 @@
         <attr name="textColorDisable" />
         <!--文字可点击时的颜色-->
         <attr name="textColorEnabled" />
+
+        <!--宽高比-->
+        <attr name="height_ratio_width"/>
+        <attr name="width_ratio_height"/>
     </declare-styleable>
 
     <declare-styleable name="SuperButton">
@@ -174,6 +178,10 @@
         <attr name="textColorDisable" />
         <!--文字可点击时的颜色-->
         <attr name="textColorEnabled" />
+
+        <!--宽高比-->
+        <attr name="height_ratio_width" />
+        <attr name="width_ratio_height" />
     </declare-styleable>
 
     <declare-styleable name="SuperRadioButton">
@@ -239,6 +247,10 @@
         <attr name="textColorDisable" />
         <!--文字可点击时的颜色-->
         <attr name="textColorEnabled" />
+
+        <!--宽高比-->
+        <attr name="height_ratio_width" />
+        <attr name="width_ratio_height" />
     </declare-styleable>
 
     <!--Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-->

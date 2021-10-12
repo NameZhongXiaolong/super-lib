@@ -62,6 +62,12 @@ public class SuperButton extends AppCompatButton {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int[] measureSpec = mCompatAttrHelper.getMeasureSpec(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(measureSpec[0], measureSpec[1]);
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
         setBackground(mCompatAttrHelper.getStateListDrawable(h));
