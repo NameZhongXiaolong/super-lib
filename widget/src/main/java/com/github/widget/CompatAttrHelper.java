@@ -8,18 +8,23 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
+
 /**
  * Created by ZhongXiaolong on 2021/9/23 3:17 下午.
  * <p>
- * 颜色选择器帮助类
+ * 自定义属性解析/帮助类
  */
-class ColorStateHelper {
+class CompatAttrHelper {
 
     public final static int DEF_COLOR = AttrsParseUtil.DEF_COLOR;
     private View mView;
@@ -46,10 +51,16 @@ class ColorStateHelper {
     private int mTextColorChecked = DEF_COLOR;
     private GradientDrawable.Orientation mBackgroundOrientation = GradientDrawable.Orientation.TL_BR;
     private int[] mBackgroundColors;
+    private float mRatioWidthToHeight, mRatioHeightToWidth;
+    private int
+            mDrawableStartWidth, mDrawableStartHeight,
+            mDrawableEndWidth, mDrawableEndHeight,
+            mDrawableTopWidth, mDrawableTopHeight,
+            mDrawableBottomWidth, mDrawableBottomHeight;
 
-    public static ColorStateHelper wrap(View view, AttributeSet attrs) {
+    public static CompatAttrHelper wrap(View view, AttributeSet attrs) {
         final Context context = view.getContext();
-        final ColorStateHelper helper = new ColorStateHelper();
+        final CompatAttrHelper helper = new CompatAttrHelper();
         helper.mView = view;
         if (attrs != null) {
             for (int i = 0; i < attrs.getAttributeCount(); i++) {
@@ -104,6 +115,26 @@ class ColorStateHelper {
                     //渐变方向
                     int backgroundOrientation = attrs.getAttributeIntValue(i, 0);
                     helper.mBackgroundOrientation = helper.int2Orientation(backgroundOrientation);
+                } else if ("drawableStartWidth".equals(attributeName)) {
+                    helper.mDrawableStartWidth = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                } else if ("drawableStartHeight".equals(attributeName)) {
+                    helper.mDrawableStartHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                } else if ("drawableEndWidth".equals(attributeName)) {
+                    helper.mDrawableEndWidth = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                } else if ("drawableEndHeight".equals(attributeName)) {
+                    helper.mDrawableEndHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                } else if ("drawableTopWidth".equals(attributeName)) {
+                    helper.mDrawableTopWidth = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                } else if ("drawableTopHeight".equals(attributeName)) {
+                    helper.mDrawableTopHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                } else if ("drawableBottomWidth".equals(attributeName)) {
+                    helper.mDrawableBottomWidth = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                } else if ("drawableBottomHeight".equals(attributeName)) {
+                    helper.mDrawableBottomHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                } else if ("width_ratio_height".equals(attributeName)) {
+                    helper.mRatioWidthToHeight = attrs.getAttributeFloatValue(i, 0);
+                } else if ("height_ratio_width".equals(attributeName)) {
+                    helper.mRatioHeightToWidth = attrs.getAttributeFloatValue(i, 0);
                 }
             }
         }
@@ -115,9 +146,14 @@ class ColorStateHelper {
 
         helper.setTextColorStateList();
 
+        helper.resetDrawable();
+
         return helper;
     }
 
+    /**
+     * 根据预设的属性获取颜色选择器
+     */
     public StateListDrawable getStateListDrawable(int viewHeight) {
         final float[] radii;
         if (mBackgroundArc) {
@@ -229,7 +265,6 @@ class ColorStateHelper {
     private void setTextColorStateList() {
         if (mView instanceof TextView) {
             TextView textView = (TextView) mView;
-            final int defaultTextColor = textView.getTextColors().getDefaultColor();
             List<Integer> states = new ArrayList<>();
             List<Integer> colors = new ArrayList<>();
 
@@ -250,17 +285,125 @@ class ColorStateHelper {
                 colors.add(mTextColorDisable);
             }
 
-            int[][] statesArr = new int[states.size() + 1][1];
-            int[] colorsArr = new int[colors.size() + 1];
-            for (int i = 0; i < states.size(); i++) {
-                statesArr[i] = new int[]{states.get(i)};
-                colorsArr[i] = colors.get(i);
+            //当设置了选择器
+            if (colors.size() > 0) {
+                //设置新的选择器
+                int[][] statesArr = new int[states.size() + 1][1];
+                int[] colorsArr = new int[colors.size() + 1];
+                for (int i = 0; i < states.size(); i++) {
+                    statesArr[i] = new int[]{states.get(i)};
+                    colorsArr[i] = colors.get(i);
+                }
+
+                //默认颜色
+                final int defaultTextColor = textView.getTextColors().getDefaultColor();
+                colorsArr[colorsArr.length - 1] = defaultTextColor;
+
+                //设置
+                ColorStateList colorStateList = new ColorStateList(statesArr, colorsArr);
+                textView.setTextColor(colorStateList);
             }
-
-            colorsArr[colorsArr.length - 1] = defaultTextColor;
-
-            ColorStateList colorStateList = new ColorStateList(statesArr, colorsArr);
-            textView.setTextColor(colorStateList);
         }
+    }
+
+    /**
+     * 重新设置Drawable
+     */
+    private void resetDrawable() {
+        if (!(mView instanceof TextView)) {
+            return;
+        }
+
+        final TextView textView = (TextView) mView;
+
+        Drawable[] compoundDrawablesRelative = textView.getCompoundDrawablesRelative();
+        Drawable[] compoundDrawables = textView.getCompoundDrawables();
+        Drawable drawableStart = ObjUtil.firstNotNull(compoundDrawablesRelative[0], compoundDrawables[0]);
+        Drawable drawableTop = compoundDrawablesRelative[1];
+        Drawable drawableEnd = ObjUtil.firstNotNull(compoundDrawablesRelative[2], compoundDrawables[2]);
+        Drawable drawableBottom = compoundDrawablesRelative[3];
+
+        textView.setCompoundDrawables(
+                wrapDrawable(drawableStart, mDrawableStartWidth, mDrawableStartHeight),
+                wrapDrawable(drawableTop, mDrawableTopWidth, mDrawableTopHeight),
+                wrapDrawable(drawableEnd, mDrawableEndWidth, mDrawableEndHeight),
+                wrapDrawable(drawableBottom, mDrawableBottomWidth, mDrawableBottomHeight));
+    }
+
+    /**
+     * 获取自适应的Drawable
+     */
+    public Drawable wrapDrawable(Drawable drawable, int width, int height) {
+        if (width > 0 || height > 0) {
+            if (drawable != null) {
+                if (width == 0) {
+                    width = drawable.getIntrinsicWidth() * height / drawable.getIntrinsicHeight();
+                    drawable.setBounds(0, 0, width, height);
+                } else if (height == 0) {
+                    height = drawable.getIntrinsicHeight() * width / drawable.getIntrinsicWidth();
+                    drawable.setBounds(0, 0, width, height);
+                } else {
+                    drawable.setBounds(0, 0, width, height);
+                }
+            }
+        } else {
+            if (drawable != null) {
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            }
+        }
+        return drawable;
+    }
+
+    public void setWrapCompoundDrawables(Drawable left, Drawable top, Drawable right, Drawable bottom) {
+        if (!(mView instanceof TextView)) {
+            return;
+        }
+
+        ((TextView) mView).
+                setCompoundDrawables(
+                        wrapDrawable(left, mDrawableStartWidth, mDrawableStartHeight),
+                        wrapDrawable(top, mDrawableTopWidth, mDrawableTopHeight),
+                        wrapDrawable(right, mDrawableEndWidth, mDrawableEndHeight),
+                        wrapDrawable(bottom, mDrawableBottomWidth, mDrawableBottomHeight)
+                );
+    }
+
+    public void setWrapCompoundDrawables(@DrawableRes int left, @DrawableRes int top, @DrawableRes int right, @DrawableRes int bottom) {
+        setWrapCompoundDrawables(
+                getDrawable(left),
+                getDrawable(top),
+                getDrawable(right),
+                getDrawable(bottom)
+        );
+    }
+
+    private Drawable getDrawable(@DrawableRes int drawableRes) {
+        try {
+            return ContextCompat.getDrawable(mView.getContext(), drawableRes);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public int[] getMeasureSpec(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mRatioHeightToWidth > 0) {
+            int newHeightSize;
+            if (mView.getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                newHeightSize = (int) (mView.getMeasuredWidth() * mRatioHeightToWidth);
+            } else {
+                newHeightSize = (int) (View.MeasureSpec.getSize(widthMeasureSpec) * mRatioHeightToWidth);
+            }
+            heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(newHeightSize, View.MeasureSpec.EXACTLY);
+        } else if (mRatioWidthToHeight > 0) {
+            int newWidthSize;
+            if (mView.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                newWidthSize = (int) (mView.getMeasuredHeight() * mRatioWidthToHeight);
+            } else {
+                newWidthSize = (int) (View.MeasureSpec.getSize(heightMeasureSpec) * mRatioWidthToHeight);
+            }
+            widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(newWidthSize, View.MeasureSpec.EXACTLY);
+        }
+
+        return new int[]{widthMeasureSpec, heightMeasureSpec};
     }
 }

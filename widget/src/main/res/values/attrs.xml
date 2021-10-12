@@ -41,6 +41,11 @@
         <enum name="TL_BR" value="7" />
     </attr>
 
+    <attr name="height_ratio_width" format="float" />
+    <attr name="width_ratio_height" format="float" />
+
+    <!--View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-->
+    
     <declare-styleable name="SuperTextView">
         <!--Drawable属性-->
         <attr name="drawableStartWidth" />
@@ -236,6 +241,8 @@
         <attr name="textColorEnabled" />
     </declare-styleable>
 
+    <!--Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-->
+
     <declare-styleable name="ShapeFrameLayout">
         <!--背景圆角属性-->
         <!--是否左右半圆-->
@@ -279,6 +286,153 @@
         <attr name="backgroundColors" />
         <!--渐变的颜色的方向-->
         <attr name="backgroundOrientation" />
+    </declare-styleable>
+
+    <declare-styleable name="SuperFrameLayout">
+        <!--背景圆角属性-->
+        <!--是否左右半圆-->
+        <attr name="backgroundArc" />
+        <!--圆角-->
+        <attr name="android:radius" />
+        <!--圆角-->
+        <attr name="android:topLeftRadius" />
+        <attr name="android:topRightRadius" />
+        <attr name="android:bottomLeftRadius" />
+        <attr name="android:bottomRightRadius" />
+
+        <!--背景颜色属性-->
+        <!--背景颜色-->
+        <attr name="backgroundColor" />
+        <!--可点击时的背景颜色-->
+        <attr name="backgroundColorEnabled" />
+        <!--点击时的背景颜色-->
+        <attr name="backgroundColorPressed" />
+        <!--选中时的背景颜色-->
+        <attr name="backgroundColorChecked" />
+        <!--不可点击时的背景颜色-->
+        <attr name="backgroundColorDisable" />
+
+        <!--背景描边宽度-->
+        <attr name="strokeWidth" />
+
+        <!--背景描边属性-->
+        <!--背景描边颜色-->
+        <attr name="strokeColor" />
+        <!--背景描边可点击时的颜色-->
+        <attr name="strokeColorEnabled" />
+        <!--背景描边点击时的颜色-->
+        <attr name="strokeColorPressed" />
+        <!--背景描边选中时的颜色-->
+        <attr name="strokeColorChecked" />
+        <!--背景描边不可点击时的颜色-->
+        <attr name="strokeColorDisable" />
+
+        <!--渐变的颜色-->
+        <attr name="backgroundColors" />
+        <!--渐变的颜色的方向-->
+        <attr name="backgroundOrientation" />
+        <!--高度为宽度的比例-->
+        <attr name="height_ratio_width" />
+        <!--宽度为高度的比例-->
+        <attr name="width_ratio_height" />
+    </declare-styleable>
+
+    <declare-styleable name="SuperLinearLayout">
+        <!--背景圆角属性-->
+        <!--是否左右半圆-->
+        <attr name="backgroundArc" />
+        <!--圆角-->
+        <attr name="android:radius" />
+        <!--圆角-->
+        <attr name="android:topLeftRadius" />
+        <attr name="android:topRightRadius" />
+        <attr name="android:bottomLeftRadius" />
+        <attr name="android:bottomRightRadius" />
+
+        <!--背景颜色属性-->
+        <!--背景颜色-->
+        <attr name="backgroundColor" />
+        <!--可点击时的背景颜色-->
+        <attr name="backgroundColorEnabled" />
+        <!--点击时的背景颜色-->
+        <attr name="backgroundColorPressed" />
+        <!--选中时的背景颜色-->
+        <attr name="backgroundColorChecked" />
+        <!--不可点击时的背景颜色-->
+        <attr name="backgroundColorDisable" />
+
+        <!--背景描边宽度-->
+        <attr name="strokeWidth" />
+
+        <!--背景描边属性-->
+        <!--背景描边颜色-->
+        <attr name="strokeColor" />
+        <!--背景描边可点击时的颜色-->
+        <attr name="strokeColorEnabled" />
+        <!--背景描边点击时的颜色-->
+        <attr name="strokeColorPressed" />
+        <!--背景描边选中时的颜色-->
+        <attr name="strokeColorChecked" />
+        <!--背景描边不可点击时的颜色-->
+        <attr name="strokeColorDisable" />
+
+        <!--渐变的颜色-->
+        <attr name="backgroundColors" />
+        <!--渐变的颜色的方向-->
+        <attr name="backgroundOrientation" />
+        <!--高度为宽度的比例-->
+        <attr name="height_ratio_width" />
+        <!--宽度为高度的比例-->
+        <attr name="width_ratio_height" />
+    </declare-styleable>
+
+    <declare-styleable name="SuperRelativeLayout">
+        <!--背景圆角属性-->
+        <!--是否左右半圆-->
+        <attr name="backgroundArc" />
+        <!--圆角-->
+        <attr name="android:radius" />
+        <!--圆角-->
+        <attr name="android:topLeftRadius" />
+        <attr name="android:topRightRadius" />
+        <attr name="android:bottomLeftRadius" />
+        <attr name="android:bottomRightRadius" />
+
+        <!--背景颜色属性-->
+        <!--背景颜色-->
+        <attr name="backgroundColor" />
+        <!--可点击时的背景颜色-->
+        <attr name="backgroundColorEnabled" />
+        <!--点击时的背景颜色-->
+        <attr name="backgroundColorPressed" />
+        <!--选中时的背景颜色-->
+        <attr name="backgroundColorChecked" />
+        <!--不可点击时的背景颜色-->
+        <attr name="backgroundColorDisable" />
+
+        <!--背景描边宽度-->
+        <attr name="strokeWidth" />
+
+        <!--背景描边属性-->
+        <!--背景描边颜色-->
+        <attr name="strokeColor" />
+        <!--背景描边可点击时的颜色-->
+        <attr name="strokeColorEnabled" />
+        <!--背景描边点击时的颜色-->
+        <attr name="strokeColorPressed" />
+        <!--背景描边选中时的颜色-->
+        <attr name="strokeColorChecked" />
+        <!--背景描边不可点击时的颜色-->
+        <attr name="strokeColorDisable" />
+
+        <!--渐变的颜色-->
+        <attr name="backgroundColors" />
+        <!--渐变的颜色的方向-->
+        <attr name="backgroundOrientation" />
+        <!--高度为宽度的比例-->
+        <attr name="height_ratio_width" />
+        <!--宽度为高度的比例-->
+        <attr name="width_ratio_height" />
     </declare-styleable>
 
 </resources>

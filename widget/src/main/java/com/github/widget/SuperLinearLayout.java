@@ -2,13 +2,10 @@ package com.github.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.widget.LinearLayout;
 
 /**
- * Created by ZhongXiaolong on 2021/3/26 9:53 AM.
+ * Created by ZhongXiaolong on 2021/10/9 3:31 下午.
  * <p>
  * 1.添加背景半圆和设置圆角,与app:backgroundColor一起使用生效:app:backgroundArc="true"--左右半圆; android:radius="@dimen/dp_10"--设置圆角
  * 2.添加选择器,点击效果/不可点击效果,描边
@@ -34,31 +31,36 @@ import androidx.annotation.Nullable;
  * *  * <attr name="strokeColorPressed" />
  * *  * <!--背景描边选中时的颜色-->
  * *  * <attr name="strokeColorChecked" />
- *
- * @Deprecated 过时了 替代方法{@link SuperFrameLayout}
+ * *  * <!--高度为宽度的比例-->
+ * *  * <attr name="height_ratio_width" />
+ * *  * <!--宽度为高度的比例-->
+ * *  * <attr name="width_ratio_height" />
  */
-@Deprecated
-public class ShapeFrameLayout extends FrameLayout {
+public class SuperLinearLayout extends LinearLayout {
 
     private final CompatAttrHelper mCompatAttrHelper;
 
-    public ShapeFrameLayout(@NonNull Context context) {
+    public SuperLinearLayout(Context context) {
         this(context, null);
     }
 
-    public ShapeFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SuperLinearLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ShapeFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SuperLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public ShapeFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public SuperLinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-
         mCompatAttrHelper = CompatAttrHelper.wrap(this, attrs);
+    }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int[] measureSpec = mCompatAttrHelper.getMeasureSpec(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(measureSpec[0], measureSpec[1]);
     }
 
     @Override
