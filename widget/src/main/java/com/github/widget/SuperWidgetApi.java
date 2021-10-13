@@ -140,9 +140,29 @@ class SuperWidgetApi {
                     helper.mDrawableBottomHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
                     resetDrawable = true;
                 } else if ("width_ratio_height".equals(attributeName)) {
-                    helper.mRatioWidthToHeight = attrs.getAttributeFloatValue(i, 0);
+                    String attributeValue = attrs.getAttributeValue(i);
+                    int index = attributeValue.indexOf(":");
+                    if (index > 0) {
+                        float arg1 = ObjUtil.parseFloat(attributeValue.substring(0, index));
+                        float arg2 = ObjUtil.parseFloat(attributeValue.substring(index + 1));
+                        if (arg1 != 0 && arg2 != 0) {
+                            helper.mRatioWidthToHeight = arg1 / arg2;
+                        }
+                    } else {
+                        helper.mRatioWidthToHeight = ObjUtil.parseFloat(attributeValue);
+                    }
                 } else if ("height_ratio_width".equals(attributeName)) {
-                    helper.mRatioHeightToWidth = attrs.getAttributeFloatValue(i, 0);
+                    String attributeValue = attrs.getAttributeValue(i);
+                    int index = attributeValue.indexOf(":");
+                    if (index > 0) {
+                        float arg1 = ObjUtil.parseFloat(attributeValue.substring(0, index));
+                        float arg2 = ObjUtil.parseFloat(attributeValue.substring(index + 1));
+                        if (arg1 != 0 && arg2 != 0) {
+                            helper.mRatioHeightToWidth = arg1 / arg2;
+                        }
+                    } else {
+                        helper.mRatioHeightToWidth = ObjUtil.parseFloat(attributeValue);
+                    }
                 }
             }
         }

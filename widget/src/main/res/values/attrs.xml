@@ -41,8 +41,8 @@
         <enum name="TL_BR" value="7" />
     </attr>
 
-    <attr name="height_ratio_width" format="float" />
-    <attr name="width_ratio_height" format="float" />
+    <attr name="height_ratio_width" format="float|string" />
+    <attr name="width_ratio_height" format="float|string" />
 
     <!--View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-View属性-->
     
