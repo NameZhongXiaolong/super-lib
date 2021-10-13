@@ -60,6 +60,7 @@ class SuperWidgetApi {
     public static SuperWidgetApi wrap(View view, AttributeSet attrs) {
         final Context context = view.getContext();
         final SuperWidgetApi helper = new SuperWidgetApi();
+        boolean resetDrawable = false;
         helper.mView = view;
         if (attrs != null) {
             for (int i = 0; i < attrs.getAttributeCount(); i++) {
@@ -116,20 +117,28 @@ class SuperWidgetApi {
                     helper.mBackgroundOrientation = helper.int2Orientation(backgroundOrientation);
                 } else if ("drawableStartWidth".equals(attributeName)) {
                     helper.mDrawableStartWidth = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                    resetDrawable = true;
                 } else if ("drawableStartHeight".equals(attributeName)) {
                     helper.mDrawableStartHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                    resetDrawable = true;
                 } else if ("drawableEndWidth".equals(attributeName)) {
                     helper.mDrawableEndWidth = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                    resetDrawable = true;
                 } else if ("drawableEndHeight".equals(attributeName)) {
                     helper.mDrawableEndHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                    resetDrawable = true;
                 } else if ("drawableTopWidth".equals(attributeName)) {
                     helper.mDrawableTopWidth = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                    resetDrawable = true;
                 } else if ("drawableTopHeight".equals(attributeName)) {
                     helper.mDrawableTopHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                    resetDrawable = true;
                 } else if ("drawableBottomWidth".equals(attributeName)) {
                     helper.mDrawableBottomWidth = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                    resetDrawable = true;
                 } else if ("drawableBottomHeight".equals(attributeName)) {
                     helper.mDrawableBottomHeight = AttrsParseUtil.getDimensionPixelOffset(context, attrs, i);
+                    resetDrawable = true;
                 } else if ("width_ratio_height".equals(attributeName)) {
                     helper.mRatioWidthToHeight = attrs.getAttributeFloatValue(i, 0);
                 } else if ("height_ratio_width".equals(attributeName)) {
@@ -145,7 +154,9 @@ class SuperWidgetApi {
 
         helper.setTextColorStateList();
 
-        helper.resetDrawable();
+        if (resetDrawable) {
+            helper.resetDrawable();
+        }
 
         return helper;
     }
