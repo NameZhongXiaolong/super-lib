@@ -44,7 +44,7 @@ import androidx.appcompat.widget.AppCompatButton;
  */
 public class SuperButton extends AppCompatButton {
 
-    private final CompatAttrHelper mCompatAttrHelper;
+    private final CompatSuperViewApi mCompatSuperViewApi;
 
     public SuperButton(Context context) {
         this(context, null);
@@ -57,28 +57,28 @@ public class SuperButton extends AppCompatButton {
     public SuperButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        mCompatAttrHelper = CompatAttrHelper.wrap(this, attrs);
+        mCompatSuperViewApi = CompatSuperViewApi.wrap(this, attrs);
 
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int[] measureSpec = mCompatAttrHelper.getMeasureSpec(widthMeasureSpec, heightMeasureSpec);
+        int[] measureSpec = mCompatSuperViewApi.getMeasureSpec(widthMeasureSpec, heightMeasureSpec);
         super.onMeasure(measureSpec[0], measureSpec[1]);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        setBackground(mCompatAttrHelper.getStateListDrawable(h));
+        setBackground(mCompatSuperViewApi.getStateListDrawable(h));
     }
 
     public void setWrapCompoundDrawables(Drawable left, Drawable top, Drawable right, Drawable bottom) {
-        mCompatAttrHelper.setWrapCompoundDrawables(left, top, right, bottom);
+        mCompatSuperViewApi.setWrapCompoundDrawables(left, top, right, bottom);
     }
 
     public void setWrapCompoundDrawables(@DrawableRes int left, @DrawableRes int top, @DrawableRes int right, @DrawableRes int bottom) {
-        mCompatAttrHelper.setWrapCompoundDrawables(left, top, right, bottom);
+        mCompatSuperViewApi.setWrapCompoundDrawables(left, top, right, bottom);
     }
 
 }

@@ -2,8 +2,6 @@ package com.github.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 /**
@@ -40,7 +38,7 @@ import android.widget.FrameLayout;
  */
 public class SuperFrameLayout extends FrameLayout {
 
-    private final CompatAttrHelper mCompatAttrHelper;
+    private final CompatSuperViewApi mCompatSuperViewApi;
 
     public SuperFrameLayout(Context context) {
         this(context, null);
@@ -56,18 +54,18 @@ public class SuperFrameLayout extends FrameLayout {
 
     public SuperFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mCompatAttrHelper = CompatAttrHelper.wrap(this, attrs);
+        mCompatSuperViewApi = CompatSuperViewApi.wrap(this, attrs);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int[] measureSpec = mCompatAttrHelper.getMeasureSpec(widthMeasureSpec, heightMeasureSpec);
+        int[] measureSpec = mCompatSuperViewApi.getMeasureSpec(widthMeasureSpec, heightMeasureSpec);
         super.onMeasure(measureSpec[0], measureSpec[1]);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        setBackground(mCompatAttrHelper.getStateListDrawable(h));
+        setBackground(mCompatSuperViewApi.getStateListDrawable(h));
     }
 }

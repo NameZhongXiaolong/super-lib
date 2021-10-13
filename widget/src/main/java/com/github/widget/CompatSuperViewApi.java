@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -22,9 +21,9 @@ import androidx.core.content.ContextCompat;
 /**
  * Created by ZhongXiaolong on 2021/9/23 3:17 下午.
  * <p>
- * 自定义属性解析/帮助类
+ * 自定义View属性解析/设置以及相关api
  */
-class CompatAttrHelper {
+class CompatSuperViewApi {
 
     public final static int DEF_COLOR = AttrsParseUtil.DEF_COLOR;
     private View mView;
@@ -58,9 +57,9 @@ class CompatAttrHelper {
             mDrawableTopWidth, mDrawableTopHeight,
             mDrawableBottomWidth, mDrawableBottomHeight;
 
-    public static CompatAttrHelper wrap(View view, AttributeSet attrs) {
+    public static CompatSuperViewApi wrap(View view, AttributeSet attrs) {
         final Context context = view.getContext();
-        final CompatAttrHelper helper = new CompatAttrHelper();
+        final CompatSuperViewApi helper = new CompatSuperViewApi();
         helper.mView = view;
         if (attrs != null) {
             for (int i = 0; i < attrs.getAttributeCount(); i++) {
