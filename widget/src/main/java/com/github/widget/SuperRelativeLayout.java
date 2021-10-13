@@ -38,7 +38,7 @@ import android.widget.RelativeLayout;
  */
 public class SuperRelativeLayout extends RelativeLayout {
 
-    private final CompatSuperViewApi mCompatSuperViewApi;
+    private final SuperWidgetApi mSuperWidgetApi;
 
     public SuperRelativeLayout(Context context) {
         this(context, null);
@@ -54,18 +54,18 @@ public class SuperRelativeLayout extends RelativeLayout {
 
     public SuperRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mCompatSuperViewApi = CompatSuperViewApi.wrap(this, attrs);
+        mSuperWidgetApi = SuperWidgetApi.wrap(this, attrs);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int[] measureSpec = mCompatSuperViewApi.getMeasureSpec(widthMeasureSpec, heightMeasureSpec);
+        int[] measureSpec = mSuperWidgetApi.getMeasureSpec(widthMeasureSpec, heightMeasureSpec);
         super.onMeasure(measureSpec[0], measureSpec[1]);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        setBackground(mCompatSuperViewApi.getStateListDrawable(h));
+        setBackground(mSuperWidgetApi.getStateListDrawable(h));
     }
 }

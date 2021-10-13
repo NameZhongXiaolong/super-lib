@@ -40,7 +40,7 @@ import androidx.annotation.Nullable;
 @Deprecated
 public class ShapeFrameLayout extends FrameLayout {
 
-    private final CompatSuperViewApi mCompatSuperViewApi;
+    private final SuperWidgetApi mSuperWidgetApi;
 
     public ShapeFrameLayout(@NonNull Context context) {
         this(context, null);
@@ -57,13 +57,13 @@ public class ShapeFrameLayout extends FrameLayout {
     public ShapeFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        mCompatSuperViewApi = CompatSuperViewApi.wrap(this, attrs);
+        mSuperWidgetApi = SuperWidgetApi.wrap(this, attrs);
 
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        setBackground(mCompatSuperViewApi.getStateListDrawable(h));
+        setBackground(mSuperWidgetApi.getStateListDrawable(h));
     }
 }

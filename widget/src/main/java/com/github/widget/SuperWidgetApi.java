@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat;
  * <p>
  * 自定义View属性解析/设置以及相关api
  */
-class CompatSuperViewApi {
+class SuperWidgetApi {
 
     public final static int DEF_COLOR = AttrsParseUtil.DEF_COLOR;
     private View mView;
@@ -57,9 +57,9 @@ class CompatSuperViewApi {
             mDrawableTopWidth, mDrawableTopHeight,
             mDrawableBottomWidth, mDrawableBottomHeight;
 
-    public static CompatSuperViewApi wrap(View view, AttributeSet attrs) {
+    public static SuperWidgetApi wrap(View view, AttributeSet attrs) {
         final Context context = view.getContext();
-        final CompatSuperViewApi helper = new CompatSuperViewApi();
+        final SuperWidgetApi helper = new SuperWidgetApi();
         helper.mView = view;
         if (attrs != null) {
             for (int i = 0; i < attrs.getAttributeCount(); i++) {
