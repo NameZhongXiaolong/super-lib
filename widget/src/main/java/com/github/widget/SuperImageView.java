@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -96,6 +97,19 @@ public class SuperImageView extends AppCompatImageView {
             super.setImageDrawable(new CircleDrawable(bm, mCircleStrokeSize, mCircleStrokeColor));
         } else {
             super.setImageBitmap(bm);
+        }
+    }
+
+    /**
+     * 设置边框的宽度和颜色
+     *
+     * @param size  宽度
+     * @param color 颜色
+     */
+    public void setCircleStroke(int size, @ColorInt int color) {
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+            setImageDrawable(new CircleDrawable(drawable, size, color));
         }
     }
 }
