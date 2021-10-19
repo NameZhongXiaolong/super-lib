@@ -265,7 +265,9 @@ class SuperWidgetApi {
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         gradientDrawable.setColor(color);
         gradientDrawable.setCornerRadii(radii);
-        gradientDrawable.setStroke(mStrokeWidth, strokeColor);
+        if (strokeColor != DEF_COLOR && strokeColor != Color.TRANSPARENT && mStrokeWidth > 0) {
+            gradientDrawable.setStroke(mStrokeWidth, strokeColor);
+        }
         return gradientDrawable;
     }
 
