@@ -253,6 +253,11 @@
         <attr name="width_ratio_height" />
     </declare-styleable>
 
+    <declare-styleable name="SuperImageView">
+        <attr name="circle_stroke_color" format="color"/>
+        <attr name="circle_stroke_size" format="dimension"/>
+        <attr name="circle_crop" format="boolean" />
+    </declare-styleable>
     <!--Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-Layout 属性-->
 
     <declare-styleable name="ShapeFrameLayout">
