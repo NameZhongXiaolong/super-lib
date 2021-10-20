@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 /**
  * Created by ZhongXiaolong on 2021/10/18 3:05 下午.
@@ -41,7 +42,7 @@ public class SuperImageView extends AppCompatImageView {
 
         a.recycle();
 
-        if (mCircleCrop) {
+        if (mCircleCrop && getDrawable() != null) {
             setImageDrawable(getDrawable());
         }
     }
@@ -71,7 +72,8 @@ public class SuperImageView extends AppCompatImageView {
             } else if (getLayoutParams().height != ViewGroup.LayoutParams.WRAP_CONTENT && getLayoutParams().height != ViewGroup.LayoutParams.MATCH_PARENT) {
                 size = MeasureSpec.getSize(heightMeasureSpec);
             } else {
-                size = getMeasuredWidth();
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+                return;
             }
             widthMeasureSpec = heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(size, View.MeasureSpec.EXACTLY);
         }
@@ -107,6 +109,8 @@ public class SuperImageView extends AppCompatImageView {
      * @param color 颜色
      */
     public void setCircleStroke(int size, @ColorInt int color) {
+        mCircleStrokeSize = size;
+        mCircleStrokeColor = color;
         Drawable drawable = getDrawable();
         if (drawable != null) {
             setImageDrawable(new CircleDrawable(drawable, size, color));
