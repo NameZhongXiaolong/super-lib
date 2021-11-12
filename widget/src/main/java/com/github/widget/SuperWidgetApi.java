@@ -17,6 +17,7 @@ import java.util.List;
 
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Created by ZhongXiaolong on 2021/9/23 3:17 下午.
@@ -221,7 +222,7 @@ class SuperWidgetApi {
                 } else {
                     int[] newColors = new int[3];
                     newColors[0] = mBackgroundColors[0];
-                    newColors[1] = mBackgroundColors[0];
+                    newColors[1] = ColorUtils.blendARGB(mBackgroundColors[0], mBackgroundColors[1], 0.5f);
                     newColors[2] = mBackgroundColors[1];
                     gradientDrawable.setColors(newColors);
                     gradientDrawable.setOrientation(mBackgroundOrientation);
