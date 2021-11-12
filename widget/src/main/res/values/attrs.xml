@@ -253,6 +253,75 @@
         <attr name="width_ratio_height" />
     </declare-styleable>
 
+    <declare-styleable name="SuperEditText">
+        <!--Drawable属性-->
+        <attr name="drawableStartWidth" />
+        <attr name="drawableStartHeight" />
+        <attr name="drawableEndWidth" />
+        <attr name="drawableEndHeight" />
+        <attr name="drawableTopWidth" />
+        <attr name="drawableTopHeight" />
+        <attr name="drawableBottomWidth" />
+        <attr name="drawableBottomHeight" />
+
+        <!--背景圆角属性-->
+        <!--是否左右半圆-->
+        <attr name="backgroundArc" />
+        <!--圆角-->
+        <attr name="android:radius" />
+        <!--圆角-->
+        <attr name="android:topLeftRadius" />
+        <attr name="android:topRightRadius" />
+        <attr name="android:bottomLeftRadius" />
+        <attr name="android:bottomRightRadius" />
+
+        <!--背景颜色属性-->
+        <!--背景颜色-->
+        <attr name="backgroundColor" />
+        <!--可点击时的背景颜色-->
+        <attr name="backgroundColorEnabled" />
+        <!--点击时的背景颜色-->
+        <attr name="backgroundColorPressed" />
+        <!--选中时的背景颜色-->
+        <attr name="backgroundColorChecked" />
+        <!--不可点击时的背景颜色-->
+        <attr name="backgroundColorDisable" />
+
+        <!--背景描边宽度-->
+        <attr name="strokeWidth" />
+
+        <!--背景描边属性-->
+        <!--背景描边颜色-->
+        <attr name="strokeColor" />
+        <!--背景描边可点击时的颜色-->
+        <attr name="strokeColorEnabled" />
+        <!--背景描边点击时的颜色-->
+        <attr name="strokeColorPressed" />
+        <!--背景描边选中时的颜色-->
+        <attr name="strokeColorChecked" />
+        <!--背景描边不可点击时的颜色-->
+        <attr name="strokeColorDisable" />
+
+        <!--渐变的颜色-->
+        <attr name="backgroundColors" />
+        <!--渐变的颜色的方向-->
+        <attr name="backgroundOrientation" />
+
+        <!--文字颜色属性-->
+        <!--文字点击时的颜色-->
+        <attr name="textColorPressed" />
+        <!--文字选中时的颜色-->
+        <attr name="textColorChecked" />
+        <!--文字不可点击时的颜色-->
+        <attr name="textColorDisable" />
+        <!--文字可点击时的颜色-->
+        <attr name="textColorEnabled" />
+
+        <!--宽高比-->
+        <attr name="height_ratio_width"/>
+        <attr name="width_ratio_height"/>
+    </declare-styleable>
+
     <declare-styleable name="SuperImageView">
         <attr name="circle_stroke_color" format="color"/>
         <attr name="circle_stroke_size" format="dimension"/>
