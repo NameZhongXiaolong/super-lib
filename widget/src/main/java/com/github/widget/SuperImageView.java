@@ -116,4 +116,30 @@ public class SuperImageView extends AppCompatImageView {
             setImageDrawable(new CircleDrawable(drawable, size, color));
         }
     }
+
+    /**
+     * 设置边框的颜色
+     *
+     * @param color 颜色
+     */
+    public void setCircleStrokeColor(@ColorInt int color) {
+        mCircleStrokeColor = color;
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+            setImageDrawable(new CircleDrawable(drawable, mCircleStrokeSize, color));
+        }
+    }
+
+    /**
+     * 设置边框的宽度
+     *
+     * @param size  宽度
+     */
+    public void setCircleStrokeSize(int size) {
+        mCircleStrokeSize = size;
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+            setImageDrawable(new CircleDrawable(drawable, size, mCircleStrokeColor));
+        }
+    }
 }
