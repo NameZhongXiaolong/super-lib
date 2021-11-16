@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
 /**
@@ -79,5 +80,19 @@ public class SuperTextView extends AppCompatTextView {
 
     public void setWrapCompoundDrawables(@DrawableRes int left, @DrawableRes int top, @DrawableRes int right, @DrawableRes int bottom) {
         mSuperWidgetApi.setWrapCompoundDrawables(left, top, right, bottom);
+    }
+
+    @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        super.setOnClickListener(mSuperWidgetApi.getOnClickListener(0, l));
+    }
+
+    /**
+     * 点击事件,响应间隔
+     *
+     * @param interval 两次点击的间隔,毫秒(第二次点击要大于这个间隔才有效)
+     */
+    public void setOnClickListener(int interval, @Nullable OnClickListener l) {
+        super.setOnClickListener(mSuperWidgetApi.getOnClickListener(interval, l));
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 
 /**
@@ -81,4 +82,17 @@ public class SuperButton extends AppCompatButton {
         mSuperWidgetApi.setWrapCompoundDrawables(left, top, right, bottom);
     }
 
+    @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        super.setOnClickListener(mSuperWidgetApi.getOnClickListener(1000, l));
+    }
+
+    /**
+     * 点击事件,响应间隔
+     *
+     * @param interval 两次点击的间隔,毫秒(第二次点击要大于这个间隔才有效)
+     */
+    public void setOnClickListener(int interval, @Nullable OnClickListener l) {
+        super.setOnClickListener(mSuperWidgetApi.getOnClickListener(interval, l));
+    }
 }

@@ -439,4 +439,29 @@ class SuperWidgetApi {
 
         return new int[]{widthMeasureSpec, heightMeasureSpec};
     }
+
+    private long mOnClickTime;
+
+    /**
+     * 获取点击事件
+     *
+     * @param interval 两次点击的间隔
+     * @param l        回调
+     */
+    public View.OnClickListener getOnClickListener(final int interval, final View.OnClickListener l) {
+        if (l == null) {
+            return null;
+        } else if (interval <= 80) {
+            return l;
+        } else {
+            return v -> {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - mOnClickTime > interval) {
+                    //防止重复点击
+                    l.onClick(v);
+                    mOnClickTime = currentTime;
+                }
+            };
+        }
+    }
 }
