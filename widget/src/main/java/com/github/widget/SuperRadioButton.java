@@ -42,7 +42,9 @@ import androidx.appcompat.widget.AppCompatRadioButton;
  * *  * <attr name="textColorEnabled" />
  * *  * <!--文字点击时的颜色-->
  * *  * <attr name="textColorPressed" />
- */
+ * *  * <!--点击时的背景阴影透明度-->
+ * *  * <attr name="backgroundPressedAlpha" />
+ * */
 public class SuperRadioButton extends AppCompatRadioButton {
 
     private final SuperWidgetApi mSuperWidgetApi;

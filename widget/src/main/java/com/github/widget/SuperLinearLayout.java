@@ -37,7 +37,9 @@ import androidx.annotation.Nullable;
  * *  * <attr name="height_ratio_width" />
  * *  * <!--宽度为高度的比例-->
  * *  * <attr name="width_ratio_height" />
- */
+ * *  * <!--点击时的背景阴影透明度-->
+ * *  * <attr name="backgroundPressedAlpha" />
+ * */
 public class SuperLinearLayout extends LinearLayout {
 
     private final SuperWidgetApi mSuperWidgetApi;

@@ -3,9 +3,12 @@ package com.github.widget;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -52,6 +55,7 @@ class SuperWidgetApi {
     private GradientDrawable.Orientation mBackgroundOrientation = GradientDrawable.Orientation.TL_BR;
     private int[] mBackgroundColors;
     private float mRatioWidthToHeight, mRatioHeightToWidth;
+    private float mBackgroundPressedAlpha;
     private int
             mDrawableStartWidth, mDrawableStartHeight,
             mDrawableEndWidth, mDrawableEndHeight,
@@ -164,6 +168,9 @@ class SuperWidgetApi {
                     } else {
                         helper.mRatioHeightToWidth = ObjUtil.parseFloat(attributeValue);
                     }
+                } else if ("backgroundPressedAlpha".equals(attributeName)) {
+                    String attributeValue = attrs.getAttributeValue(i);
+                    helper.mBackgroundPressedAlpha = ObjUtil.parseFloat(attributeValue);
                 }
             }
         }
@@ -232,9 +239,25 @@ class SuperWidgetApi {
         }
 
         //点击状态
-        if (mBackgroundColorPressed != DEF_COLOR) {
-            GradientDrawable pressedDrawable = getGradientDrawable(mBackgroundColorPressed, radii, mStrokeColorPressed);
-            stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+        if (mBackgroundColorPressed != DEF_COLOR || mBackgroundPressedAlpha > 0) {
+            Drawable pressedDrawable;
+            if (mBackgroundColorPressed != DEF_COLOR) {
+                pressedDrawable = getGradientDrawable(mBackgroundColorPressed, radii, mStrokeColorPressed);
+            } else {
+                if (normalDrawable != null) {
+                    pressedDrawable = normalDrawable.mutate();
+                } else {
+                    pressedDrawable = new ColorDrawable();
+                }
+            }
+
+            if (mBackgroundPressedAlpha > 0) {
+                int argb = Color.argb((int) (mBackgroundPressedAlpha * 255), 0, 0, 0);
+                GradientDrawable pressedAlpha = getGradientDrawable(argb, radii, mStrokeColorPressed);
+                stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, new LayerDrawable(new Drawable[]{pressedDrawable, pressedAlpha}));
+            } else {
+                stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+            }
         }
 
         //选中状态

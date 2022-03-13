@@ -29,6 +29,8 @@
     <attr name="strokeWidth" format="dimension" />
     <attr name="strokeColor" format="color" />
 
+    <attr name="backgroundPressedAlpha" format="float" />
+
     <attr name="backgroundColors" format="string" />
     <attr name="backgroundOrientation" format="enum">
         <enum name="TOP_BOTTOM" value="0" />
@@ -113,6 +115,9 @@
         <!--宽高比-->
         <attr name="height_ratio_width"/>
         <attr name="width_ratio_height"/>
+
+        <!--点击时的背景阴影透明度-->
+        <attr name="backgroundPressedAlpha" />
     </declare-styleable>
 
     <declare-styleable name="SuperButton">
@@ -182,6 +187,9 @@
         <!--宽高比-->
         <attr name="height_ratio_width" />
         <attr name="width_ratio_height" />
+
+        <!--点击时的背景阴影透明度-->
+        <attr name="backgroundPressedAlpha" />
     </declare-styleable>
 
     <declare-styleable name="SuperRadioButton">
@@ -251,6 +259,9 @@
         <!--宽高比-->
         <attr name="height_ratio_width" />
         <attr name="width_ratio_height" />
+
+        <!--点击时的背景阴影透明度-->
+        <attr name="backgroundPressedAlpha" />
     </declare-styleable>
 
     <declare-styleable name="SuperEditText">
@@ -320,6 +331,9 @@
         <!--宽高比-->
         <attr name="height_ratio_width"/>
         <attr name="width_ratio_height"/>
+
+        <!--点击时的背景阴影透明度-->
+        <attr name="backgroundPressedAlpha" />
     </declare-styleable>
 
     <declare-styleable name="SuperImageView">
@@ -372,6 +386,9 @@
         <attr name="backgroundColors" />
         <!--渐变的颜色的方向-->
         <attr name="backgroundOrientation" />
+
+        <!--点击时的背景阴影透明度-->
+        <attr name="backgroundPressedAlpha" />
     </declare-styleable>
 
     <declare-styleable name="SuperFrameLayout">
@@ -421,6 +438,9 @@
         <attr name="height_ratio_width" />
         <!--宽度为高度的比例-->
         <attr name="width_ratio_height" />
+
+        <!--点击时的背景阴影透明度-->
+        <attr name="backgroundPressedAlpha" />
     </declare-styleable>
 
     <declare-styleable name="SuperLinearLayout">
@@ -470,6 +490,9 @@
         <attr name="height_ratio_width" />
         <!--宽度为高度的比例-->
         <attr name="width_ratio_height" />
+
+        <!--点击时的背景阴影透明度-->
+        <attr name="backgroundPressedAlpha" />
     </declare-styleable>
 
     <declare-styleable name="SuperRelativeLayout">
@@ -519,6 +542,9 @@
         <attr name="height_ratio_width" />
         <!--宽度为高度的比例-->
         <attr name="width_ratio_height" />
+
+        <!--点击时的背景阴影透明度-->
+        <attr name="backgroundPressedAlpha" />
     </declare-styleable>
 
 </resources>
