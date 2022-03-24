@@ -65,8 +65,8 @@ public class ScanningLocalPhotoService extends JobIntentService {
 //                MediaStore.Images.Media.MIME_TYPE + "=? or " +
 //                MediaStore.Images.Media.MIME_TYPE + "=? ";
 
-        String selection = "_size >30 and (mime_type = ? or mime_type = ? or mime_type =?) ";
-        String[] selectionArgs = {"image/jpeg", "image/jpg", "image/png"};
+        String selection = "_size >30 and (mime_type = ? or mime_type = ? or mime_type =? or mime_type =? or mime_type =?) ";
+        String[] selectionArgs = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/bmp"};
         String sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " desc ";
         Cursor cursor = contentResolver.query(imageUri, projection, selection, selectionArgs, sortOrder);
 
