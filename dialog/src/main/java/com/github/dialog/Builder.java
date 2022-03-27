@@ -7,7 +7,7 @@ import android.util.TypedValue;
 /**
  * Created by ZhongXiaolong on 2020/9/2 4:34 PM.
  */
-public class Builder {
+class Builder {
 
     Context context;
     String title;

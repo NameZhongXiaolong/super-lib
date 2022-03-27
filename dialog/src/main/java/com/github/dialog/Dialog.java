@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatDialog;
  * <p>
  * dialog
  */
-public class Dialog extends AppCompatDialog {
+class Dialog extends AppCompatDialog {
 
     public static final int BUTTON_POSITIVE = R.id.btn_negative;
     public static final int BUTTON_NEGATIVE = R.id.btn_positive;
