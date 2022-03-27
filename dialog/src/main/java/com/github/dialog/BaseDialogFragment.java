@@ -24,12 +24,14 @@ import androidx.fragment.app.FragmentManager;
  * <p>
  * 基于{@link androidx.fragment.app.DialogFragment}修改的Dialog Fragment
  * 同样是用 Fragment维护Dialog,同时可以更好的处理dialog的宽高
+ * 去掉在{@link #onStop()}时隐藏dialog逻辑
  */
 public class BaseDialogFragment extends Fragment {
 
+    //默认的宽高
     private static final int DEF_SIZE = -100;
 
-    private int mCreateViewWidth = -100, mCreateViewHeight = -100;
+    private int mCreateViewWidth = DEF_SIZE, mCreateViewHeight = DEF_SIZE;
 
     private Dialog mDialog;
 
@@ -61,6 +63,7 @@ public class BaseDialogFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //设置dialog布局的宽高
         if (mCreateViewWidth == DEF_SIZE) {
             ViewGroup.LayoutParams lp = view.getLayoutParams();
             if (lp != null) {
@@ -79,7 +82,9 @@ public class BaseDialogFragment extends Fragment {
             mDialog.setOnDismissListener(this::onDismiss);
             mDialog.setOnCancelListener(this::onCancel);
             mDialog.setOnShowListener(this::onShow);
+            //设置布局的宽高
             view.setLayoutParams(new ViewGroup.LayoutParams(mCreateViewWidth, mCreateViewHeight));
+            //设置布局
             mDialog.setContentView(view);
             if (mShowing) {
                 mDialog.show();
