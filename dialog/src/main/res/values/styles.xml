@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.BaseDialog" parent="Theme.AppCompat.Dialog">
+    <!--setStatusBarColor-->
+    <style name="Theme.BaseDialog" parent="Theme.AppCompat.NoActionBar">
         <item name="windowNoTitle">true</item>
+        <item name="android:backgroundDimAmount">0</item>
+        <item name="android:windowBackground">#00123456</item>
+        <item name="android:statusBarColor">#00123456</item>
     </style>
 </resources>
