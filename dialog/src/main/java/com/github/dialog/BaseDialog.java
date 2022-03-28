@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -61,6 +62,8 @@ public class BaseDialog extends AppCompatDialog {
     //进场动画,出场动画
     private int mAnimEnter = 0, mAnimExit = 0;
 
+    private final boolean mIsLightStatusBar;
+
     public BaseDialog(Context context) {
         this(context, false);
     }
@@ -72,14 +75,19 @@ public class BaseDialog extends AppCompatDialog {
      *                         false状态栏深色,白色图标
      */
     public BaseDialog(Context context, boolean isLightStatusBar) {
-        super(context, isLightStatusBar ? R.style.Theme_BaseDialog_LightStatusBar : R.style.Theme_BaseDialog_DarkStatusBar);
+        super(context, R.style.Theme_BaseDialog);
+        mIsLightStatusBar = isLightStatusBar;
     }
 
     /**
      * 自定义主题,最好继承 R.style.Theme_BaseDialog
+     *
+     * @param isLightStatusBar true状态栏浅色,黑色图标
+     *                         false状态栏深色,白色图标
      */
-    protected BaseDialog(Context context, int theme) {
+    protected BaseDialog(Context context, int theme, boolean isLightStatusBar) {
         super(context, theme);
+        mIsLightStatusBar = isLightStatusBar;
     }
 
     @Override
@@ -187,7 +195,13 @@ public class BaseDialog extends AppCompatDialog {
         if (mDimAmountWithNavigationBar) {
             Window window = getWindow();
             if (window != null) {
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                int visibility;
+                if (mIsLightStatusBar && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                } else {
+                    visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE ;
+                }
+                window.getDecorView().setSystemUiVisibility(visibility);
                 window.setNavigationBarColor(Color.TRANSPARENT);
                 window.setBackgroundDrawable(new ColorDrawable());
                 window.setDimAmount(mDimAmount);
@@ -202,7 +216,13 @@ public class BaseDialog extends AppCompatDialog {
             }
             Window window = getWindow();
             if (window != null) {
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                int visibility;
+                if (mIsLightStatusBar && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                } else {
+                    visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE ;
+                }
+                window.getDecorView().setSystemUiVisibility(visibility);
                 window.setBackgroundDrawable(new ColorDrawable());
                 window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
