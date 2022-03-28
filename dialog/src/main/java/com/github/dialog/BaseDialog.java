@@ -1,6 +1,7 @@
 package com.github.dialog;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -192,43 +193,28 @@ public class BaseDialog extends AppCompatDialog {
     public BaseDialog setDimAmount(float dimAmount, boolean navigationBar) {
         mDimAmount = dimAmount;
         mDimAmountWithNavigationBar = navigationBar;
-        if (mDimAmountWithNavigationBar) {
-            Window window = getWindow();
-            if (window != null) {
-                int visibility;
-                if (mIsLightStatusBar && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                } else {
-                    visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE ;
-                }
-                window.getDecorView().setSystemUiVisibility(visibility);
-                window.setNavigationBarColor(Color.TRANSPARENT);
-                window.setBackgroundDrawable(new ColorDrawable());
-                window.setDimAmount(mDimAmount);
-                window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            }
-        } else {
-            if (mBackgroundView != null) {
-                ColorDrawable colorDrawable = new ColorDrawable(Color.BLACK);
-                colorDrawable.setAlpha((int) (255 * mDimAmount));
-                mBackgroundView.setBackground(colorDrawable);
-            }
-            Window window = getWindow();
-            if (window != null) {
-                int visibility;
-                if (mIsLightStatusBar && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                } else {
-                    visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE ;
-                }
-                window.getDecorView().setSystemUiVisibility(visibility);
-                window.setBackgroundDrawable(new ColorDrawable());
-                window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setDimAmount(0);
-            }
+        if (mBackgroundView != null) {
+            ColorDrawable colorDrawable = new ColorDrawable(Color.BLACK);
+            colorDrawable.setAlpha((int) (255 * mDimAmount));
+            mBackgroundView.setBackground(colorDrawable);
         }
+        Window window = getWindow();
+        if (window != null) {
+            int visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            if (mDimAmountWithNavigationBar) {
+                visibility = visibility | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+                window.setNavigationBarColor(Color.TRANSPARENT);
+            }
+            if (mIsLightStatusBar && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                visibility = visibility | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            window.getDecorView().setSystemUiVisibility(visibility);
+            window.setBackgroundDrawable(new ColorDrawable());
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setDimAmount(0);
+        }
+
         return this;
     }
 
@@ -297,7 +283,7 @@ public class BaseDialog extends AppCompatDialog {
     }
 
     /**
-     * 读取动画
+     * 读取动画,会为null
      */
     private Animation loadAnimation(@AnimatorRes @AnimRes int id) {
         Animation animation;
@@ -306,13 +292,14 @@ public class BaseDialog extends AppCompatDialog {
         } catch (Exception e) {
             animation = null;
         }
-        if (animation == null) {
-            AlphaAnimation alphaAnimation = new AlphaAnimation(1, 1);
-            alphaAnimation.setDuration(1);
-            return alphaAnimation;
-        } else {
-            return animation;
-        }
+
+        return animation;
+    }
+
+    private AlphaAnimation getAlphaAnimation(float fromAlpha, float toAlpha, long duration) {
+        AlphaAnimation alphaAnimation = new AlphaAnimation(fromAlpha, toAlpha);
+        alphaAnimation.setDuration(duration);
+        return alphaAnimation;
     }
 
     @Override
@@ -321,11 +308,12 @@ public class BaseDialog extends AppCompatDialog {
         super.show();
         if (!showing && mContentView != null) {
             Animation animation = loadAnimation(mAnimEnter);
-            if (!mDimAmountWithNavigationBar) {
-                AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
-                alphaAnimation.setDuration(Math.max(animation.getDuration(), 200));
-                mBackgroundView.startAnimation(alphaAnimation);
+            if (animation == null) {
+                animation = getAlphaAnimation(0.5f, 1, 200);
             }
+            AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+            alphaAnimation.setDuration(animation.getDuration());
+            mBackgroundView.startAnimation(alphaAnimation);
             mContentView.startAnimation(animation);
         }
     }
@@ -347,15 +335,15 @@ public class BaseDialog extends AppCompatDialog {
         if (showing && mContentView != null) {
             mOnAnimExitTag = true;
             Animation animation = loadAnimation(mAnimExit);
-            long durationMillis = Math.max(animation.getDuration(), 200);
-            if (!mDimAmountWithNavigationBar) {
-                AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
-                alphaAnimation.setDuration(durationMillis);
-                mBackgroundView.setAnimation(alphaAnimation);
+            if (animation == null) {
+                animation = getAlphaAnimation(1, 0, 200);
             }
+            AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
+            alphaAnimation.setDuration(animation.getDuration());
+            mBackgroundView.startAnimation(alphaAnimation);
             mContentView.startAnimation(animation);
-            mContentView.postDelayed(BaseDialog.super::dismiss, durationMillis);
-            mContentView.postDelayed(() -> mOnAnimExitTag = false, durationMillis);
+            mContentView.postDelayed(BaseDialog.super::dismiss, animation.getDuration());
+            mContentView.postDelayed(() -> mOnAnimExitTag = false, animation.getDuration());
         } else {
             super.dismiss();
         }
@@ -371,15 +359,15 @@ public class BaseDialog extends AppCompatDialog {
         if (showing && mContentView != null) {
             mOnAnimExitTag = true;
             Animation animation = loadAnimation(mAnimExit);
-            long durationMillis = Math.max(animation.getDuration(), 200);
-            if (!mDimAmountWithNavigationBar) {
-                AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
-                alphaAnimation.setDuration(durationMillis);
-                mBackgroundView.setAnimation(alphaAnimation);
+            if (animation == null) {
+                animation = getAlphaAnimation(1, 0, 200);
             }
+            AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
+            alphaAnimation.setDuration(animation.getDuration());
+            mBackgroundView.setAnimation(alphaAnimation);
             mContentView.startAnimation(animation);
-            mContentView.postDelayed(BaseDialog.super::hide, durationMillis);
-            mContentView.postDelayed(() -> mOnAnimExitTag = false, durationMillis);
+            mContentView.postDelayed(BaseDialog.super::hide, animation.getDuration());
+            mContentView.postDelayed(() -> mOnAnimExitTag = false, animation.getDuration());
         } else {
             super.hide();
         }
@@ -388,6 +376,24 @@ public class BaseDialog extends AppCompatDialog {
     @Override
     public void cancel() {
         super.cancel();
+    }
+
+    public boolean getDimAmountWithNavigationBar() {
+        return mDimAmountWithNavigationBar;
+    }
+
+    public int getNavigationBarHeight() {
+        int navigationBarHeight = -1;
+        Resources resources = getContext().getResources();
+        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            navigationBarHeight = resources.getDimensionPixelSize(resourceId);
+        }
+        return navigationBarHeight;
+    }
+
+    public View getContentView() {
+        return mContentView;
     }
 
     /**
