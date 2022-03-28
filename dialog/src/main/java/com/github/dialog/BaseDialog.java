@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +28,22 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by ZhongXiaolong on 2022/03/27 21:06.
  * <p>
  * Base弹窗
+ * 与其他弹窗不同,本弹窗实际是占满屏幕的主容器{@link #mContentView},背景{@link #mBackgroundView},setContentView添加到主容器中,
+ * 用法与通用弹窗类似,布局文件可以设置位置、margin属性,
+ * 需要在setContentView中对应的View设置好相应的位置宽高属性,避免传统Dialog需要调用{@link #getWindow()#setLayout(int, int)}等方法来实现位置,
+ * 额外方法
+ * {@link #setDimAmount(float, boolean)}设置空白部分阴影(即黑色的透明度),在导航栏是否可以设置
+ * {@link #setLayout(int, int)}设置宽高,将会覆盖布局文件的宽高
+ * {@link #setGravity(int)}设置弹窗的位置
+ * {@link #setAnimations(int, int)}重写动画,原本的主题动画已失效,需在这里重写
+ *
+ * 如果需要使用底部弹出框使用{@link BaseBottomSheetDialog},进行了相关的兼容处理
  */
 public class BaseDialog extends AppCompatDialog {
 
+    /**
+     * 默认的{@link Window#setDimAmount(float)}数值
+     */
     public static final float DEF_DIM_AMOUNT = 0.65f;
 
     //内容容器
@@ -55,7 +67,7 @@ public class BaseDialog extends AppCompatDialog {
     private boolean mDimAmountWithNavigationBar = true;
 
     //宽,高,位置
-    private int mLayoutWidth, mLayoutHeight, mGravity = Gravity.CENTER;
+    private int mLayoutWidth, mLayoutHeight, mGravity ;
 
     //背景
     private Drawable mContentViewBackground;
