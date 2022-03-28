@@ -36,6 +36,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * {@link #setLayout(int, int)}设置宽高,将会覆盖布局文件的宽高
  * {@link #setGravity(int)}设置弹窗的位置
  * {@link #setAnimations(int, int)}重写动画,原本的主题动画已失效,需在这里重写
+ * {@link #destroy()}销毁方法,在组建销毁的时候调用一下,避免窗体泄漏
+ * 推荐和{@link BaseDialogFragment}一起使用
  *
  * 如果需要使用底部弹出框使用{@link BaseBottomSheetDialog},进行了相关的兼容处理
  */
