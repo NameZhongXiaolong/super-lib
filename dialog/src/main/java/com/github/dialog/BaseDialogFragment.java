@@ -17,6 +17,7 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 /**
@@ -114,6 +115,14 @@ public class BaseDialogFragment extends Fragment {
                     .add(this, tag)
                     .commitAllowingStateLoss();
         }
+    }
+
+    public void show(FragmentActivity activity) {
+        show(activity.getSupportFragmentManager(), getClass().getCanonicalName());
+    }
+
+    public void show(Fragment fragment) {
+        show(fragment.getChildFragmentManager(), getClass().getCanonicalName());
     }
 
     public void dismiss() {
