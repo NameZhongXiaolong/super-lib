@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--setStatusBarColor-->
-    <style name="Theme.BaseDialog" parent="Theme.AppCompat.NoActionBar">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--setStatusBarColor深色状态栏,白色图标-->
+    <style name="Theme.BaseDialog.DarkStatusBar" parent="Theme.AppCompat.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="android:backgroundDimAmount">0</item>
         <item name="android:windowBackground">#00123456</item>
         <item name="android:statusBarColor">#00123456</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <!--setStatusBarColor浅色状态栏,黑色图标-->
+    <style name="Theme.BaseDialog.LightStatusBar" parent="Theme.BaseDialog.DarkStatusBar">
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 </resources>

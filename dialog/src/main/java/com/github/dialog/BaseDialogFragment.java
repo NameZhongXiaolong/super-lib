@@ -1,5 +1,6 @@
 package com.github.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,10 +30,8 @@ import androidx.fragment.app.FragmentManager;
  */
 public class BaseDialogFragment extends Fragment {
 
-    //默认的宽高
-    private static final int DEF_SIZE = -100;
-
-    private int mCreateViewWidth = DEF_SIZE, mCreateViewHeight = DEF_SIZE;
+    //弹窗内容的layoutParams
+    private ViewGroup.MarginLayoutParams mCreateViewParams;
 
     private Dialog mDialog;
 
@@ -64,18 +63,12 @@ public class BaseDialogFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //设置dialog布局的宽高
-        if (mCreateViewWidth == DEF_SIZE) {
+        if (mCreateViewParams == null) {
             ViewGroup.LayoutParams lp = view.getLayoutParams();
             if (lp != null) {
-                mCreateViewWidth = lp.width;
-            }
-        }
-
-        if (mCreateViewHeight == DEF_SIZE) {
-            ViewGroup.LayoutParams lp = view.getLayoutParams();
-            if (lp != null) {
-                mCreateViewHeight = lp.height;
+                mCreateViewParams = new ViewGroup.MarginLayoutParams(lp);
+            } else {
+                mCreateViewParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
         }
 
@@ -84,7 +77,8 @@ public class BaseDialogFragment extends Fragment {
             mDialog.setOnCancelListener(this::onCancel);
             mDialog.setOnShowListener(this::onShow);
             //设置布局的宽高
-            view.setLayoutParams(new ViewGroup.LayoutParams(mCreateViewWidth, mCreateViewHeight));
+            view.setLayoutParams(mCreateViewParams);
+
             //设置布局
             mDialog.setContentView(view);
             if (mShowing) {
@@ -185,7 +179,11 @@ public class BaseDialogFragment extends Fragment {
     @Override
     public void onDestroy() {
         if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+            if (mDialog instanceof BaseDialog) {
+                ((BaseDialog) mDialog).destroy();
+            } else {
+                mDialog.dismiss();
+            }
         }
         super.onDestroy();
     }
@@ -206,6 +204,7 @@ public class BaseDialogFragment extends Fragment {
             return mLayoutInflater.cloneInContext(newContext);
         }
 
+        @SuppressLint("ResourceType")
         @Override
         public View inflate(int resource, @Nullable ViewGroup root, boolean attachToRoot) {
             XmlResourceParser parser = getContext().getResources().getLayout(resource);
@@ -213,13 +212,31 @@ public class BaseDialogFragment extends Fragment {
                 int type;
                 //过滤掉END_DOCUMENT和非START_TAG的事件
                 while ((type = parser.next()) != XmlPullParser.END_DOCUMENT) {
-                    if (type != XmlPullParser.START_TAG || (mDialogFragment.mCreateViewWidth != DEF_SIZE && mDialogFragment.mCreateViewHeight != DEF_SIZE)) {
+                    if (type != XmlPullParser.START_TAG || mDialogFragment.mCreateViewParams != null) {
                         continue;
                     }
 
-                    TypedArray a = getContext().obtainStyledAttributes(parser, new int[]{android.R.attr.layout_width, android.R.attr.layout_height});
-                    mDialogFragment.mCreateViewWidth = a.getLayoutDimension(0, ViewGroup.LayoutParams.MATCH_PARENT);
-                    mDialogFragment.mCreateViewHeight = a.getLayoutDimension(1, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    int[] attrs = {
+                            android.R.attr.layout_width,
+                            android.R.attr.layout_height,
+                            android.R.attr.layout_margin,
+                            android.R.attr.layout_marginLeft,
+                            android.R.attr.layout_marginTop,
+                            android.R.attr.layout_marginRight,
+                            android.R.attr.layout_marginBottom,
+                    };
+                    TypedArray a = getContext().obtainStyledAttributes(parser, attrs);
+                    int width = a.getLayoutDimension(0, ViewGroup.LayoutParams.MATCH_PARENT);
+                    int height = a.getLayoutDimension(1, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    int margin = a.getLayoutDimension(2, 0);
+                    int marginLeft = a.getLayoutDimension(3, margin);
+                    int marginTop = a.getLayoutDimension(4, margin);
+                    int marginRight = a.getLayoutDimension(5, margin);
+                    int marginBottom = a.getLayoutDimension(6, margin);
+
+                    mDialogFragment.mCreateViewParams = new ViewGroup.MarginLayoutParams(width, height);
+                    mDialogFragment.mCreateViewParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
+
                     a.recycle();
                 }
             } catch (Exception e) {
