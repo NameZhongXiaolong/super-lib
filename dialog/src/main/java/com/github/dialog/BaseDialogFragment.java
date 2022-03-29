@@ -246,7 +246,22 @@ public class BaseDialogFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            return super.inflate(resource, root, attachToRoot);
+            return mLayoutInflater.inflate(resource, root, attachToRoot);
+        }
+
+        @Override
+        public View inflate(int resource, @Nullable ViewGroup root) {
+            return inflate(resource, root, root != null);
+        }
+
+        @Override
+        public View inflate(XmlPullParser parser, @Nullable ViewGroup root) {
+            return mLayoutInflater.inflate(parser, root);
+        }
+
+        @Override
+        public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) {
+            return mLayoutInflater.inflate(parser, root, attachToRoot);
         }
     }
 }
