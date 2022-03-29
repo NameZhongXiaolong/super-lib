@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,15 @@ import androidx.fragment.app.FragmentManager;
  * 基于{@link androidx.fragment.app.DialogFragment}修改的Dialog Fragment
  * 同样是用 Fragment维护Dialog,同时可以更好的处理dialog的宽高
  * 去掉在{@link #onStop()}时隐藏dialog逻辑
+ * 布局文件根布局设置的layout_gravity就是弹窗的位置,不设置就默认居中
  */
 public class BaseDialogFragment extends Fragment {
 
     //弹窗内容的layoutParams
     private ViewGroup.MarginLayoutParams mCreateViewParams;
+
+    //弹窗的位置
+    private int mDialogGravity = Gravity.CENTER;
 
     private Dialog mDialog;
 
@@ -78,6 +83,14 @@ public class BaseDialogFragment extends Fragment {
             mDialog.setOnShowListener(this::onShow);
             //设置布局的宽高
             view.setLayoutParams(mCreateViewParams);
+
+            if (mDialog instanceof BaseDialog) {
+                if (!(mDialog instanceof BaseBottomSheetDialog)) {
+                    ((BaseDialog) mDialog).setGravity(mDialogGravity);
+                }
+            } else {
+                mDialog.getWindow().setGravity(mDialogGravity);
+            }
 
             //设置布局
             mDialog.setContentView(view);
@@ -236,11 +249,23 @@ public class BaseDialogFragment extends Fragment {
                     int marginTop = a.getLayoutDimension(4, margin);
                     int marginRight = a.getLayoutDimension(5, margin);
                     int marginBottom = a.getLayoutDimension(6, margin);
+                    a.recycle();
+
+                    int attributeCount = parser.getAttributeCount();
+                    for (int i = 0; i < attributeCount; i++) {
+                        String attributeName = parser.getAttributeName(i);
+                        if (attributeName.equals("layout_gravity")) {
+                            int gravity = parser.getAttributeIntValue(i, 100);
+                            if (gravity != 100) {
+                                mDialogFragment.mDialogGravity = gravity;
+                            }
+                            break;
+                        }
+                    }
 
                     mDialogFragment.mCreateViewParams = new ViewGroup.MarginLayoutParams(width, height);
                     mDialogFragment.mCreateViewParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
 
-                    a.recycle();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
