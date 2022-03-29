@@ -116,7 +116,10 @@ public class BaseDialogFragment extends Fragment {
     }
 
     public void show(Fragment fragment) {
-        show(fragment.getChildFragmentManager(), getClass().getCanonicalName());
+        FragmentActivity activity = fragment.getActivity();
+        if (activity != null) {
+            show(activity);
+        }
     }
 
     public void dismiss() {
