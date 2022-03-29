@@ -189,13 +189,13 @@ public class BaseDialog extends AppCompatDialog {
     @Override
     public void setCancelable(boolean flag) {
         super.setCancelable(flag);
-        mCancelable = true;
+        mCancelable = flag;
     }
 
     @Override
     public void setCanceledOnTouchOutside(boolean cancel) {
         super.setCanceledOnTouchOutside(cancel);
-        mCanceledOnTouchOutside = true;
+        mCanceledOnTouchOutside = cancel;
     }
 
     /**
@@ -366,7 +366,7 @@ public class BaseDialog extends AppCompatDialog {
     @Override
     public void hide() {
         if (mOnAnimExitTag) {
-            super.dismiss();
+            super.hide();
             return;
         }
         boolean showing = isShowing();
