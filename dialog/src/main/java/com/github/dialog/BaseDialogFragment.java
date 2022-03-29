@@ -29,6 +29,7 @@ import androidx.fragment.app.FragmentManager;
  * 同样是用 Fragment维护Dialog,同时可以更好的处理dialog的宽高
  * 去掉在{@link #onStop()}时隐藏dialog逻辑
  * 布局文件根布局设置的layout_gravity就是弹窗的位置,不设置就默认居中
+ * 使用{@link #show(FragmentActivity)}和{@link #show(Fragment)}注意tag的唯一性{@link #getDefTag()}
  */
 public class BaseDialogFragment extends Fragment {
 
@@ -124,10 +125,16 @@ public class BaseDialogFragment extends Fragment {
         }
     }
 
+    /**
+     * 便捷的显示,注意{@link #getDefTag()}的唯一性
+     */
     public void show(FragmentActivity activity) {
         show(activity.getSupportFragmentManager(), getClass().getCanonicalName());
     }
 
+    /**
+     * 便捷的显示,注意{@link #getDefTag()}的唯一性
+     */
     public void show(Fragment fragment) {
         FragmentActivity activity = fragment.getActivity();
         if (activity != null) {
@@ -202,6 +209,13 @@ public class BaseDialogFragment extends Fragment {
             }
         }
         super.onDestroy();
+    }
+
+    /**
+     * Fragment添加的Tag,同一个页面多次使用注意唯一性
+     */
+    protected String getDefTag() {
+        return getClass().getCanonicalName();
     }
 
     protected static class DialogLayoutInflater extends LayoutInflater {
