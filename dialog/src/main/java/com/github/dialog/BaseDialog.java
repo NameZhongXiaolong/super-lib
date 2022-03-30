@@ -38,7 +38,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * {@link #setAnimations(int, int)}重写动画,原本的主题动画已失效,需在这里重写
  * {@link #destroy()}销毁方法,在组建销毁的时候调用一下,避免窗体泄漏
  * 推荐和{@link BaseDialogFragment}一起使用
- *
+ * <p>
  * 如果需要使用底部弹出框使用{@link BaseBottomSheetDialog},进行了相关的兼容处理
  */
 public class BaseDialog extends AppCompatDialog {
@@ -69,7 +69,7 @@ public class BaseDialog extends AppCompatDialog {
     private boolean mDimAmountWithNavigationBar = true;
 
     //宽,高,位置
-    private int mLayoutWidth, mLayoutHeight, mGravity ;
+    private int mLayoutWidth, mLayoutHeight, mGravity;
 
     //背景
     private Drawable mContentViewBackground;
@@ -134,10 +134,12 @@ public class BaseDialog extends AppCompatDialog {
         mBackgroundView = new View(getContext());
         mContainerLayout.addView(mBackgroundView, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         if (layoutResId != 0) {
-            LayoutInflater.from(getContext()).inflate(layoutResId, mContainerLayout, true);
+            mContentView = LayoutInflater.from(getContext()).inflate(layoutResId, mContainerLayout, true);
         } else if (params != null) {
+            mContentView = view;
             mContainerLayout.addView(view, params);
         } else if (view != null) {
+            mContentView = view;
             mContainerLayout.addView(view);
         }
         return mContainerLayout;
@@ -237,7 +239,7 @@ public class BaseDialog extends AppCompatDialog {
     }
 
     /**
-     * 设置宽高
+     * 设置宽高,会使布局文件或View设置的宽高失效
      * {@link #getWindow()#setLayout(int, int)}已经失效使用这个
      */
     public BaseDialog setLayout(int width, int height) {
@@ -253,7 +255,7 @@ public class BaseDialog extends AppCompatDialog {
     }
 
     /**
-     * 设置位置
+     * 设置位置,会使布局文件或View设置的位置失效
      * {@link #getWindow()#setGravity(int)}已经失效使用这个
      */
     public BaseDialog setGravity(int gravity) {
@@ -406,6 +408,9 @@ public class BaseDialog extends AppCompatDialog {
         return navigationBarHeight;
     }
 
+    /**
+     * 获取内容布局,在setContentView之后调用才不为null
+     */
     public View getContentView() {
         return mContentView;
     }
