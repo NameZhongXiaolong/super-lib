@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.AnimRes;
 import androidx.annotation.AnimatorRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialog;
 
@@ -143,6 +144,19 @@ public class BaseDialog extends AppCompatDialog {
             mContainerLayout.addView(view);
         }
         return mContainerLayout;
+    }
+
+    @Override
+    public void addContentView(View view, ViewGroup.LayoutParams params) {
+        addContentView(view, new FrameLayout.LayoutParams(params));
+    }
+
+    public void addContentView(View view, FrameLayout.LayoutParams params) {
+        if (mContainerLayout != null) {
+            mContainerLayout.addView(view, params);
+        } else {
+            setContentView(view, params);
+        }
     }
 
     public FrameLayout getContainerLayout() {
@@ -413,6 +427,20 @@ public class BaseDialog extends AppCompatDialog {
      */
     public View getContentView() {
         return mContentView;
+    }
+
+    @NonNull
+    @Override
+    public <T extends View> T findViewById(int id) {
+        T view = super.findViewById(id);
+        if (view == null && mContainerLayout != null) {
+            view = mContainerLayout.findViewById(id);
+        }
+
+        if (view == null) {
+            throw new NullPointerException("No find view by id:" + id);
+        }
+        return view;
     }
 
     /**
