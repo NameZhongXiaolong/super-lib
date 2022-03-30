@@ -218,6 +218,20 @@ public class BaseDialogFragment extends Fragment {
         return getClass().getCanonicalName();
     }
 
+    @Nullable
+    public Dialog getDialog() {
+        return mDialog;
+    }
+
+    @NonNull
+    public final Dialog requireDialog() {
+        Dialog dialog = getDialog();
+        if (dialog == null) {
+            throw new IllegalStateException("DialogFragment " + this + " does not have a Dialog.");
+        }
+        return dialog;
+    }
+
     protected static class DialogLayoutInflater extends LayoutInflater {
 
         private final LayoutInflater mLayoutInflater;
