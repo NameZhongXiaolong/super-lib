@@ -225,11 +225,10 @@ public class BaseDialogFragment extends Fragment {
 
     @NonNull
     public final Dialog requireDialog() {
-        Dialog dialog = getDialog();
-        if (dialog == null) {
+        if (mDialog == null) {
             throw new IllegalStateException("DialogFragment " + this + " does not have a Dialog.");
         }
-        return dialog;
+        return mDialog;
     }
 
     protected static class DialogLayoutInflater extends LayoutInflater {
