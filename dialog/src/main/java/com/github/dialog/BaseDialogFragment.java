@@ -146,10 +146,6 @@ public class BaseDialogFragment extends Fragment {
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }
-
-        if (isAdded() && getFragmentManager() != null) {
-            getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
-        }
     }
 
     public void hide() {
@@ -197,6 +193,10 @@ public class BaseDialogFragment extends Fragment {
         if (mOnDismissListener != null) {
             mOnDismissListener.onDismiss(dialog);
         }
+
+        if (isAdded() && getFragmentManager() != null) {
+            getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
+        }
     }
 
     @Override
@@ -218,11 +218,25 @@ public class BaseDialogFragment extends Fragment {
         return getClass().getCanonicalName();
     }
 
+    /**
+     * 获取弹窗
+     * 不要复写Dialog中的方法(用替代方法)
+     * {@link Dialog#setOnDismissListener(DialogInterface.OnDismissListener)} ---> {@link #setOnDismissListener(DialogInterface.OnDismissListener)}
+     * {@link Dialog#setOnCancelListener(DialogInterface.OnCancelListener)} ---> {@link #setOnCancelListener(DialogInterface.OnCancelListener)}
+     * {@link Dialog#setOnShowListener(DialogInterface.OnShowListener)} ---> {@link #setOnShowListener(DialogInterface.OnShowListener)}
+     */
     @Nullable
     public Dialog getDialog() {
         return mDialog;
     }
 
+    /**
+     * 获取弹窗
+     * 不要复写Dialog中的方法(用替代方法)
+     * {@link Dialog#setOnDismissListener(DialogInterface.OnDismissListener)} ---> {@link #setOnDismissListener(DialogInterface.OnDismissListener)}
+     * {@link Dialog#setOnCancelListener(DialogInterface.OnCancelListener)} ---> {@link #setOnCancelListener(DialogInterface.OnCancelListener)}
+     * {@link Dialog#setOnShowListener(DialogInterface.OnShowListener)} ---> {@link #setOnShowListener(DialogInterface.OnShowListener)}
+     */
     @NonNull
     public final Dialog requireDialog() {
         if (mDialog == null) {
