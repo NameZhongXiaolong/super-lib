@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -300,6 +301,19 @@ public class BaseDialog extends AppCompatDialog {
             mContentView.setBackground(mContentViewBackground);
         }
         return this;
+    }
+
+    /**
+     * 设置内容背景
+     *
+     * @param color    颜色
+     * @param radiusDp 四个圆角,单位为dp
+     */
+    public BaseDialog setContentViewBackground(int color, int radiusDp) {
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setColor(color);
+        gradientDrawable.setCornerRadius(radiusDp);
+        return setContentViewBackground(gradientDrawable);
     }
 
     /**
