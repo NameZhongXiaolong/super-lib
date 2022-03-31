@@ -461,7 +461,14 @@ public class BaseDialog extends AppCompatDialog {
         }
 
         if (view == null) {
-            throw new NullPointerException("No find view by id:" + id);
+            String idKey;
+            try {
+                idKey = "R.id." + getContext().getResources().getResourceEntryName(id);
+            } catch (Exception e) {
+                idKey = String.valueOf(id);
+            }
+
+            throw new NullPointerException("No find view by id: " + idKey);
         }
         return view;
     }
