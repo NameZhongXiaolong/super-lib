@@ -31,7 +31,7 @@ import androidx.fragment.app.FragmentManager;
  * 布局文件根布局设置的layout_gravity就是弹窗的位置,不设置就默认居中
  * 使用{@link #show(FragmentActivity)}和{@link #show(Fragment)}注意tag的唯一性{@link #getDefTag()}
  */
-public class BaseDialogFragment extends Fragment {
+public class BaseDialogFragment extends Fragment implements DialogInterface {
 
     //弹窗内容的layoutParams
     private ViewGroup.MarginLayoutParams mCreateViewParams;
@@ -142,13 +142,17 @@ public class BaseDialogFragment extends Fragment {
         }
     }
 
+    @Override
+    public void cancel() {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.cancel();
+        }
+    }
+
+    @Override
     public void dismiss() {
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
-        }
-
-        if (isAdded() && getFragmentManager() != null) {
-            getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
 
@@ -167,7 +171,7 @@ public class BaseDialogFragment extends Fragment {
      */
     protected void onShow(DialogInterface dialog) {
         if (mOnShowListener != null) {
-            mOnShowListener.onShow(dialog);
+            mOnShowListener.onShow(this);
         }
     }
 
@@ -181,7 +185,7 @@ public class BaseDialogFragment extends Fragment {
     protected void onCancel(DialogInterface dialog) {
         mShowing = false;
         if (mOnCancelListener != null) {
-            mOnCancelListener.onCancel(dialog);
+            mOnCancelListener.onCancel(this);
         }
     }
 
@@ -195,7 +199,11 @@ public class BaseDialogFragment extends Fragment {
     protected void onDismiss(DialogInterface dialog) {
         mShowing = false;
         if (mOnDismissListener != null) {
-            mOnDismissListener.onDismiss(dialog);
+            mOnDismissListener.onDismiss(this);
+        }
+
+        if (isAdded() && getFragmentManager() != null) {
+            getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
 
@@ -218,11 +226,25 @@ public class BaseDialogFragment extends Fragment {
         return getClass().getCanonicalName();
     }
 
+    /**
+     * 获取弹窗
+     * 不要复写Dialog中的方法(用替代方法)
+     * {@link Dialog#setOnDismissListener(DialogInterface.OnDismissListener)} ---> {@link #setOnDismissListener(DialogInterface.OnDismissListener)}
+     * {@link Dialog#setOnCancelListener(DialogInterface.OnCancelListener)} ---> {@link #setOnCancelListener(DialogInterface.OnCancelListener)}
+     * {@link Dialog#setOnShowListener(DialogInterface.OnShowListener)} ---> {@link #setOnShowListener(DialogInterface.OnShowListener)}
+     */
     @Nullable
     public Dialog getDialog() {
         return mDialog;
     }
 
+    /**
+     * 获取弹窗
+     * 不要复写Dialog中的方法(用替代方法)
+     * {@link Dialog#setOnDismissListener(DialogInterface.OnDismissListener)} ---> {@link #setOnDismissListener(DialogInterface.OnDismissListener)}
+     * {@link Dialog#setOnCancelListener(DialogInterface.OnCancelListener)} ---> {@link #setOnCancelListener(DialogInterface.OnCancelListener)}
+     * {@link Dialog#setOnShowListener(DialogInterface.OnShowListener)} ---> {@link #setOnShowListener(DialogInterface.OnShowListener)}
+     */
     @NonNull
     public final Dialog requireDialog() {
         if (mDialog == null) {

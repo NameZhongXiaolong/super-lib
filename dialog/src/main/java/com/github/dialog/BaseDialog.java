@@ -5,8 +5,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialog;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * Created by ZhongXiaolong on 2022/03/27 21:06.
@@ -106,6 +109,9 @@ public class BaseDialog extends AppCompatDialog {
         mIsLightStatusBar = isLightStatusBar;
     }
 
+    /**
+     * 确保View已经设置了{@link View#setLayoutParams(ViewGroup.LayoutParams)}属性,否则会导致窗体宽高与实际设置的不一致
+     */
     @Override
     final public void setContentView(View view) {
         super.setContentView(wrapInLayout(0, view, null));
@@ -141,7 +147,11 @@ public class BaseDialog extends AppCompatDialog {
             mContainerLayout.addView(view, params);
         } else if (view != null) {
             mContentView = view;
-            mContainerLayout.addView(view);
+            if (view.getLayoutParams() != null) {
+                mContainerLayout.addView(view);
+            } else {
+                mContainerLayout.addView(view, new FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER));
+            }
         }
         return mContainerLayout;
     }
@@ -295,6 +305,19 @@ public class BaseDialog extends AppCompatDialog {
 
     /**
      * 设置内容背景
+     *
+     * @param color    颜色
+     * @param radiusDp 四个圆角,单位为dp
+     */
+    public BaseDialog setContentViewBackground(int color, int radiusDp) {
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setColor(color);
+        gradientDrawable.setCornerRadius(radiusDp);
+        return setContentViewBackground(gradientDrawable);
+    }
+
+    /**
+     * 设置内容背景
      */
     public BaseDialog setContentViewBackgroundColor(int color) {
         return setContentViewBackground(new ColorDrawable(color));
@@ -438,7 +461,14 @@ public class BaseDialog extends AppCompatDialog {
         }
 
         if (view == null) {
-            throw new NullPointerException("No find view by id:" + id);
+            String idKey;
+            try {
+                idKey = "R.id." + getContext().getResources().getResourceEntryName(id);
+            } catch (Exception e) {
+                idKey = String.valueOf(id);
+            }
+
+            throw new NullPointerException("No find view by id: " + idKey);
         }
         return view;
     }
