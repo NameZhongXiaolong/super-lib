@@ -108,6 +108,9 @@ public class BaseDialog extends AppCompatDialog {
         mIsLightStatusBar = isLightStatusBar;
     }
 
+    /**
+     * 确保View已经设置了{@link View#setLayoutParams(ViewGroup.LayoutParams)}属性,否则会导致窗体宽高与实际设置的不一致
+     */
     @Override
     final public void setContentView(View view) {
         super.setContentView(wrapInLayout(0, view, null));
