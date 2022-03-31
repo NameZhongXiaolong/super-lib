@@ -17,7 +17,11 @@ public class BaseBottomSheetDialog extends BaseDialog {
     }
 
     public BaseBottomSheetDialog(Context context, boolean isLightStatusBar) {
-        super(context, isLightStatusBar);
+        this(context, R.style.Theme_BaseDialog, isLightStatusBar);
+    }
+
+    public BaseBottomSheetDialog(Context context, int theme, boolean isLightStatusBar) {
+        super(context, theme, isLightStatusBar);
         setDimAmount(BaseDialog.DEF_DIM_AMOUNT, false);
         setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         setAnimations(R.anim.bottom_sheet_in, R.anim.bottom_sheet_out);
