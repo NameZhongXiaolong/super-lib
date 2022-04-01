@@ -49,10 +49,18 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
 
     private DialogInterface.OnDismissListener mOnDismissListener;
 
+    private Boolean mCancelable = true, mCanceledOnTouchOutside = true;
+
     @NonNull
     @Override
     public LayoutInflater onGetLayoutInflater(@Nullable Bundle savedInstanceState) {
         mDialog = onCreateDialog(savedInstanceState);
+        if (mCancelable != null) {
+            setCancelable(mCancelable);
+        }
+        if (mCanceledOnTouchOutside != null) {
+            setCanceledOnTouchOutside(mCanceledOnTouchOutside);
+        }
         return new DialogLayoutInflater(this, super.onGetLayoutInflater(savedInstanceState));
     }
 
@@ -251,6 +259,26 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
             throw new IllegalStateException("DialogFragment " + this + " does not have a Dialog.");
         }
         return mDialog;
+    }
+
+    /**
+     * 设置为false返回键和外部点击不可关闭弹窗,会覆盖{@link #onCreateDialog(Bundle)}中返回dialog的setCancelable属性
+     */
+    public void setCancelable(boolean flag) {
+        mCancelable = flag;
+        if (mDialog != null) {
+            mDialog.setCancelable(mCancelable);
+        }
+    }
+
+    /**
+     * 设置为false返回键不可关闭弹窗,外部点击可关闭,会覆盖{@link #onCreateDialog(Bundle)}中返回dialog的setCanceledOnTouchOutside属性
+     */
+    public void setCanceledOnTouchOutside(boolean cancel) {
+        mCanceledOnTouchOutside = cancel;
+        if (mDialog != null) {
+            mDialog.setCanceledOnTouchOutside(mCanceledOnTouchOutside);
+        }
     }
 
     protected static class DialogLayoutInflater extends LayoutInflater {
