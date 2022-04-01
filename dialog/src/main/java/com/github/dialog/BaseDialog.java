@@ -19,6 +19,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.annotation.AnimRes;
 import androidx.annotation.AnimatorRes;
 import androidx.annotation.NonNull;
@@ -83,6 +86,8 @@ public class BaseDialog extends AppCompatDialog {
 
     private final boolean mIsLightStatusBar;
 
+    private final List<Integer> mContentLayoutResIds = new ArrayList<>();
+
     public BaseDialog(Context context) {
         this(context, false);
     }
@@ -141,6 +146,7 @@ public class BaseDialog extends AppCompatDialog {
         mBackgroundView = new View(getContext());
         mContainerLayout.addView(mBackgroundView, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         if (layoutResId != 0) {
+            mContentLayoutResIds.add(layoutResId);
             mContentView = LayoutInflater.from(getContext()).inflate(layoutResId, mContainerLayout, false);
             mContainerLayout.addView(mContentView);
         } else if (params != null) {
@@ -157,35 +163,67 @@ public class BaseDialog extends AppCompatDialog {
         return mContainerLayout;
     }
 
+    private void addContentView(int layoutResId, @Nullable View view, @Nullable FrameLayout.LayoutParams params) {
+        if (mContainerLayout == null) {
+            super.setContentView(wrapInLayout(layoutResId, view, params));
+            return;
+        }
+
+        if (layoutResId != 0) {
+            if (mContentLayoutResIds.contains(layoutResId)) {
+                return;
+            }
+            mContentLayoutResIds.add(layoutResId);
+            view = LayoutInflater.from(getContext()).inflate(layoutResId, mContainerLayout, false);
+            params = (FrameLayout.LayoutParams) view.getLayoutParams();
+        } else if (view == null) {
+            return;
+        }
+
+        if (params == null) {
+            params = new FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER);
+        }
+
+        for (int i = 0; i < mContainerLayout.getChildCount(); i++) {
+            View childView = mContainerLayout.getChildAt(i);
+            if (childView == view || childView.equals(view)) {
+                return;
+            }
+        }
+
+        view.setClickable(true);
+
+        if (mGravity != 0) {
+            params.gravity = mGravity;
+        }
+
+        if (mLayoutWidth != 0 && mLayoutHeight != 0) {
+            params.width = mLayoutWidth;
+            params.height = mLayoutHeight;
+        }
+
+        if (mContentViewBackground != null) {
+            view.setBackground(mContentViewBackground);
+        }
+
+        mContainerLayout.addView(view);
+    }
+
     @Override
     public void addContentView(View view, ViewGroup.LayoutParams params) {
-        addContentView(view, new FrameLayout.LayoutParams(params));
+        addContentView(0, view, new FrameLayout.LayoutParams(params));
     }
 
     public void addContentView(View view, FrameLayout.LayoutParams params) {
-        if (mContainerLayout != null) {
-            mContainerLayout.addView(view, params);
-        } else {
-            setContentView(view, params);
-        }
+        addContentView(0, view, params);
     }
 
-    /**
-     * 添加布局
-     *
-     * @param layoutResID   布局id
-     * @param setBackground 背景是否依附于{@link #setContentViewBackground(Drawable)}
-     */
-    public void addContentView(int layoutResID, boolean setBackground) {
-        if (mContainerLayout != null) {
-            View view = LayoutInflater.from(getContext()).inflate(layoutResID, mContainerLayout, false);
-            mContainerLayout.addView(view);
-            if (setBackground && mContentViewBackground != null) {
-                view.setBackground(mContentViewBackground);
-            }
-        } else {
-            setContentView(layoutResID);
-        }
+    public void addContentView(View view) {
+        addContentView(0, view, null);
+    }
+
+    public void addContentView(int layoutResID) {
+        addContentView(layoutResID, null, null);
     }
 
     public FrameLayout getContainerLayout() {
@@ -313,7 +351,7 @@ public class BaseDialog extends AppCompatDialog {
     }
 
     /**
-     * 设置内容背景
+     * 设置内容背景,包括setContentView和addContentView
      */
     public BaseDialog setContentViewBackground(Drawable background) {
         mContentViewBackground = background;
