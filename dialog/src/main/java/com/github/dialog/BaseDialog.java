@@ -153,31 +153,6 @@ public class BaseDialog extends AppCompatDialog {
                 mContainerLayout.addView(view, new FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER));
             }
         }
-
-        //设置空白位置点击事件
-        mContainerLayout.setOnClickListener(this::onContainerLayoutClick);
-
-        //设置阴影背景
-        setDimAmount(mDimAmount, mDimAmountWithNavigationBar);
-        mBackgroundView.setClickable(false);
-
-        if (mContentView == null) {
-            return mContainerLayout;
-        }
-
-        mContentView.setClickable(true);
-
-        if (mGravity != 0) {
-            setGravity(mGravity);
-        }
-
-        if (mLayoutWidth != 0 && mLayoutHeight != 0) {
-            setLayout(mLayoutWidth, mLayoutHeight);
-        }
-
-        if (mContentViewBackground != null) {
-            setContentViewBackground(mContentViewBackground);
-        }
         return mContainerLayout;
     }
 
@@ -196,6 +171,37 @@ public class BaseDialog extends AppCompatDialog {
 
     public FrameLayout getContainerLayout() {
         return mContainerLayout;
+    }
+
+    @Override
+    final public void onContentChanged() {
+        super.onContentChanged();
+
+        //设置空白位置点击事件
+        mContainerLayout.setOnClickListener(this::onContainerLayoutClick);
+        //设置阴影背景
+        setDimAmount(mDimAmount, mDimAmountWithNavigationBar);
+        mBackgroundView.setClickable(false);
+
+        int childCount = mContainerLayout.getChildCount();
+        if (childCount <= 1) {
+            return;
+        }
+
+        mContentView = mContainerLayout.getChildAt(1);
+        mContentView.setClickable(true);
+
+        if (mGravity != 0) {
+            setGravity(mGravity);
+        }
+
+        if (mLayoutWidth != 0 && mLayoutHeight != 0) {
+            setLayout(mLayoutWidth, mLayoutHeight);
+        }
+
+        if (mContentViewBackground != null) {
+            setContentViewBackground(mContentViewBackground);
+        }
     }
 
     /**
