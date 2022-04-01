@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -154,6 +153,31 @@ public class BaseDialog extends AppCompatDialog {
                 mContainerLayout.addView(view, new FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER));
             }
         }
+
+        //设置空白位置点击事件
+        mContainerLayout.setOnClickListener(this::onContainerLayoutClick);
+
+        //设置阴影背景
+        setDimAmount(mDimAmount, mDimAmountWithNavigationBar);
+        mBackgroundView.setClickable(false);
+
+        if (mContentView == null) {
+            return mContainerLayout;
+        }
+
+        mContentView.setClickable(true);
+
+        if (mGravity != 0) {
+            setGravity(mGravity);
+        }
+
+        if (mLayoutWidth != 0 && mLayoutHeight != 0) {
+            setLayout(mLayoutWidth, mLayoutHeight);
+        }
+
+        if (mContentViewBackground != null) {
+            setContentViewBackground(mContentViewBackground);
+        }
         return mContainerLayout;
     }
 
@@ -172,36 +196,6 @@ public class BaseDialog extends AppCompatDialog {
 
     public FrameLayout getContainerLayout() {
         return mContainerLayout;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //设置空白位置点击事件
-        mContainerLayout.setOnClickListener(this::onContainerLayoutClick);
-        //设置阴影背景
-        setDimAmount(mDimAmount, mDimAmountWithNavigationBar);
-        mBackgroundView.setClickable(false);
-
-        int childCount = mContainerLayout.getChildCount();
-        if (childCount <= 1) {
-            return;
-        }
-
-        mContentView = mContainerLayout.getChildAt(1);
-        mContentView.setClickable(true);
-
-        if (mGravity != 0) {
-            setGravity(mGravity);
-        }
-
-        if (mLayoutWidth != 0 && mLayoutHeight != 0) {
-            setLayout(mLayoutWidth, mLayoutHeight);
-        }
-
-        if (mContentViewBackground != null) {
-            setContentViewBackground(mContentViewBackground);
-        }
     }
 
     /**
