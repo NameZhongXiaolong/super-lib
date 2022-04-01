@@ -141,7 +141,8 @@ public class BaseDialog extends AppCompatDialog {
         mBackgroundView = new View(getContext());
         mContainerLayout.addView(mBackgroundView, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         if (layoutResId != 0) {
-            mContentView = LayoutInflater.from(getContext()).inflate(layoutResId, mContainerLayout, true);
+            mContentView = LayoutInflater.from(getContext()).inflate(layoutResId, mContainerLayout, false);
+            mContainerLayout.addView(mContentView);
         } else if (params != null) {
             mContentView = view;
             mContainerLayout.addView(view, params);
@@ -166,6 +167,24 @@ public class BaseDialog extends AppCompatDialog {
             mContainerLayout.addView(view, params);
         } else {
             setContentView(view, params);
+        }
+    }
+
+    /**
+     * 添加布局
+     *
+     * @param layoutResID   布局id
+     * @param setBackground 背景是否依附于{@link #setContentViewBackground(Drawable)}
+     */
+    public void addContentView(int layoutResID, boolean setBackground) {
+        if (mContainerLayout != null) {
+            View view = LayoutInflater.from(getContext()).inflate(layoutResID, mContainerLayout, false);
+            mContainerLayout.addView(view);
+            if (setBackground && mContentViewBackground != null) {
+                view.setBackground(mContentViewBackground);
+            }
+        } else {
+            setContentView(layoutResID);
         }
     }
 
