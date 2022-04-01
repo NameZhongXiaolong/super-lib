@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -310,10 +311,10 @@ public class BaseDialog extends AppCompatDialog {
      * @param radiusDp 四个圆角,单位为dp
      */
     public BaseDialog setContentViewBackground(int color, int radiusDp) {
-        GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setColor(color);
-        gradientDrawable.setCornerRadius(radiusDp);
-        return setContentViewBackground(gradientDrawable);
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(color);
+        drawable.setCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radiusDp, getContext().getResources().getDisplayMetrics()));
+        return setContentViewBackground(drawable);
     }
 
     /**
