@@ -41,7 +41,7 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
 
     private Dialog mDialog;
 
-    private boolean mShowing;
+    private boolean mShowing = true;
 
     private DialogInterface.OnShowListener mOnShowListener;
 
@@ -110,7 +110,7 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
     }
 
     public boolean isShowing() {
-        return mShowing;
+        return mShowing && isAdded();
     }
 
     private void show() {
