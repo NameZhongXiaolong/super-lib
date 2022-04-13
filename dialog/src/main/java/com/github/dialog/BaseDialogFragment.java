@@ -28,7 +28,7 @@ import androidx.fragment.app.FragmentManager;
  * 基于{@link androidx.fragment.app.DialogFragment}修改的Dialog Fragment
  * 同样是用 Fragment维护Dialog,同时可以更好的处理dialog的宽高
  * 去掉在{@link #onStop()}时隐藏dialog逻辑
- * 布局文件根布局设置的layout_gravity就是弹窗的位置,不设置就默认居中
+ * 布局文件根布局设置的layout_gravity就是弹窗的位置,不设置就获取弹窗设置的位置,还没有就设置居中
  * 使用{@link #show(FragmentActivity)}和{@link #show(Fragment)}注意tag的唯一性{@link #getDefTag()}
  */
 public class BaseDialogFragment extends Fragment implements DialogInterface {
@@ -55,6 +55,24 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
     @Override
     public LayoutInflater onGetLayoutInflater(@Nullable Bundle savedInstanceState) {
         mDialog = onCreateDialog(savedInstanceState);
+
+        //获取弹窗的位置
+        if (mDialog instanceof BaseDialog) {
+            mDialogGravity = ((BaseDialog) mDialog).getGravity();
+            if (mDialogGravity == 0) {
+                mDialogGravity = Gravity.CENTER;
+            }
+        } else {
+            try {
+                mDialogGravity = mDialog.getWindow().getAttributes().gravity;
+                if (mDialogGravity == 0) {
+                    mDialogGravity = Gravity.CENTER;
+                }
+            } catch (Exception e) {
+                mDialogGravity = Gravity.CENTER;
+            }
+        }
+
         if (mCancelable != null) {
             setCancelable(mCancelable);
         }
@@ -94,7 +112,9 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
             view.setLayoutParams(mCreateViewParams);
 
             if (mDialog instanceof BaseDialog) {
-                if (!(mDialog instanceof BaseBottomSheetDialog)) {
+                if ((mDialog instanceof DialogBottomSheet)) {
+                    ((BaseDialog) mDialog).setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+                } else {
                     ((BaseDialog) mDialog).setGravity(mDialogGravity);
                 }
             } else {

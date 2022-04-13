@@ -351,6 +351,13 @@ public class BaseDialog extends AppCompatDialog {
     }
 
     /**
+     * 获取弹窗内容的位置
+     */
+    public int getGravity() {
+        return mGravity;
+    }
+
+    /**
      * 设置内容背景,包括setContentView和addContentView
      */
     public BaseDialog setContentViewBackground(Drawable background) {
