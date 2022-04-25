@@ -53,6 +53,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     /**
      * Fragment添加标记,用于处理Fragment重复添加和tag不同导致异常崩溃
+     * {@link Fragment#isAdded()}是异步的,因此也不能用来判断
      */
     private boolean mAddedTag;
 
