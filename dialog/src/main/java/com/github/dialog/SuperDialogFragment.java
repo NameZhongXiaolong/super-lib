@@ -206,6 +206,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     }
 
     public void hide() {
+        mShowing = false;
+
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.hide();
         }
