@@ -51,6 +51,11 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     private Boolean mCancelable = true, mCanceledOnTouchOutside = true;
 
+    /**
+     * Fragment添加标记,用于处理Fragment重复添加和tag不同导致异常崩溃
+     */
+    private boolean mAddedTag;
+
     @NonNull
     @Override
     public LayoutInflater onGetLayoutInflater(@Nullable Bundle savedInstanceState) {
@@ -142,11 +147,27 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     }
 
     public void show(FragmentManager fragmentManager, String tag) {
+        //根据tag查找DialogFragment
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        if (fragment instanceof SuperDialogFragment && Objects.equals(getClass().getCanonicalName(), fragment.getClass().getCanonicalName())) {
+
+        if (fragment instanceof SuperDialogFragment && Objects.equals(getClass().getCanonicalName(), fragment.getClass().getCanonicalName()) && fragment.isAdded()) {
+            //查找的Fragment存在并且是将要添加的class,直接调用show()方法
             ((SuperDialogFragment) fragment).show();
         } else {
+            if (mAddedTag) {
+                if (isAdded()) {
+                    //已经添加到FragmentManager中了,再调用一次show()
+                    show();
+                }
+                return;
+            }
+
+            //添加
+            mAddedTag = true;
+
+            //show标记
             mShowing = true;
+
             fragmentManager.beginTransaction()
                     .add(this, tag)
                     .commitAllowingStateLoss();
@@ -244,6 +265,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 mDialog.dismiss();
             }
         }
+        //移除添加标记
+        mAddedTag = false;
         super.onDestroy();
     }
 
