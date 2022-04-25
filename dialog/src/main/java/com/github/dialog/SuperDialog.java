@@ -44,11 +44,11 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * {@link #setGravity(int)}设置弹窗的位置
  * {@link #setAnimations(int, int)}重写动画,原本的主题动画已失效,需在这里重写
  * {@link #destroy()}销毁方法,在组建销毁的时候调用一下,避免窗体泄漏
- * 推荐和{@link BaseDialogFragment}一起使用
+ * 推荐和{@link SuperDialogFragment}一起使用
  * <p>
- * 如果需要使用底部弹出框使用{@link BaseBottomSheetDialog},进行了相关的兼容处理
+ * 如果需要使用底部弹出框使用{@link BottomSheetDialog},进行了相关的兼容处理
  */
-public class BaseDialog extends AppCompatDialog {
+public class SuperDialog extends AppCompatDialog {
 
     /**
      * 默认的{@link Window#setDimAmount(float)}数值
@@ -88,7 +88,7 @@ public class BaseDialog extends AppCompatDialog {
 
     private final List<Integer> mContentLayoutResIds = new ArrayList<>();
 
-    public BaseDialog(Context context) {
+    public SuperDialog(Context context) {
         this(context, false);
     }
 
@@ -98,7 +98,7 @@ public class BaseDialog extends AppCompatDialog {
      * @param isLightStatusBar true状态栏浅色,黑色图标
      *                         false状态栏深色,白色图标
      */
-    public BaseDialog(Context context, boolean isLightStatusBar) {
+    public SuperDialog(Context context, boolean isLightStatusBar) {
         super(context, R.style.Theme_BaseDialog);
         mIsLightStatusBar = isLightStatusBar;
     }
@@ -109,7 +109,7 @@ public class BaseDialog extends AppCompatDialog {
      * @param isLightStatusBar true状态栏浅色,黑色图标
      *                         false状态栏深色,白色图标
      */
-    protected BaseDialog(Context context, int theme, boolean isLightStatusBar) {
+    protected SuperDialog(Context context, int theme, boolean isLightStatusBar) {
         super(context, theme);
         mIsLightStatusBar = isLightStatusBar;
     }
@@ -288,7 +288,7 @@ public class BaseDialog extends AppCompatDialog {
      * @param dimAmount     0～1之间,越深越明显
      * @param navigationBar 是否可以设置导航栏,true设置,false不设置
      */
-    public BaseDialog setDimAmount(float dimAmount, boolean navigationBar) {
+    public SuperDialog setDimAmount(float dimAmount, boolean navigationBar) {
         mDimAmount = dimAmount;
         mDimAmountWithNavigationBar = navigationBar;
         if (mBackgroundView != null) {
@@ -324,7 +324,7 @@ public class BaseDialog extends AppCompatDialog {
      * 设置宽高,会使布局文件或View设置的宽高失效
      * {@link #getWindow()#setLayout(int, int)}已经失效使用这个
      */
-    public BaseDialog setLayout(int width, int height) {
+    public SuperDialog setLayout(int width, int height) {
         mLayoutWidth = width;
         mLayoutHeight = height;
         if (mContentView != null) {
@@ -340,7 +340,7 @@ public class BaseDialog extends AppCompatDialog {
      * 设置位置,会使布局文件或View设置的位置失效
      * {@link #getWindow()#setGravity(int)}已经失效使用这个
      */
-    public BaseDialog setGravity(int gravity) {
+    public SuperDialog setGravity(int gravity) {
         mGravity = gravity;
         if (mContentView != null) {
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mContentView.getLayoutParams();
@@ -360,7 +360,7 @@ public class BaseDialog extends AppCompatDialog {
     /**
      * 设置内容背景,包括setContentView和addContentView
      */
-    public BaseDialog setContentViewBackground(Drawable background) {
+    public SuperDialog setContentViewBackground(Drawable background) {
         mContentViewBackground = background;
         if (mContentView != null) {
             mContentView.setBackground(mContentViewBackground);
@@ -374,7 +374,7 @@ public class BaseDialog extends AppCompatDialog {
      * @param color    颜色
      * @param radiusDp 四个圆角,单位为dp
      */
-    public BaseDialog setContentViewBackground(int color, int radiusDp) {
+    public SuperDialog setContentViewBackground(int color, int radiusDp) {
         GradientDrawable drawable = new GradientDrawable();
         drawable.setColor(color);
         drawable.setCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radiusDp, getContext().getResources().getDisplayMetrics()));
@@ -384,7 +384,7 @@ public class BaseDialog extends AppCompatDialog {
     /**
      * 设置内容背景
      */
-    public BaseDialog setContentViewBackgroundColor(int color) {
+    public SuperDialog setContentViewBackgroundColor(int color) {
         return setContentViewBackground(new ColorDrawable(color));
     }
 
@@ -394,7 +394,7 @@ public class BaseDialog extends AppCompatDialog {
      * @param enter 进场动画
      * @param exit  出场动画
      */
-    public BaseDialog setAnimations(@AnimatorRes @AnimRes int enter, @AnimatorRes @AnimRes int exit) {
+    public SuperDialog setAnimations(@AnimatorRes @AnimRes int enter, @AnimatorRes @AnimRes int exit) {
         mAnimEnter = enter;
         mAnimExit = exit;
         return this;
@@ -460,7 +460,7 @@ public class BaseDialog extends AppCompatDialog {
             alphaAnimation.setDuration(animation.getDuration());
             mBackgroundView.startAnimation(alphaAnimation);
             mContentView.startAnimation(animation);
-            mContentView.postDelayed(BaseDialog.super::dismiss, animation.getDuration());
+            mContentView.postDelayed(SuperDialog.super::dismiss, animation.getDuration());
             mContentView.postDelayed(() -> mOnAnimExitTag = false, animation.getDuration());
         } else {
             super.dismiss();
@@ -484,7 +484,7 @@ public class BaseDialog extends AppCompatDialog {
             alphaAnimation.setDuration(animation.getDuration());
             mBackgroundView.setAnimation(alphaAnimation);
             mContentView.startAnimation(animation);
-            mContentView.postDelayed(BaseDialog.super::hide, animation.getDuration());
+            mContentView.postDelayed(SuperDialog.super::hide, animation.getDuration());
             mContentView.postDelayed(() -> mOnAnimExitTag = false, animation.getDuration());
         } else {
             super.hide();

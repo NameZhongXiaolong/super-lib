@@ -31,7 +31,7 @@ import androidx.fragment.app.FragmentManager;
  * 布局文件根布局设置的layout_gravity就是弹窗的位置,不设置就获取弹窗设置的位置,还没有就设置居中
  * 使用{@link #show(FragmentActivity)}和{@link #show(Fragment)}注意tag的唯一性{@link #getDefTag()}
  */
-public class BaseDialogFragment extends Fragment implements DialogInterface {
+public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     //弹窗内容的layoutParams
     private ViewGroup.MarginLayoutParams mCreateViewParams;
@@ -57,8 +57,8 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
         mDialog = onCreateDialog(savedInstanceState);
 
         //获取弹窗的位置
-        if (mDialog instanceof BaseDialog) {
-            mDialogGravity = ((BaseDialog) mDialog).getGravity();
+        if (mDialog instanceof SuperDialog) {
+            mDialogGravity = ((SuperDialog) mDialog).getGravity();
             if (mDialogGravity == 0) {
                 mDialogGravity = Gravity.CENTER;
             }
@@ -83,7 +83,7 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
     }
 
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return new BaseDialog(getContext());
+        return new SuperDialog(getContext());
     }
 
     @Nullable
@@ -111,11 +111,11 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
             //设置布局的宽高
             view.setLayoutParams(mCreateViewParams);
 
-            if (mDialog instanceof BaseDialog) {
+            if (mDialog instanceof SuperDialog) {
                 if ((mDialog instanceof DialogBottomSheet)) {
-                    ((BaseDialog) mDialog).setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+                    ((SuperDialog) mDialog).setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
                 } else {
-                    ((BaseDialog) mDialog).setGravity(mDialogGravity);
+                    ((SuperDialog) mDialog).setGravity(mDialogGravity);
                 }
             } else {
                 mDialog.getWindow().setGravity(mDialogGravity);
@@ -143,8 +143,8 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
 
     public void show(FragmentManager fragmentManager, String tag) {
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        if (fragment instanceof BaseDialogFragment && Objects.equals(getClass().getCanonicalName(), fragment.getClass().getCanonicalName())) {
-            ((BaseDialogFragment) fragment).show();
+        if (fragment instanceof SuperDialogFragment && Objects.equals(getClass().getCanonicalName(), fragment.getClass().getCanonicalName())) {
+            ((SuperDialogFragment) fragment).show();
         } else {
             mShowing = true;
             fragmentManager.beginTransaction()
@@ -238,8 +238,8 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
     @Override
     public void onDestroy() {
         if (mDialog != null && mDialog.isShowing()) {
-            if (mDialog instanceof BaseDialog) {
-                ((BaseDialog) mDialog).destroy();
+            if (mDialog instanceof SuperDialog) {
+                ((SuperDialog) mDialog).destroy();
             } else {
                 mDialog.dismiss();
             }
@@ -304,9 +304,9 @@ public class BaseDialogFragment extends Fragment implements DialogInterface {
     protected static class DialogLayoutInflater extends LayoutInflater {
 
         private final LayoutInflater mLayoutInflater;
-        private final BaseDialogFragment mDialogFragment;
+        private final SuperDialogFragment mDialogFragment;
 
-        public DialogLayoutInflater(BaseDialogFragment dialogFragment, LayoutInflater layoutInflater) {
+        public DialogLayoutInflater(SuperDialogFragment dialogFragment, LayoutInflater layoutInflater) {
             super(layoutInflater, layoutInflater.getContext());
             mDialogFragment = dialogFragment;
             mLayoutInflater = layoutInflater;
