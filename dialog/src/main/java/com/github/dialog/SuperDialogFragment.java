@@ -179,16 +179,17 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
      * 便捷的显示,注意{@link #getDefTag()}的唯一性
      */
     public void show(FragmentActivity activity) {
-        show(activity.getSupportFragmentManager(), getClass().getCanonicalName());
+        if (activity != null && !activity.isFinishing()) {
+            show(activity.getSupportFragmentManager(), getDefTag());
+        }
     }
 
     /**
      * 便捷的显示,注意{@link #getDefTag()}的唯一性
      */
     public void show(Fragment fragment) {
-        FragmentActivity activity = fragment.getActivity();
-        if (activity != null) {
-            show(activity);
+        if (fragment != null) {
+            show(fragment.getActivity());
         }
     }
 
