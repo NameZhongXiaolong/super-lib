@@ -117,19 +117,25 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
             //设置布局的宽高
             view.setLayoutParams(mCreateViewParams);
 
-            //设置布局
-            mDialog.setContentView(view);
-
-            //设置弹窗的位置
             if (mDialog instanceof SuperDialog) {
+                //封装过的Dialog特殊处理
+                //设置弹窗的位置
                 if ((mDialog instanceof DialogBottomSheet)) {
                     ((SuperDialog) mDialog).setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
                 } else {
                     ((SuperDialog) mDialog).setGravity(mDialogGravity);
                 }
+                //设置布局
+                mDialog.setContentView(view);
             } else {
+                //常规弹窗
+                //设置布局
+                mDialog.setContentView(view);
+
                 //默认弹窗还要重新设置一次宽高
                 mDialog.getWindow().setLayout(mCreateViewParams.width, mCreateViewParams.height);
+
+                //设置布局
                 mDialog.getWindow().setGravity(mDialogGravity);
             }
 
