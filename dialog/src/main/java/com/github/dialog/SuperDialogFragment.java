@@ -135,7 +135,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 //默认弹窗还要重新设置一次宽高
                 mDialog.getWindow().setLayout(mCreateViewParams.width, mCreateViewParams.height);
 
-                //设置布局
+                //设置弹窗的位置
                 mDialog.getWindow().setGravity(mDialogGravity);
             }
 
