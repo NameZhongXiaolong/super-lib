@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -129,11 +132,27 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 mDialog.setContentView(view);
             } else {
                 //常规弹窗
+                //去掉标题
+                mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
                 //设置布局
                 mDialog.setContentView(view);
 
-                //默认弹窗还要重新设置一次宽高
-                mDialog.getWindow().setLayout(mCreateViewParams.width, mCreateViewParams.height);
+                //默认弹窗还要重新设置一次宽高,如果是MATCH_PARENT就要获取屏幕的宽高
+                int width = mCreateViewParams.width, height = mCreateViewParams.height;
+                if (width == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    width = getResources().getDisplayMetrics().widthPixels;
+                }
+                if (height == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    DisplayMetrics metrics = new DisplayMetrics();
+                    requireActivity().getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+                    height = metrics.heightPixels;
+                }
+                //设置窗体的尺寸
+                mDialog.getWindow().setLayout(width, height);
+
+                //去掉阴影
+                mDialog.getWindow().setBackgroundDrawable(new ColorDrawable());
 
                 //设置弹窗的位置
                 mDialog.getWindow().setGravity(mDialogGravity);
