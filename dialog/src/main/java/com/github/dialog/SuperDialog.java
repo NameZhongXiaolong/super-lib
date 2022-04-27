@@ -35,7 +35,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * Created by ZhongXiaolong on 2022/03/27 21:06.
  * <p>
  * Base弹窗
- * 与其他弹窗不同,本弹窗实际是占满屏幕的主容器{@link #mContentView},背景{@link #mBackgroundView},setContentView添加到主容器中,
+ * 与其他弹窗不同,本弹窗实际是占满屏幕的主容器{@link #mContainerLayout},背景{@link #mBackgroundView},setContentView添加到主容器中,
  * 用法与通用弹窗类似,布局文件可以设置位置、margin属性,
  * 需要在setContentView中对应的View设置好相应的位置宽高属性,避免传统Dialog需要调用{@link #getWindow()#setLayout(int, int)}等方法来实现位置,
  * 额外方法
