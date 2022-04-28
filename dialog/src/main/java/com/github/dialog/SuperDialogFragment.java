@@ -348,7 +348,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     }
 
     /**
-     * 设置为false返回键不可关闭弹窗,外部点击可关闭,会覆盖{@link #onCreateDialog(Bundle)}中返回dialog的setCanceledOnTouchOutside属性
+     * 设置为false 返回键可关闭弹窗,点击外部不可关闭弹窗,会覆盖{@link #onCreateDialog(Bundle)}中返回dialog的setCanceledOnTouchOutside属性
      */
     public void setCanceledOnTouchOutside(boolean cancel) {
         mCanceledOnTouchOutside = cancel;
