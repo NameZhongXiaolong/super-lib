@@ -52,7 +52,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     private DialogInterface.OnDismissListener mOnDismissListener;
 
-    private Boolean mCancelable = true, mCanceledOnTouchOutside = true;
+    private Boolean mCancelable, mCanceledOnTouchOutside;
 
     /**
      * Fragment添加标记,用于处理Fragment重复添加和tag不同导致异常崩溃
