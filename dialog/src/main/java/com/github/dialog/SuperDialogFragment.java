@@ -393,6 +393,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                             android.R.attr.layout_marginTop,
                             android.R.attr.layout_marginRight,
                             android.R.attr.layout_marginBottom,
+                            android.R.attr.layout_marginStart,
+                            android.R.attr.layout_marginEnd,
                     };
                     TypedArray a = getContext().obtainStyledAttributes(parser, attrs);
                     int width = a.getLayoutDimension(0, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -402,6 +404,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                     int marginTop = a.getLayoutDimension(4, margin);
                     int marginRight = a.getLayoutDimension(5, margin);
                     int marginBottom = a.getLayoutDimension(6, margin);
+                    int marginStart = a.getLayoutDimension(7, 0);
+                    int marginEnd = a.getLayoutDimension(8, 0);
                     a.recycle();
 
                     int attributeCount = parser.getAttributeCount();
@@ -418,7 +422,12 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
                     mDialogFragment.mCreateViewParams = new ViewGroup.MarginLayoutParams(width, height);
                     mDialogFragment.mCreateViewParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
-
+                    if (marginStart > 0) {
+                        mDialogFragment.mCreateViewParams.setMarginStart(marginStart);
+                    }
+                    if (marginEnd > 0) {
+                        mDialogFragment.mCreateViewParams.setMarginEnd(marginEnd);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
