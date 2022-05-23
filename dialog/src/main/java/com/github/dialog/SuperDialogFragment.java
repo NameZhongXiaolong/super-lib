@@ -231,6 +231,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     @Override
     public void dismiss() {
+        mShowing = false;
+
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }
