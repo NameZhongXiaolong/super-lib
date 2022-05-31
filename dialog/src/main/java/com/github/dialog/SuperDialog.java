@@ -446,7 +446,7 @@ public class SuperDialog extends AppCompatDialog {
     @Override
     public void dismiss() {
         if (mOnAnimExitTag) {
-            super.dismiss();
+            superDismiss();
             return;
         }
         boolean showing = isShowing();
@@ -460,10 +460,20 @@ public class SuperDialog extends AppCompatDialog {
             alphaAnimation.setDuration(animation.getDuration());
             mBackgroundView.startAnimation(alphaAnimation);
             mContentView.startAnimation(animation);
-            mContentView.postDelayed(SuperDialog.super::dismiss, animation.getDuration());
+            mContentView.postDelayed(this::superDismiss, animation.getDuration());
             mContentView.postDelayed(() -> mOnAnimExitTag = false, animation.getDuration());
         } else {
+            superDismiss();
+        }
+    }
+
+    private boolean mDismissed;
+
+    //真正的dismiss
+    private void superDismiss() {
+        if (!mDismissed) {
             super.dismiss();
+            mDismissed = true;
         }
     }
 
@@ -542,6 +552,6 @@ public class SuperDialog extends AppCompatDialog {
      * 销毁之前没有调用{@link #dismiss()}的时候调用
      */
     public void destroy() {
-        super.dismiss();
+        superDismiss();
     }
 }
