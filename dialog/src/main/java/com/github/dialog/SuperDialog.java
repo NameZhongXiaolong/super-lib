@@ -544,6 +544,9 @@ public class SuperDialog extends AppCompatDialog {
      * 即:无动画的dismiss
      */
     public synchronized void destroy() {
-        super.dismiss();
+        try {
+            super.dismiss();
+        } catch (Exception ignored) {
+        }
     }
 }
