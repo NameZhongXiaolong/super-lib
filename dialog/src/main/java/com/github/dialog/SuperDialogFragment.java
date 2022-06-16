@@ -205,7 +205,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     }
 
     /**
-     * 便捷的显示,注意{@link #getDefTag()}的唯一性
+     * 关联FragmentActivity的显示,注意{@link #getDefTag()}的唯一性
      */
     public void show(FragmentActivity activity) {
         if (activity != null && !activity.isFinishing()) {
@@ -214,11 +214,19 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     }
 
     /**
-     * 便捷的显示,注意{@link #getDefTag()}的唯一性
+     * 关联Fragment显示(若Fragment未添加使用它的Activity),注意{@link #getDefTag()}的唯一性
      */
     public void show(Fragment fragment) {
         if (fragment != null) {
-            show(fragment.getActivity());
+            FragmentManager fragmentManager;
+            if (fragment.isAdded()) {
+                fragmentManager = fragment.getChildFragmentManager();
+            } else if (fragment.getActivity() != null) {
+                fragmentManager = fragment.getActivity().getSupportFragmentManager();
+            } else {
+                return;
+            }
+            show(fragmentManager, getDefTag());
         }
     }
 
