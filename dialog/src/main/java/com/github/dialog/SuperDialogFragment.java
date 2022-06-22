@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -219,7 +220,13 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     public void show(Fragment fragment) {
         if (fragment != null) {
             FragmentManager fragmentManager;
-            if (fragment.isAdded()) {
+            if (fragment instanceof SuperDialogFragment || fragment instanceof DialogFragment) {
+                //处理DialogFragment,防止DialogFragment销毁了,弹窗没显示
+                Fragment parentFragment = fragment.getParentFragment();
+                if (parentFragment != null) show(parentFragment);
+                else show(fragment.getActivity());
+                return;
+            } else if (fragment.isAdded()) {
                 fragmentManager = fragment.getChildFragmentManager();
             } else if (fragment.getActivity() != null) {
                 fragmentManager = fragment.getActivity().getSupportFragmentManager();
