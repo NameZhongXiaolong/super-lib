@@ -223,7 +223,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     /**
      * 关联Fragment显示,注意{@link #getDefTag()}的唯一性
      * 如果Fragment没有添加,就会关联Activity;如果这个Fragment是个弹窗Fragment,会取上一级的非弹窗Fragment关联.详细逻辑看{@link #getShowCompatFragmentManager(Fragment)}
-     * 如果一定要百分百关联传入的Fragment就使用{@link #show(FragmentManager, String)}传入Fragment.getChildFragmentManager()
+     * 如果一定要关联弹窗Fragment就使用{@link #show(FragmentManager, String)}传入Fragment.getChildFragmentManager()
      */
     public void show(Fragment fragment) {
         FragmentManager fragmentManager = SuperDialogFragment.getShowCompatFragmentManager(fragment);
