@@ -221,25 +221,50 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     }
 
     /**
-     * 关联Fragment显示(若Fragment未添加使用它的Activity),注意{@link #getDefTag()}的唯一性
+     * 关联Fragment显示,注意{@link #getDefTag()}的唯一性
+     * 如果Fragment没有添加,就会关联Activity;如果这个Fragment是个弹窗Fragment,会取上一级的非弹窗Fragment关联.详细逻辑看{@link #getShowCompatFragmentManager(Fragment)}
+     * 如果一定要百分百关联传入的Fragment就使用{@link #show(FragmentManager, String)}传入Fragment.getChildFragmentManager()
      */
     public void show(Fragment fragment) {
-        if (fragment != null) {
-            FragmentManager fragmentManager;
-            if (fragment instanceof SuperDialogFragment || fragment instanceof DialogFragment) {
-                //处理DialogFragment,防止DialogFragment销毁了,弹窗没显示
-                Fragment parentFragment = fragment.getParentFragment();
-                if (parentFragment != null) show(parentFragment);
-                else show(fragment.getActivity());
-                return;
-            } else if (fragment.isAdded()) {
-                fragmentManager = fragment.getChildFragmentManager();
-            } else if (fragment.getActivity() != null) {
-                fragmentManager = fragment.getActivity().getSupportFragmentManager();
-            } else {
-                return;
-            }
+        FragmentManager fragmentManager = SuperDialogFragment.getShowCompatFragmentManager(fragment);
+        if (fragmentManager != null) {
             show(fragmentManager, getDefTag());
+        }
+    }
+
+    /**
+     * 通过Fragment获取{@link #show(Fragment)}传入的{@link FragmentManager}
+     * 兼容DialogFragment,防止弹窗关联DialogFragment后关闭
+     * 也尽可能地能去到非空的值(返回值要判空)
+     */
+    public static FragmentManager getShowCompatFragmentManager(Fragment fragment) {
+        if (fragment == null) {
+            return null;
+        }
+
+        if (fragment instanceof SuperDialogFragment || fragment instanceof DialogFragment) {
+            //逐级往上找正常的Fragment
+            FragmentManager fragmentManager = null;
+            Fragment parentFragment = fragment.getParentFragment();
+            while (parentFragment != null) {
+                if (!(parentFragment instanceof DialogFragment) && !(parentFragment instanceof SuperDialogFragment)) {
+                    fragmentManager = parentFragment.getChildFragmentManager();
+                    break;
+                } else {
+                    parentFragment = parentFragment.getParentFragment();
+                }
+            }
+            if (fragmentManager != null) {
+                return fragmentManager;
+            } else {
+                return fragment.getActivity() != null ? fragment.getActivity().getSupportFragmentManager() : null;
+            }
+        } else if (fragment.isAdded()) {
+            return fragment.getChildFragmentManager();
+        } else if (fragment.getActivity() != null) {
+            return fragment.getActivity().getSupportFragmentManager();
+        } else {
+            return null;
         }
     }
 
