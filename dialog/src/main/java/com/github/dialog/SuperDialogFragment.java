@@ -177,6 +177,12 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
         }
     }
 
+    /**
+     * show
+     *
+     * @param fragmentManager Fragment管理器,注意:如果传入DialogFragment的fragmentManager,在DialogFragment关闭/销毁后这个弹窗也会关闭
+     * @param tag             显示标记,注意唯一性
+     */
     public void show(FragmentManager fragmentManager, String tag) {
         //根据tag查找DialogFragment
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
