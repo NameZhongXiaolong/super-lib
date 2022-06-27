@@ -243,25 +243,28 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
         }
 
         if (fragment instanceof SuperDialogFragment || fragment instanceof DialogFragment) {
-            //逐级往上找正常的Fragment
-            FragmentManager fragmentManager = null;
+            //如果是弹窗Fragment,逐级往上找常规的Fragment
             Fragment parentFragment = fragment.getParentFragment();
             while (parentFragment != null) {
                 if (!(parentFragment instanceof DialogFragment) && !(parentFragment instanceof SuperDialogFragment)) {
-                    fragmentManager = parentFragment.getChildFragmentManager();
                     break;
                 } else {
                     parentFragment = parentFragment.getParentFragment();
                 }
             }
-            if (fragmentManager != null) {
-                return fragmentManager;
+            if (parentFragment != null && parentFragment.isAdded()) {
+                return parentFragment.getChildFragmentManager();
             } else {
-                return fragment.getActivity() != null ? fragment.getActivity().getSupportFragmentManager() : null;
+                FragmentActivity fragmentActivity = fragment.getActivity();
+                if (fragmentActivity != null && !fragmentActivity.isFinishing()) {
+                    return fragmentActivity.getSupportFragmentManager();
+                } else {
+                    return null;
+                }
             }
         } else if (fragment.isAdded()) {
             return fragment.getChildFragmentManager();
-        } else if (fragment.getActivity() != null) {
+        } else if (fragment.getActivity() != null && !fragment.getActivity().isFinishing()) {
             return fragment.getActivity().getSupportFragmentManager();
         } else {
             return null;
