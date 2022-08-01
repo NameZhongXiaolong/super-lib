@@ -181,6 +181,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
      * show
      *
      * @param fragmentManager Fragment管理器,注意:如果传入DialogFragment的fragmentManager,在DialogFragment关闭/销毁后这个弹窗也会关闭
+     *                        注意处理{@link Fragment#getChildFragmentManager()}异常(在未添加到Activity时会抛异常)
      * @param tag             显示标记,注意唯一性
      */
     public void show(FragmentManager fragmentManager, String tag) {
