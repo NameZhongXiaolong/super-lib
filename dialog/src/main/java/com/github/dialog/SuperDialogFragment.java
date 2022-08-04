@@ -47,6 +47,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     private boolean mShowing = true;
 
+    private boolean mSetContentViewTag;
+
     private DialogInterface.OnShowListener mOnShowListener;
 
     private DialogInterface.OnCancelListener mOnCancelListener;
@@ -153,9 +155,9 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 mDialog.getWindow().setGravity(mDialogGravity);
             }
 
-            if (mShowing) {
-                show();
-            }
+            mSetContentViewTag = true;
+
+            if (mShowing) show();
         }
     }
 
@@ -166,7 +168,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     private void show() {
         mShowing = true;
         try {
-            mDialog.show();
+            if (mSetContentViewTag) mDialog.show();
         } catch (Exception ignored) {
         }
     }
