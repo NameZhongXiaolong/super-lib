@@ -96,12 +96,6 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
         return new SuperDialog(getContext());
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -160,7 +154,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
             }
 
             if (mShowing) {
-                mDialog.show();
+                show();
             }
         }
     }
