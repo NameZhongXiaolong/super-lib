@@ -161,8 +161,11 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
         }
     }
 
+    /**
+     * 弹窗是否显示
+     */
     public boolean isShowing() {
-        return mShowing && isAdded();
+        return mShowing && isAdded() && mDialog != null && mDialog.isShowing();
     }
 
     private void show() {
