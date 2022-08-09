@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -130,8 +131,17 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 mDialog.setContentView(view);
             } else {
                 //常规弹窗
+
                 //去掉标题
-                mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                try {
+                    if (mDialog instanceof AppCompatDialog) {
+                        ((AppCompatDialog) mDialog).supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+                    } else {
+                        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    }
+                } catch (Exception ignored) {
+                    //捕获异常,会存在崩溃闪退隐患
+                }
 
                 //设置布局
                 mDialog.setContentView(view);
