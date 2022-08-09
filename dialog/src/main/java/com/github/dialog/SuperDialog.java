@@ -130,9 +130,20 @@ public class SuperDialog extends AppCompatDialog {
         super.setContentView(wrapInLayout(layoutResID, null, null));
     }
 
+    /**
+     * 特别注意:params是{@link ViewGroup.MarginLayoutParams}时,低版本(<android6.0)会无法获取 Margin 值,因此直接用{@link FrameLayout.LayoutParams}替代
+     * 即使是使用原始的{@link android.app.Dialog}也会有这个问题,这是SDK的bug
+     */
     @Override
     final public void setContentView(View view, ViewGroup.LayoutParams params) {
-        super.setContentView(wrapInLayout(0, view, params));
+        if (params instanceof ViewGroup.MarginLayoutParams) {
+            final ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) params;
+            final FrameLayout.LayoutParams newParams = new FrameLayout.LayoutParams(mlp);
+            newParams.setMargins(mlp.leftMargin, mlp.topMargin, mlp.rightMargin, mlp.bottomMargin);
+            super.setContentView(wrapInLayout(0, view, newParams));
+        } else {
+            super.setContentView(wrapInLayout(0, view, params));
+        }
     }
 
     final public void setContentView(View view, FrameLayout.LayoutParams params) {
