@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.FrameLayout;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -38,7 +39,7 @@ import androidx.fragment.app.FragmentManager;
 public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     //弹窗内容的layoutParams
-    private ViewGroup.MarginLayoutParams mCreateViewParams;
+    private FrameLayout.LayoutParams mCreateViewParams;
 
     //弹窗的位置
     private int mDialogGravity = Gravity.CENTER;
@@ -104,9 +105,9 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
         if (mCreateViewParams == null) {
             ViewGroup.LayoutParams lp = view.getLayoutParams();
             if (lp != null) {
-                mCreateViewParams = new ViewGroup.MarginLayoutParams(lp);
+                mCreateViewParams = new FrameLayout.LayoutParams(lp);
             } else {
-                mCreateViewParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                mCreateViewParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
         }
 
@@ -471,7 +472,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                         }
                     }
 
-                    mDialogFragment.mCreateViewParams = new ViewGroup.MarginLayoutParams(width, height);
+                    mDialogFragment.mCreateViewParams = new FrameLayout.LayoutParams(width, height);
                     mDialogFragment.mCreateViewParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
                     if (marginStart > 0) {
                         mDialogFragment.mCreateViewParams.setMarginStart(marginStart);
