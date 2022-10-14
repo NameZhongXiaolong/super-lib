@@ -16,10 +16,12 @@
     <string name="gallery_dcim">相册(DCIM)</string>
     <string name="gallery_hint_tip">提示</string>
     <string name="gallery_hint_need_sd_permission">需要存储权限才能访问相册</string>
+    <string name="gallery_hint_need_camera_permission">需要相机权限才能拍照</string>
     <string name="gallery_go_setting">去设置</string>
     <string name="gallery_exit">退出</string>
     <string name="gallery_video">视频</string>
     <string name="gallery_max_video">最多只能选择%1$d个视频</string>
     <string name="gallery_video_size_max">视频不能超过%1$s</string>
     <string name="gallery_video_size_min">视频不能小于%1$s</string>
+    <string name="gallery_cancel">取消</string>
 </resources>
