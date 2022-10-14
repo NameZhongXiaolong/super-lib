@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.FrameLayout;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -38,7 +40,7 @@ import androidx.fragment.app.FragmentManager;
 public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     //弹窗内容的layoutParams
-    private ViewGroup.MarginLayoutParams mCreateViewParams;
+    private FrameLayout.LayoutParams mCreateViewParams;
 
     //弹窗的位置
     private int mDialogGravity = Gravity.CENTER;
@@ -46,6 +48,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     private Dialog mDialog;
 
     private boolean mShowing = true;
+
+    private boolean mSetContentViewTag;
 
     private DialogInterface.OnShowListener mOnShowListener;
 
@@ -96,21 +100,15 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
         return new SuperDialog(getContext());
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (mCreateViewParams == null) {
             ViewGroup.LayoutParams lp = view.getLayoutParams();
             if (lp != null) {
-                mCreateViewParams = new ViewGroup.MarginLayoutParams(lp);
+                mCreateViewParams = new FrameLayout.LayoutParams(lp);
             } else {
-                mCreateViewParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                mCreateViewParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
         }
 
@@ -133,8 +131,17 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 mDialog.setContentView(view);
             } else {
                 //常规弹窗
+
                 //去掉标题
-                mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                try {
+                    if (mDialog instanceof AppCompatDialog) {
+                        ((AppCompatDialog) mDialog).supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+                    } else {
+                        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    }
+                } catch (Exception ignored) {
+                    //捕获异常,会存在崩溃闪退隐患
+                }
 
                 //设置布局
                 mDialog.setContentView(view);
@@ -159,24 +166,34 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 mDialog.getWindow().setGravity(mDialogGravity);
             }
 
-            if (mShowing) {
-                mDialog.show();
-            }
+            mSetContentViewTag = true;
+
+            if (mShowing) show();
         }
     }
 
+    /**
+     * 弹窗是否显示
+     */
     public boolean isShowing() {
-        return mShowing && isAdded();
+        return mShowing && isAdded() && mDialog != null && mDialog.isShowing();
     }
 
     private void show() {
         mShowing = true;
         try {
-            mDialog.show();
+            if (mSetContentViewTag) mDialog.show();
         } catch (Exception ignored) {
         }
     }
 
+    /**
+     * show
+     *
+     * @param fragmentManager Fragment管理器,注意:如果传入DialogFragment的fragmentManager,在DialogFragment关闭/销毁后这个弹窗也会关闭
+     *                        注意处理{@link Fragment#getChildFragmentManager()}异常(在未添加到Activity时会抛异常)
+     * @param tag             显示标记,注意唯一性
+     */
     public void show(FragmentManager fragmentManager, String tag) {
         //根据tag查找DialogFragment
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
@@ -215,25 +232,53 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     }
 
     /**
-     * 关联Fragment显示(若Fragment未添加使用它的Activity),注意{@link #getDefTag()}的唯一性
+     * 关联Fragment显示,注意{@link #getDefTag()}的唯一性
+     * 如果Fragment没有添加,就会关联Activity;如果这个Fragment是个弹窗Fragment,会取上一级的非弹窗Fragment关联.详细逻辑看{@link #getShowCompatFragmentManager(Fragment)}
+     * 如果一定要关联弹窗Fragment就使用{@link #show(FragmentManager, String)}传入Fragment.getChildFragmentManager()
      */
     public void show(Fragment fragment) {
-        if (fragment != null) {
-            FragmentManager fragmentManager;
-            if (fragment instanceof SuperDialogFragment || fragment instanceof DialogFragment) {
-                //处理DialogFragment,防止DialogFragment销毁了,弹窗没显示
-                Fragment parentFragment = fragment.getParentFragment();
-                if (parentFragment != null) show(parentFragment);
-                else show(fragment.getActivity());
-                return;
-            } else if (fragment.isAdded()) {
-                fragmentManager = fragment.getChildFragmentManager();
-            } else if (fragment.getActivity() != null) {
-                fragmentManager = fragment.getActivity().getSupportFragmentManager();
-            } else {
-                return;
-            }
+        FragmentManager fragmentManager = SuperDialogFragment.getShowCompatFragmentManager(fragment);
+        if (fragmentManager != null) {
             show(fragmentManager, getDefTag());
+        }
+    }
+
+    /**
+     * 通过Fragment获取{@link #show(Fragment)}传入的{@link FragmentManager}
+     * 兼容DialogFragment,防止弹窗关联DialogFragment后关闭
+     * 也尽可能地能去到非空的值(返回值要判空)
+     */
+    public static FragmentManager getShowCompatFragmentManager(Fragment fragment) {
+        if (fragment == null) {
+            return null;
+        }
+
+        if (fragment instanceof SuperDialogFragment || fragment instanceof DialogFragment) {
+            //如果是弹窗Fragment,逐级往上找常规的Fragment
+            Fragment parentFragment = fragment.getParentFragment();
+            while (parentFragment != null) {
+                if (!(parentFragment instanceof DialogFragment) && !(parentFragment instanceof SuperDialogFragment)) {
+                    break;
+                } else {
+                    parentFragment = parentFragment.getParentFragment();
+                }
+            }
+            if (parentFragment != null && parentFragment.isAdded()) {
+                return parentFragment.getChildFragmentManager();
+            } else {
+                FragmentActivity fragmentActivity = fragment.getActivity();
+                if (fragmentActivity != null && !fragmentActivity.isFinishing()) {
+                    return fragmentActivity.getSupportFragmentManager();
+                } else {
+                    return null;
+                }
+            }
+        } else if (fragment.isAdded()) {
+            return fragment.getChildFragmentManager();
+        } else if (fragment.getActivity() != null && !fragment.getActivity().isFinishing()) {
+            return fragment.getActivity().getSupportFragmentManager();
+        } else {
+            return null;
         }
     }
 
@@ -437,7 +482,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                         }
                     }
 
-                    mDialogFragment.mCreateViewParams = new ViewGroup.MarginLayoutParams(width, height);
+                    mDialogFragment.mCreateViewParams = new FrameLayout.LayoutParams(width, height);
                     mDialogFragment.mCreateViewParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
                     if (marginStart > 0) {
                         mDialogFragment.mCreateViewParams.setMarginStart(marginStart);

@@ -115,14 +115,6 @@ public class SuperDialog extends AppCompatDialog {
     }
 
     /**
-     * 确保View已经设置了{@link View#setLayoutParams(ViewGroup.LayoutParams)}属性,否则会导致窗体宽高与实际设置的不一致
-     */
-    @Override
-    final public void setContentView(View view) {
-        super.setContentView(wrapInLayout(0, view, null));
-    }
-
-    /**
      * 可以完整的读取布局文件的属性
      */
     @Override
@@ -130,13 +122,49 @@ public class SuperDialog extends AppCompatDialog {
         super.setContentView(wrapInLayout(layoutResID, null, null));
     }
 
+    /**
+     * 确保View已经设置了{@link View#setLayoutParams(ViewGroup.LayoutParams)}属性,否则会导致窗体占满整个屏幕(这是默认设置)
+     */
+    @Override
+    final public void setContentView(View view) {
+        super.setContentView(wrapInLayout(0, view, null));
+    }
+
+    /**
+     * 特别注意:params是{@link ViewGroup.MarginLayoutParams}时,低版本(<android6.0)会无法获取 Margin 值,因此直接用{@link FrameLayout.LayoutParams}替代
+     * 即使是使用原始的{@link android.app.Dialog}也会有这个问题,这是SDK的bug
+     */
     @Override
     final public void setContentView(View view, ViewGroup.LayoutParams params) {
+        if (params instanceof ViewGroup.MarginLayoutParams) {
+            final ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) params;
+            final FrameLayout.LayoutParams newParams = new FrameLayout.LayoutParams(mlp);
+            newParams.setMargins(mlp.leftMargin, mlp.topMargin, mlp.rightMargin, mlp.bottomMargin);
+            super.setContentView(wrapInLayout(0, view, newParams));
+        } else {
+            super.setContentView(wrapInLayout(0, view, params));
+        }
+    }
+
+    /**
+     * 设置窗体的布局,并且设置窗体的LayoutParams属性
+     */
+    final public void setContentView(View view, FrameLayout.LayoutParams params) {
         super.setContentView(wrapInLayout(0, view, params));
     }
 
-    final public void setContentView(View view, FrameLayout.LayoutParams params) {
-        super.setContentView(wrapInLayout(0, view, params));
+    /**
+     * 设置窗体的布局,并且设置窗体的宽高(位置居中)
+     */
+    final public void setContentView(View view, int width, int height) {
+        super.setContentView(wrapInLayout(0, view, new FrameLayout.LayoutParams(width, height, Gravity.CENTER)));
+    }
+
+    /**
+     * 设置窗体的布局,并且设置窗体的宽高、位置
+     */
+    final public void setContentView(View view, int width, int height, int gravity) {
+        super.setContentView(wrapInLayout(0, view, new FrameLayout.LayoutParams(width, height, gravity)));
     }
 
     private View wrapInLayout(int layoutResId, @Nullable View view, @Nullable ViewGroup.LayoutParams params) {

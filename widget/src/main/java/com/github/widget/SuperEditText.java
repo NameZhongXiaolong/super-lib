@@ -54,7 +54,7 @@ public class SuperEditText extends AppCompatEditText {
     }
 
     public SuperEditText(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.editTextStyle);
+        this(context, attrs, android.R.attr.editTextStyle);
     }
 
     public SuperEditText(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {

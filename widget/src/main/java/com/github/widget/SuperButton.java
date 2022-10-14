@@ -54,7 +54,7 @@ public class SuperButton extends AppCompatButton {
     }
 
     public SuperButton(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.buttonStyle);
+        this(context, attrs, android.R.attr.buttonStyle);
     }
 
     public SuperButton(Context context, AttributeSet attrs, int defStyleAttr) {

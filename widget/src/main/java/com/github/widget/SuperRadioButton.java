@@ -54,7 +54,7 @@ public class SuperRadioButton extends AppCompatRadioButton {
     }
 
     public SuperRadioButton(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.radioButtonStyle);
+        this(context, attrs, android.R.attr.radioButtonStyle);
     }
 
     public SuperRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
