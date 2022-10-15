@@ -45,6 +45,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.widget.AbsListView.CHOICE_MODE_SINGLE;
 import static com.github.gallery.PhotoAdapter.OnItemClickType.CAMERA;
 import static com.github.gallery.PhotoAdapter.OnItemClickType.CHECKED;
@@ -204,7 +205,7 @@ public class ChoiceGalleryActivity extends BaseActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
             for (int i = 0; i < permissions.length; i++) {
-                if (permissions[i].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                if (permissions[i].equals(WRITE_EXTERNAL_STORAGE)) {
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                         //扫描图片
                         ScanningLocalPhotoService.enqueueWork(this, new Intent(this, ScanningLocalPhotoService.class));
@@ -276,9 +277,11 @@ public class ChoiceGalleryActivity extends BaseActivity {
         //没有权限
         if (data.getCode() == LoadResultData.CODE_NO_PERMISSION) {
             mLoadSucceed = false;
-            //请求权限
+            //请求权限,低版本的直接显示弹窗
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, 100);
+            } else {
+                showPermissionDialog();
             }
         }
         if (data.getCode() == LoadResultData.CODE_SUCCESS) {
@@ -489,10 +492,9 @@ public class ChoiceGalleryActivity extends BaseActivity {
                 .setMessage(R.string.gallery_hint_need_sd_permission)
                 .setCancelable(false)
                 .setPositiveButton(R.string.gallery_go_setting, (dialog, which) -> {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-                        }
+                    final boolean canShowRequestPermission = ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && canShowRequestPermission) {
+                        requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, 100);
                     } else {
                         Intent starter = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS");
                         String pkg = "com.android.settings";
@@ -512,7 +514,6 @@ public class ChoiceGalleryActivity extends BaseActivity {
         mPermissionDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#E84393"));
         mPermissionDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#999999"));
     }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
