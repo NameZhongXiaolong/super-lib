@@ -3,24 +3,29 @@ package com.github.dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import androidx.annotation.AnimRes;
 import androidx.annotation.AnimatorRes;
@@ -87,6 +92,12 @@ public class SuperDialog extends AppCompatDialog {
     private final boolean mIsLightStatusBar;
 
     private final List<Integer> mContentLayoutResIds = new ArrayList<>();
+
+    //销毁标记
+    private boolean mDestroyTag;
+
+    //是否有EditText标记
+    private boolean mHasEditTextView;
 
     public SuperDialog(Context context) {
         this(context, false);
@@ -259,6 +270,22 @@ public class SuperDialog extends AppCompatDialog {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mDestroyTag = false;
+
+        if (!mHasEditTextView) {
+            Executors.newCachedThreadPool().submit(() -> {
+                mHasEditTextView = viewHasEditText(mContentView);
+                if (mHasEditTextView && !mDestroyTag) {
+                    mContainerLayout.post(this::setKeyboardChangeTranslation);
+                }
+            });
+        }
+    }
+
+    @Override
     final public void onContentChanged() {
         super.onContentChanged();
 
@@ -286,6 +313,25 @@ public class SuperDialog extends AppCompatDialog {
 
         if (mContentViewBackground != null) {
             setContentViewBackground(mContentViewBackground);
+        }
+    }
+
+    //判断view是否有EditText
+    private boolean viewHasEditText(View view) {
+        if (view instanceof EditText) {
+            return true;
+        } else if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View childView = viewGroup.getChildAt(i);
+                boolean hasEditText = viewHasEditText(childView);
+                if (hasEditText) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
         }
     }
 
@@ -573,8 +619,74 @@ public class SuperDialog extends AppCompatDialog {
      */
     public synchronized void destroy() {
         try {
+            if (mKeyboardChangeGlobalLayoutListener != null) {
+                final ViewTreeObserver viewTreeObserver = mContainerLayout != null ? mContainerLayout.getViewTreeObserver() : null;
+                if (viewTreeObserver != null) viewTreeObserver.removeOnGlobalLayoutListener(mKeyboardChangeGlobalLayoutListener);
+                mKeyboardChangeGlobalLayoutListener = null;
+            }
             super.dismiss();
         } catch (Exception ignored) {
+        }
+        mDestroyTag = true;
+    }
+
+    public boolean isLightStatusBar() {
+        return mIsLightStatusBar;
+    }
+
+    private ViewTreeObserver.OnGlobalLayoutListener mKeyboardChangeGlobalLayoutListener;
+
+    /**
+     * 设置键盘弹窗View上移
+     */
+    private void setKeyboardChangeTranslation() {
+        final ViewTreeObserver viewTreeObserver = mContainerLayout != null ? mContainerLayout.getViewTreeObserver() : null;
+        if (viewTreeObserver != null) {
+            if (mKeyboardChangeGlobalLayoutListener == null) {
+                mKeyboardChangeGlobalLayoutListener = () -> {
+                    Rect rect = new Rect();
+                    mContainerLayout.getWindowVisibleDisplayFrame(rect);
+
+                    //可视的高度
+                    final int visualHeight = rect.height();
+
+                    //设置弹出键盘的弹起的偏移量
+                    if (getGravity() == Gravity.BOTTOM || getGravity() == (Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM)) {
+                        final int translationY = mContainerLayout.getHeight()
+                                - (mDimAmountWithNavigationBar ? getNavBarHeight() : 0)
+                                - getStatusBarHeight()
+                                - visualHeight;
+                        mContentView.setTranslationY(-(Math.max(translationY, 0)));
+                    } else {
+                        final int paddingBottom = mContainerLayout.getHeight()
+                                - (mDimAmountWithNavigationBar ? getNavBarHeight() : 0)
+                                - getStatusBarHeight()
+                                - visualHeight;
+                        mContainerLayout.setPadding(0, 0, 0, Math.max(paddingBottom, 0));
+                    }
+                };
+            }
+            viewTreeObserver.addOnGlobalLayoutListener(mKeyboardChangeGlobalLayoutListener);
+        }
+    }
+
+    //获取导航栏高度
+    private int getNavBarHeight() {
+        try {
+            final int resId = getContext().getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+            return getContext().getResources().getDimensionPixelSize(resId);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    //获取状态栏高度
+    private int getStatusBarHeight() {
+        try {
+            final int resId = getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+            return getContext().getResources().getDimensionPixelSize(resId);
+        } catch (Exception e) {
+            return 0;
         }
     }
 }
