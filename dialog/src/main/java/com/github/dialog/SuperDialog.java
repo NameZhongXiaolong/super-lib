@@ -49,7 +49,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * {@link #setGravity(int)}设置弹窗的位置
  * {@link #setAnimations(int, int)}重写动画,原本的主题动画已失效,需在这里重写
  * {@link #destroy()}销毁方法,在组建销毁的时候调用一下,避免窗体泄漏
- * 适配了软件弹窗,软件弹出将会使View上移
+ * 适配了软键盘,软键盘弹出将会使View上移
  * 推荐和{@link SuperDialogFragment}一起使用
  * <p>
  * 如果需要使用底部弹出框使用{@link BottomSheetDialog},进行了相关的兼容处理
