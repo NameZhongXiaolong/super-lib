@@ -100,6 +100,9 @@ public class SuperDialog extends AppCompatDialog {
     //是否有EditText标记
     private boolean mHasEditTextView;
 
+    //设置键盘弹出View整体上移,默认是true
+    private boolean mKeyboardSheetTranslation;
+
     public SuperDialog(Context context) {
         this(context, false);
     }
@@ -113,6 +116,7 @@ public class SuperDialog extends AppCompatDialog {
     public SuperDialog(Context context, boolean isLightStatusBar) {
         super(context, R.style.Theme_BaseDialog);
         mIsLightStatusBar = isLightStatusBar;
+        mKeyboardSheetTranslation = true;
     }
 
     /**
@@ -124,6 +128,7 @@ public class SuperDialog extends AppCompatDialog {
     protected SuperDialog(Context context, int theme, boolean isLightStatusBar) {
         super(context, theme);
         mIsLightStatusBar = isLightStatusBar;
+        mKeyboardSheetTranslation = true;
     }
 
     /**
@@ -276,7 +281,7 @@ public class SuperDialog extends AppCompatDialog {
 
         mDestroyTag = false;
 
-        if (!mHasEditTextView) {
+        if (mKeyboardSheetTranslation && !mHasEditTextView) {
             Executors.newCachedThreadPool().submit(() -> {
                 mHasEditTextView = viewHasEditText(mContentView);
                 if (mHasEditTextView && !mDestroyTag) {
@@ -668,6 +673,34 @@ public class SuperDialog extends AppCompatDialog {
                 };
             }
             viewTreeObserver.addOnGlobalLayoutListener(mKeyboardChangeGlobalLayoutListener);
+        }
+    }
+
+    /**
+     * 设置键盘弹出View整体上移,默认是true
+     */
+    public void setKeyboardSheetTranslation(boolean keyboardSheetTranslation) {
+        if (mKeyboardSheetTranslation == keyboardSheetTranslation) {
+            return;
+        }
+        mKeyboardSheetTranslation = keyboardSheetTranslation;
+        if (isShowing()) {
+            if (mKeyboardSheetTranslation) {
+                if (!mHasEditTextView) {
+                    Executors.newCachedThreadPool().submit(() -> {
+                        mHasEditTextView = viewHasEditText(mContentView);
+                        if (mHasEditTextView && !mDestroyTag) {
+                            mContainerLayout.post(this::setKeyboardChangeTranslation);
+                        }
+                    });
+                }
+            } else {
+                if (mKeyboardChangeGlobalLayoutListener != null) {
+                    final ViewTreeObserver viewTreeObserver = mContainerLayout != null ? mContainerLayout.getViewTreeObserver() : null;
+                    if (viewTreeObserver != null) viewTreeObserver.removeOnGlobalLayoutListener(mKeyboardChangeGlobalLayoutListener);
+                    mKeyboardChangeGlobalLayoutListener = null;
+                }
+            }
         }
     }
 
