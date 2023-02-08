@@ -97,11 +97,11 @@ public class SuperDialog extends AppCompatDialog {
     //销毁标记
     private boolean mDestroyTag;
 
+    //设置键盘弹出View整体是否上移,如果没有赋值就根据 mHasEditTextView 参数来决定是否开启这个功能
+    private Boolean mKeyboardSheetTranslation;
+
     //是否有EditText标记
     private boolean mHasEditTextView;
-
-    //设置键盘弹出View整体上移,默认是true
-    private boolean mKeyboardSheetTranslation;
 
     public SuperDialog(Context context) {
         this(context, false);
@@ -116,7 +116,6 @@ public class SuperDialog extends AppCompatDialog {
     public SuperDialog(Context context, boolean isLightStatusBar) {
         super(context, R.style.Theme_BaseDialog);
         mIsLightStatusBar = isLightStatusBar;
-        mKeyboardSheetTranslation = true;
     }
 
     /**
@@ -128,7 +127,6 @@ public class SuperDialog extends AppCompatDialog {
     protected SuperDialog(Context context, int theme, boolean isLightStatusBar) {
         super(context, theme);
         mIsLightStatusBar = isLightStatusBar;
-        mKeyboardSheetTranslation = true;
     }
 
     /**
@@ -281,13 +279,19 @@ public class SuperDialog extends AppCompatDialog {
 
         mDestroyTag = false;
 
-        if (mKeyboardSheetTranslation && !mHasEditTextView) {
-            Executors.newCachedThreadPool().submit(() -> {
-                mHasEditTextView = viewHasEditText(mContentView);
-                if (mHasEditTextView && !mDestroyTag) {
-                    mContainerLayout.post(this::setKeyboardChangeTranslation);
-                }
-            });
+        if (mKeyboardSheetTranslation == null) {
+            if (mHasEditTextView) {
+                mContainerLayout.post(this::setKeyboardChangeTranslation);
+            } else {
+                Executors.newCachedThreadPool().submit(() -> {
+                    mHasEditTextView = viewHasEditText(mContentView);
+                    if (mHasEditTextView && !mDestroyTag) {
+                        mContainerLayout.post(this::setKeyboardChangeTranslation);
+                    }
+                });
+            }
+        } else if (mKeyboardSheetTranslation) {
+            mContainerLayout.post(this::setKeyboardChangeTranslation);
         }
     }
 
@@ -680,20 +684,13 @@ public class SuperDialog extends AppCompatDialog {
      * 设置键盘弹出View整体上移,默认是true
      */
     public void setKeyboardSheetTranslation(boolean keyboardSheetTranslation) {
-        if (mKeyboardSheetTranslation == keyboardSheetTranslation) {
+        if (mKeyboardSheetTranslation != null && mKeyboardSheetTranslation == keyboardSheetTranslation) {
             return;
         }
         mKeyboardSheetTranslation = keyboardSheetTranslation;
         if (isShowing()) {
             if (mKeyboardSheetTranslation) {
-                if (!mHasEditTextView) {
-                    Executors.newCachedThreadPool().submit(() -> {
-                        mHasEditTextView = viewHasEditText(mContentView);
-                        if (mHasEditTextView && !mDestroyTag) {
-                            mContainerLayout.post(this::setKeyboardChangeTranslation);
-                        }
-                    });
-                }
+                setKeyboardChangeTranslation();
             } else {
                 if (mKeyboardChangeGlobalLayoutListener != null) {
                     final ViewTreeObserver viewTreeObserver = mContainerLayout != null ? mContainerLayout.getViewTreeObserver() : null;
