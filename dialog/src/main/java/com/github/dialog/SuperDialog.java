@@ -506,9 +506,11 @@ public class SuperDialog extends AppCompatDialog {
 
     @Override
     public void show() {
-        boolean showing = isShowing();
+        final boolean showing = isShowing();
         super.show();
-        if (!showing && mContentView != null) {
+        if ((!showing || mHiding) && mContentView != null) {
+            //不显示的状态show显示动画
+
             Animation animation = loadAnimation(mAnimEnter);
             if (animation == null) {
                 animation = getAlphaAnimation(0.5f, 1, 200);
@@ -517,15 +519,13 @@ public class SuperDialog extends AppCompatDialog {
             alphaAnimation.setDuration(animation.getDuration());
             mBackgroundView.startAnimation(alphaAnimation);
             mContentView.startAnimation(animation);
+
+            //将隐藏状态设置为false
+            mHiding = false;
         }
     }
 
     private boolean mOnAnimExitTag;
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
     @Override
     public void dismiss() {
@@ -552,8 +552,12 @@ public class SuperDialog extends AppCompatDialog {
         }
     }
 
+    //触发hide()方法的标记true,设置show的时候设置为false
+    private boolean mHiding;
+
     @Override
     public void hide() {
+        mHiding = true;
         if (mOnAnimExitTag) {
             super.hide();
             return;
@@ -621,6 +625,14 @@ public class SuperDialog extends AppCompatDialog {
             throw new NullPointerException("No find view by id: " + idKey);
         }
         return view;
+    }
+
+    /**
+     * 返回键点击
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     /**
