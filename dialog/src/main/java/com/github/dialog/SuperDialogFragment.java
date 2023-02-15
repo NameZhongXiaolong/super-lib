@@ -117,6 +117,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
             mDialog.setOnCancelListener(this::onCancel);
             mDialog.setOnShowListener(this::onShow);
 
+            boolean showing = false;
             if (mDialog instanceof SuperDialog) {
                 //封装过的Dialog特殊处理
                 //设置弹窗的位置
@@ -133,6 +134,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
                     //设置布局
                     mDialog.setContentView(view);
+
+                    showing = true;
                 }
             } else {
                 //常规弹窗
@@ -155,6 +158,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
                     //设置布局
                     mDialog.setContentView(view);
+
+                    showing = true;
                 }
 
                 //默认弹窗还要重新设置一次宽高,如果是MATCH_PARENT就要获取屏幕的宽高
@@ -180,7 +185,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
             mSetContentViewTag = true;
 
             //如果设置了show或者父容器为null调用Dialog.show
-            if (mShowing || view.getParent() == null) show();
+            if (mShowing || showing) show();
         }
     }
 
