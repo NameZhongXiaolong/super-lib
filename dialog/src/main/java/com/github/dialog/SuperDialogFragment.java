@@ -47,7 +47,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     private Dialog mDialog;
 
-    private boolean mShowing = true;
+    private boolean mShowing;
 
     private boolean mSetContentViewTag;
 
@@ -116,8 +116,6 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
             mDialog.setOnDismissListener(this::onDismiss);
             mDialog.setOnCancelListener(this::onCancel);
             mDialog.setOnShowListener(this::onShow);
-            //设置布局的宽高
-            view.setLayoutParams(mCreateViewParams);
 
             if (mDialog instanceof SuperDialog) {
                 //封装过的Dialog特殊处理
@@ -127,8 +125,15 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 } else {
                     ((SuperDialog) mDialog).setGravity(mDialogGravity);
                 }
-                //设置布局
-                mDialog.setContentView(view);
+
+                //设置弹窗(没有父容器的情况才设置,避免出现 The specified child already has a parent. You must call removeView() on the child‘s pare)
+                if (view.getParent() == null) {
+                    //设置布局的属性
+                    view.setLayoutParams(mCreateViewParams);
+
+                    //设置布局
+                    mDialog.setContentView(view);
+                }
             } else {
                 //常规弹窗
 
@@ -143,8 +148,14 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                     //捕获异常,会存在崩溃闪退隐患
                 }
 
-                //设置布局
-                mDialog.setContentView(view);
+                //设置弹窗(没有父容器的情况才设置,避免出现 The specified child already has a parent. You must call removeView() on the child‘s pare)
+                if (view.getParent() == null) {
+                    //设置布局的属性
+                    view.setLayoutParams(mCreateViewParams);
+
+                    //设置布局
+                    mDialog.setContentView(view);
+                }
 
                 //默认弹窗还要重新设置一次宽高,如果是MATCH_PARENT就要获取屏幕的宽高
                 int width = mCreateViewParams.width, height = mCreateViewParams.height;
@@ -168,7 +179,8 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
             mSetContentViewTag = true;
 
-            if (mShowing) show();
+            //如果设置了show或者父容器为null调用Dialog.show
+            if (mShowing || view.getParent() == null) show();
         }
     }
 
@@ -210,15 +222,21 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
                 return;
             }
 
-            //添加
-            mAddedTag = true;
+            try {
+                //添加
+                mAddedTag = true;
 
-            //show标记
-            mShowing = true;
+                //show标记
+                mShowing = true;
 
-            fragmentManager.beginTransaction()
-                    .add(this, tag)
-                    .commitAllowingStateLoss();
+                fragmentManager.beginTransaction()
+                        .add(this, tag)
+                        .commitAllowingStateLoss();
+            } catch (Exception e) {
+                //添加异常标记设置回默认
+                mAddedTag = false;
+                mShowing = false;
+            }
         }
     }
 
