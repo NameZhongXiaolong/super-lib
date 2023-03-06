@@ -117,7 +117,7 @@ public class SuperDialog extends AppCompatDialog {
      *                         false状态栏深色,白色图标
      */
     public SuperDialog(Context context, boolean isLightStatusBar) {
-        this(context, Boolean.valueOf(isLightStatusBar));
+        this(context, R.style.Theme_BaseDialog, isLightStatusBar);
     }
 
     /**
