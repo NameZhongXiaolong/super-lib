@@ -402,7 +402,7 @@ public class SuperDialog extends AppCompatDialog {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
             //设置刘海区域显示
-            if (Build.VERSION.SDK_INT >= 28) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 WindowManager.LayoutParams attributes = getWindow().getAttributes();
                 //LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT 这是默认行为，如上所述。在竖屏模式下，内容会呈现到刘海区域中；但在横屏模式下，内容会显示黑边
                 //LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES 在竖屏模式和横屏模式下，内容都会呈现到刘海区域中
