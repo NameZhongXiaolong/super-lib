@@ -1,5 +1,6 @@
 package com.github.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -32,6 +33,8 @@ import androidx.annotation.AnimatorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialog;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -103,8 +106,23 @@ public class SuperDialog extends AppCompatDialog {
     //是否有EditText标记
     private boolean mHasEditTextView;
 
+    //根据context获取状态栏图标颜色
+    private static boolean getContextLightStatus(final Context context) {
+        if (context instanceof Activity) {
+            try {
+                Window window = ((Activity) context).getWindow();
+                WindowInsetsControllerCompat insetsController = WindowCompat.getInsetsController(window, window.getDecorView());
+                return insetsController != null && insetsController.isAppearanceLightStatusBars();
+            } catch (Exception e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     public SuperDialog(Context context) {
-        this(context, false);
+        this(context, getContextLightStatus(context));
     }
 
     /**
@@ -116,6 +134,22 @@ public class SuperDialog extends AppCompatDialog {
     public SuperDialog(Context context, boolean isLightStatusBar) {
         super(context, R.style.Theme_BaseDialog);
         mIsLightStatusBar = isLightStatusBar;
+    }
+
+    /**
+     * 构造器
+     *
+     * @param isLightStatusBar true状态栏浅色,黑色图标
+     *                         false状态栏深色,白色图标
+     *                         null跟随Activity
+     */
+    public SuperDialog(Context context, Boolean isLightStatusBar) {
+        super(context, R.style.Theme_BaseDialog);
+        if (isLightStatusBar != null) {
+            mIsLightStatusBar = isLightStatusBar;
+        } else {
+            mIsLightStatusBar = getContextLightStatus(context);
+        }
     }
 
     /**
