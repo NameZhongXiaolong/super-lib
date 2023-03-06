@@ -18,14 +18,34 @@ public class BottomSheetDialog extends SuperDialog implements DialogBottomSheet 
         this(context, null);
     }
 
+    /**
+     * 构造器
+     *
+     * @param isLightStatusBar true状态栏浅色,黑色图标
+     *                         false状态栏深色,白色图标
+     */
     public BottomSheetDialog(Context context, boolean isLightStatusBar) {
         this(context, R.style.Theme_BaseDialog, isLightStatusBar);
     }
 
+    /**
+     * 构造器
+     *
+     * @param isLightStatusBar true状态栏浅色,黑色图标
+     *                         false状态栏深色,白色图标
+     *                         null跟随Activity
+     */
     public BottomSheetDialog(Context context, Boolean isLightStatusBar) {
         this(context, R.style.Theme_BaseDialog, isLightStatusBar);
     }
 
+    /**
+     * 自定义主题,最好继承 R.style.Theme_BaseDialog
+     *
+     * @param isLightStatusBar true状态栏浅色,黑色图标
+     *                         false状态栏深色,白色图标
+     *                         null跟随Activity
+     */
     public BottomSheetDialog(Context context, int theme, Boolean isLightStatusBar) {
         super(context, theme, isLightStatusBar);
         setDimAmount(SuperDialog.DEF_DIM_AMOUNT, false);
