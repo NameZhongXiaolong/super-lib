@@ -15,14 +15,18 @@ import android.view.ViewGroup;
 public class BottomSheetDialog extends SuperDialog implements DialogBottomSheet {
 
     public BottomSheetDialog(Context context) {
-        this(context, false);
+        this(context, null);
     }
 
     public BottomSheetDialog(Context context, boolean isLightStatusBar) {
         this(context, R.style.Theme_BaseDialog, isLightStatusBar);
     }
 
-    public BottomSheetDialog(Context context, int theme, boolean isLightStatusBar) {
+    public BottomSheetDialog(Context context, Boolean isLightStatusBar) {
+        this(context, R.style.Theme_BaseDialog, isLightStatusBar);
+    }
+
+    public BottomSheetDialog(Context context, int theme, Boolean isLightStatusBar) {
         super(context, theme, isLightStatusBar);
         setDimAmount(SuperDialog.DEF_DIM_AMOUNT, false);
         setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);

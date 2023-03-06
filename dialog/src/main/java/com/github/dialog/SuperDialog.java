@@ -106,6 +106,47 @@ public class SuperDialog extends AppCompatDialog {
     //是否有EditText标记
     private boolean mHasEditTextView;
 
+    public SuperDialog(Context context) {
+        this(context, null);
+    }
+
+    /**
+     * 构造器
+     *
+     * @param isLightStatusBar true状态栏浅色,黑色图标
+     *                         false状态栏深色,白色图标
+     */
+    public SuperDialog(Context context, boolean isLightStatusBar) {
+        this(context, Boolean.valueOf(isLightStatusBar));
+    }
+
+    /**
+     * 构造器
+     *
+     * @param isLightStatusBar true状态栏浅色,黑色图标
+     *                         false状态栏深色,白色图标
+     *                         null跟随Activity
+     */
+    public SuperDialog(Context context, Boolean isLightStatusBar) {
+        this(context, R.style.Theme_BaseDialog, isLightStatusBar);
+    }
+
+    /**
+     * 自定义主题,最好继承 R.style.Theme_BaseDialog
+     *
+     * @param isLightStatusBar true状态栏浅色,黑色图标
+     *                         false状态栏深色,白色图标
+     *                         null跟随Activity
+     */
+    protected SuperDialog(Context context, int theme, Boolean isLightStatusBar) {
+        super(context, theme);
+        if (isLightStatusBar != null) {
+            mIsLightStatusBar = isLightStatusBar;
+        } else {
+            mIsLightStatusBar = getContextLightStatus(context);
+        }
+    }
+
     //根据context获取状态栏图标颜色
     private static boolean getContextLightStatus(final Context context) {
         if (context instanceof Activity) {
@@ -119,48 +160,6 @@ public class SuperDialog extends AppCompatDialog {
         } else {
             return false;
         }
-    }
-
-    public SuperDialog(Context context) {
-        this(context, getContextLightStatus(context));
-    }
-
-    /**
-     * 构造器
-     *
-     * @param isLightStatusBar true状态栏浅色,黑色图标
-     *                         false状态栏深色,白色图标
-     */
-    public SuperDialog(Context context, boolean isLightStatusBar) {
-        super(context, R.style.Theme_BaseDialog);
-        mIsLightStatusBar = isLightStatusBar;
-    }
-
-    /**
-     * 构造器
-     *
-     * @param isLightStatusBar true状态栏浅色,黑色图标
-     *                         false状态栏深色,白色图标
-     *                         null跟随Activity
-     */
-    public SuperDialog(Context context, Boolean isLightStatusBar) {
-        super(context, R.style.Theme_BaseDialog);
-        if (isLightStatusBar != null) {
-            mIsLightStatusBar = isLightStatusBar;
-        } else {
-            mIsLightStatusBar = getContextLightStatus(context);
-        }
-    }
-
-    /**
-     * 自定义主题,最好继承 R.style.Theme_BaseDialog
-     *
-     * @param isLightStatusBar true状态栏浅色,黑色图标
-     *                         false状态栏深色,白色图标
-     */
-    protected SuperDialog(Context context, int theme, boolean isLightStatusBar) {
-        super(context, theme);
-        mIsLightStatusBar = isLightStatusBar;
     }
 
     /**
