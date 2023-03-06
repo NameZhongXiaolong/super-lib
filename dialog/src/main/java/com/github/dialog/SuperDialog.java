@@ -391,9 +391,26 @@ public class SuperDialog extends AppCompatDialog {
                 visibility = visibility | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             }
             window.getDecorView().setSystemUiVisibility(visibility);
+
+            //设置透明背景
             window.setBackgroundDrawable(new ColorDrawable());
+
+            //设置可以设置背景阴影度
             window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
+            //设置沉浸式
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+            //设置刘海区域显示
+            if (Build.VERSION.SDK_INT >= 28) {
+                WindowManager.LayoutParams attributes = getWindow().getAttributes();
+                //LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT 这是默认行为，如上所述。在竖屏模式下，内容会呈现到刘海区域中；但在横屏模式下，内容会显示黑边
+                //LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES 在竖屏模式和横屏模式下，内容都会呈现到刘海区域中
+                //LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER 内容从不呈现到刘海区域中
+                attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                window.setAttributes(attributes);
+            }
+
             window.setDimAmount(0);
         }
 
