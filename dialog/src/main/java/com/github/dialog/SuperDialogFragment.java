@@ -47,7 +47,9 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
     private Dialog mDialog;
 
-    private boolean mShowing;
+    private Boolean mShowing;
+
+    private boolean mHiding;
 
     private boolean mSetContentViewTag;
 
@@ -185,7 +187,17 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
             mSetContentViewTag = true;
 
             //如果设置了show或者父容器为null调用Dialog.show
-            if (mShowing || showing) show();
+            if (mShowing == null) {
+                if (showing) show();
+            } else {
+                if (mShowing) {
+                    show();
+                } else if (!mHiding) {
+                    //没有show,判断是否是hide,再删除Fragment
+                    final FragmentManager fragmentManager = getFragmentManager();
+                    if (fragmentManager != null) fragmentManager.beginTransaction().remove(this).commitAllowingStateLoss();
+                }
+            }
         }
     }
 
@@ -193,11 +205,13 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
      * 弹窗是否显示
      */
     public boolean isShowing() {
-        return mShowing && isAdded() && mDialog != null && mDialog.isShowing();
+        return mShowing != null && mShowing && isAdded() && mDialog != null && mDialog.isShowing();
     }
 
     private void show() {
         mShowing = true;
+        mHiding = false;
+
         try {
             if (mSetContentViewTag) mDialog.show();
         } catch (Exception ignored) {
@@ -215,7 +229,7 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
         //根据tag查找DialogFragment
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
 
-        if (fragment instanceof SuperDialogFragment && Objects.equals(getClass().getCanonicalName(), fragment.getClass().getCanonicalName()) && fragment.isAdded()) {
+        if (fragment == this) {
             //查找的Fragment存在并且是将要添加的class,直接调用show()方法
             ((SuperDialogFragment) fragment).show();
         } else {
@@ -309,6 +323,9 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
     public void cancel() {
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.cancel();
+        } else if (isAdded()) {
+            final FragmentManager fragmentManager = getFragmentManager();
+            if (fragmentManager != null) fragmentManager.beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
 
@@ -318,11 +335,15 @@ public class SuperDialogFragment extends Fragment implements DialogInterface {
 
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
+        } else if (isAdded()) {
+            final FragmentManager fragmentManager = getFragmentManager();
+            if (fragmentManager != null) fragmentManager.beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
 
     public void hide() {
         mShowing = false;
+        mHiding = true;
 
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.hide();
